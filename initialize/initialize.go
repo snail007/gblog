@@ -46,7 +46,7 @@ func Initialize(s gcore.HTTPServer) (err error) {
 	dataFile := cfg.Get("database.sqlite3").([]interface{})[0].(map[string]interface{})["database"].(string)
 	dataDir := filepath.Dir(dataFile)
 	if !gfile.Exists(dataDir) {
-		err = os.MkdirAll(dataDir, 600)
+		err = os.MkdirAll(dataDir, 0700)
 		if err != nil {
 			return
 		}
