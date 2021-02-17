@@ -46,6 +46,7 @@
                                 <th>ID</th>
                                 <th>目录名称</th>
                                 <th>顶部导航</th>
+                                <th>文章数</th>
                                 <th>排序</th>
                                 <th>操作</th>
                             </tr>
@@ -63,7 +64,8 @@
                                     </td>
                                     <td><a href="{{$adminPath}}{{$controllerPath}}/detail?{{$idName}}={{val $row $idName}}">{{val $row $idName}}</a></td>
                                     <td>{{$row.name}}</td>
-                                    <td>{{if eq $row.is_nav "0" }}否{{else}}是{{end}}</td>
+                                    <td>{{if eq $row.is_nav "0" }}<span class="badge badge-danger-light">否</span>{{else}}<span class="badge badge-success-light">是</span>{{end}}</td>
+                                    <td><span class="badge badge-success-light">{{$row.total}}</span></td>
                                     <td>{{$row.sequence}}</td>
                                     <td>
                                         <div class="btn-group">

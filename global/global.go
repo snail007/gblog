@@ -2,10 +2,12 @@ package global
 
 import (
 	"encoding/json"
+	"fmt"
 	gcore "github.com/snail007/gmc/core"
 	gconfig "github.com/snail007/gmc/module/config"
 	gcast "github.com/snail007/gmc/util/cast"
 	gmap "github.com/snail007/gmc/util/map"
+	"math/rand"
 	"strings"
 )
 
@@ -38,6 +40,7 @@ func (B *BContext) ConfigFile() string {
 func (B *BContext) Config() gcore.Config {
 	return B.config
 }
+
 // key can be:
 // "basic.web_site_title": string,
 // "basic": map[string]interface{}
@@ -54,7 +57,7 @@ func (B *BContext) BConfig(key string) interface{} {
 	if v, ok := allConfig[configType]; !ok {
 		return "{}"
 	} else {
-		value :=gmap.M{}
+		value := gmap.M{}
 		err = json.Unmarshal([]byte(v["value"]), &value)
 		if err != nil {
 			return ""
@@ -112,4 +115,12 @@ func NewBContext(configFile string) (c *BContext, err error) {
 		config:     cfg,
 	}
 	return
+}
+
+var (
+	maxImgIdx int32 = 20
+)
+
+func RandImgIdx() string {
+	return fmt.Sprintf("/static/style/%.3d.png", rand.Int31n(maxImgIdx)+1)
 }

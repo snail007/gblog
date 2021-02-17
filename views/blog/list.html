@@ -6,7 +6,7 @@
                 {{range $article:=.articles}}
                     <li>
                         <a href="/view/{{$article.article_id}}">
-                            <i><img src="/static/style/00{{$article.rand}}.jpg" alt="标题图片"></i>
+                            <i><img src="{{$article.poster_url}}" alt="标题图片"></i>
                             <h2>{{$article.title}}</h2>
                         </a>
                         <p class="blog_smalltext">{{$article.summary}}</p>

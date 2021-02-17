@@ -2,7 +2,8 @@
     <div class="container">
         <h1>{{.article.title}}</h1>
         <p class="blog_info">
-        <span>{{.article.create_time|date "2006-01-02 15:04"}}</span><span>狂奔的蜗牛</span><span><a href="/list/{{.catalog.catalog_id}}">{{.catalog.name}}</a></span>
+            <span>{{.article.create_time|date "2006-01-02 15:04"}}</span><span>狂奔的蜗牛</span><span><a
+                        href="/list/{{.catalog.catalog_id}}">{{.catalog.name}}</a></span>
         </p>
 
         <div class="content" id="mkeditor">
@@ -17,32 +18,37 @@
                 <p><span>下一篇</span><a href="/view/{{.articleNext.article_id}}">{{.articleNext.title}}</a></p>
             {{end}}
         </div>
-{{/*        <div class="otherlink">*/}}
-{{/*            <h2>相关文章</h2>*/}}
-{{/*            <ul>*/}}
-{{/*                <li><a href="http://yanshi.sucainiu.com/sun/10.html" title="遇见你,是我平凡人生中最美的事情">遇见你,是我平凡人生中最美的事情</a></li>*/}}
-{{/*                <li><a href="http://yanshi.sucainiu.com/love/9.html" title="追梦路上邂逅爱情,他们携手改写平凡人生!">追梦路上邂逅爱情,他们携手改写平凡人生!</a></li>*/}}
-{{/*                <li><a href="http://yanshi.sucainiu.com/meet/8.html" title="理性精致穷,平凡人生的“见世面”之旅">理性精致穷,平凡人生的“见世面”之旅</a></li>*/}}
-{{/*                <li><a href="http://yanshi.sucainiu.com/life/7.html" title="世界上最永恒的幸福就是平凡，人生中最长久的拥有就是珍惜。">世界上最永恒的幸福就是平凡，人生中最长久的拥有就是珍</a></li>*/}}
-{{/*            </ul>*/}}
-{{/*        </div>*/}}
-{{/*        <div class="pinglun_box">*/}}
-{{/*            <h2>文章评论</h2>*/}}
-{{/*        </div>*/}}
+        {{/*        <div class="otherlink">*/}}
+        {{/*            <h2>相关文章</h2>*/}}
+        {{/*            <ul>*/}}
+        {{/*                <li><a href="http://yanshi.sucainiu.com/sun/10.html" title="遇见你,是我平凡人生中最美的事情">遇见你,是我平凡人生中最美的事情</a></li>*/}}
+        {{/*                <li><a href="http://yanshi.sucainiu.com/love/9.html" title="追梦路上邂逅爱情,他们携手改写平凡人生!">追梦路上邂逅爱情,他们携手改写平凡人生!</a></li>*/}}
+        {{/*                <li><a href="http://yanshi.sucainiu.com/meet/8.html" title="理性精致穷,平凡人生的“见世面”之旅">理性精致穷,平凡人生的“见世面”之旅</a></li>*/}}
+        {{/*                <li><a href="http://yanshi.sucainiu.com/life/7.html" title="世界上最永恒的幸福就是平凡，人生中最长久的拥有就是珍惜。">世界上最永恒的幸福就是平凡，人生中最长久的拥有就是珍</a></li>*/}}
+        {{/*            </ul>*/}}
+        {{/*        </div>*/}}
+        {{/*        <div class="pinglun_box">*/}}
+        {{/*            <h2>文章评论</h2>*/}}
+        {{/*        </div>*/}}
     </div>
 </article>
 
 <script>
-    $(function () {
-        editormd.markdownToHTML("mkeditor", {
-            tocm: true,
-            emoji: true,
-            taskList: true,
-            tex: true,
-            flowChart: true,
-            sequenceDiagram: true,
-            codeFold: true,
-            path: "/static/js/meditor/lib/"
-        });
-    });
+   window.init.push(function () {
+       $(function () {
+           editormd.markdownToHTML("mkeditor", {
+               width: "90%",
+               tocm: true,
+               tocTitle: "目录导航",
+               emoji: true,
+               taskList: true,
+               tex: true,
+               flowChart: true,
+               sequenceDiagram: true,
+               codeFold: true,
+               htmlDecode: "img",
+               path: "/static/js/meditor/lib/"
+           });
+       });
+   })
 </script>

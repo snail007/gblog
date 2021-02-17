@@ -21,3 +21,20 @@
 {{if .bc_basic.web_site_stat}}
     <script>{{.bc_basic.web_site_stat}}</script>
 {{end}}
+<button onclick="topFunction()" id="myBtn" title="回顶部">返回顶部</button>
+<script>
+    function scrollFunction() {console.log(121);
+        if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 100) {
+            document.getElementById("myBtn").style.display = "block";
+        } else {
+            document.getElementById("myBtn").style.display = "none";
+        }
+    }
+    function topFunction() {
+        document.body.scrollTop = 0;
+        document.documentElement.scrollTop = 0;
+    }
+    window.init.push(function () {
+        window.onscroll = function() {scrollFunction()};
+    })
+</script>

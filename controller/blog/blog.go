@@ -2,7 +2,7 @@ package blog
 
 import (
 	"encoding/json"
-	"fmt"
+	"gblog/global"
 	"github.com/snail007/gmc"
 	gcore "github.com/snail007/gmc/core"
 	gcast "github.com/snail007/gmc/util/cast"
@@ -28,7 +28,7 @@ var (
 		"Search":   true,
 		"Catalogs": true,
 	}
-	cacheSecond uint = 3600
+	cacheSecond uint  = 3600
 )
 
 func (this *Blog) Before() {
@@ -61,6 +61,7 @@ func (this *Blog) Before() {
 		this.buildNav()
 	}
 }
+
 func (this *Blog) cache(key string) (ar gcore.ActiveRecord) {
 	ar = gmc.DB.DB().AR()
 	if cacheSecond <= 0 {
@@ -113,7 +114,6 @@ func (this *Blog) List() {
 	for k, v := range articles {
 		catalog := catalogs[v["catalog_id"]]
 		v["catalog_name"] = catalog["name"]
-		v["rand"] = fmt.Sprintf("%d", rand.Int31n(6)+1)
 		articles[k] = v
 	}
 	// page
@@ -252,7 +252,7 @@ func (this *Blog) Catalogs() {
 			cnt = vv["total"]
 		}
 		v["total"] = cnt
-		v["rand"] = fmt.Sprintf("%d", rand.Int31n(6)+1)
+		v["rand"] = global.RandImgIdx()
 		catalogs[k] = v
 	}
 	this.View.Set("catalogs", catalogs)

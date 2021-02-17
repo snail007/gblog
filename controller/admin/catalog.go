@@ -3,6 +3,7 @@ package admin
 import (
 	"github.com/gookit/validate"
 	"github.com/snail007/gmc"
+	gdb "github.com/snail007/gmc/module/db"
 	gcast "github.com/snail007/gmc/util/cast"
 	gmap "github.com/snail007/gmc/util/map"
 )
@@ -22,7 +23,7 @@ func (this *Catalog) List() {
 			this.Stop(err)
 		}
 		v := data.Create()
-		v.StringRule("search_field", "enum:name,age")
+		v.StringRule("search_field", "enum:name")
 		if !v.Validate() {
 			this.Stop(v.Errors.One())
 		}
@@ -41,6 +42,23 @@ func (this *Catalog) List() {
 	rows, total, err := table.Page(where, start, pageSize, gmap.M{"sequence": "asc"})
 	if err != nil {
 		this.Stop(err)
+	}
+	db := gdb.DB()
+	rs, err := db.Query(db.AR().Select("count(*) as total,catalog_id").From("article").GroupBy("catalog_id"))
+	if err != nil {
+		this.Stop(err)
+	}
+	catalogsSummary := rs.MapRows("catalog_id")
+	for k, v := range rows {
+		cnt := ""
+		vv, exists := catalogsSummary[v["catalog_id"]]
+		if !exists {
+			cnt = "0"
+		} else {
+			cnt = vv["total"]
+		}
+		v["total"] = cnt
+		rows[k] = v
 	}
 	this.View.Set("rows", rows)
 	this.View.Set("enable_search", enableSearch)

@@ -8,19 +8,19 @@
                     <table class="table table-condensed">
                         <tbody>
                         <tr>
-                            <td style="width: 150px;">文章标题</td>
+                            <td style="width: 150px;">标题</td>
                             <td>{{val .data "title"}}</td>
                         </tr>
                         <tr>
-                            <td style="width: 150px;">文章摘要</td>
+                            <td style="width: 150px;">摘要</td>
                             <td>{{val .data "summary"}}</td>
                         </tr>
                         <tr>
-                            <td>文章内容</td>
-                            <td>{{val .data "content"}}</td>
+                            <td>配图</td>
+                            <td><img style="width: 100px;" src="{{.data.poster_url}}"/></td>
                         </tr>
                         <tr>
-                            <td>文章目录</td>
+                            <td>目录</td>
                             <td>{{.data.catalog_name}}</td>
                         </tr>
                         <tr>

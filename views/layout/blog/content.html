@@ -5,6 +5,7 @@
     {{template "blog/common/head" .}}
     <link rel="stylesheet" type="text/css" href="/static/js/meditor/css/editormd.min.css">
     <link rel="stylesheet" type="text/css" href="/static/js/meditor/css/editormd.logo.min.css">
+    <link rel="stylesheet" type="text/css" href="/static/js/meditor/css/editormd.preview.min.css">
 </head>
 <body>
 {{template "blog/common/header" .}}
@@ -13,13 +14,14 @@
     {{.GMC_LAYOUT_CONTENT}}
 </main>
 {{template "blog/common/foot" .}}
-<script src="/static/js/meditor/lib/flowchart.min.js"></script>
-<script src="/static/js/meditor/lib/jquery.flowchart.min.js"></script>
 <script src="/static/js/meditor/lib/marked.min.js"></script>
 <script src="/static/js/meditor/lib/prettify.min.js"></script>
 <script src="/static/js/meditor/lib/raphael.min.js"></script>
-<script src="/static/js/meditor/lib/sequence-diagram.min.js"></script>
 <script src="/static/js/meditor/lib/underscore.min.js"></script>
-<script type="text/javascript" src="/static/js/meditor/editormd.min.js"></script>
+<script src="/static/js/meditor/lib/sequence-diagram.min.js"></script>
+<script src="/static/js/meditor/lib/flowchart.min.js"></script>
+<script src="/static/js/meditor/lib/jquery.flowchart.min.js"></script>
+<script src="/static/js/meditor/editormd.min.js"></script>
+{{template "layout/blog/init"}}
 </body>
 </html>

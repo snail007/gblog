@@ -1,6 +1,7 @@
 package admin
 
 import (
+	"gblog/global"
 	"github.com/gookit/validate"
 	"github.com/snail007/gmc"
 	gcast "github.com/snail007/gmc/util/cast"
@@ -23,7 +24,7 @@ func (this *Article) List() {
 			this.Stop(err)
 		}
 		v := data.Create()
-		v.StringRule("search_field", "enum:name,age")
+		v.StringRule("search_field", "enum:title,content")
 		if !v.Validate() {
 			this.Stop(v.Errors.One())
 		}
@@ -107,8 +108,12 @@ func (this *Article) Create() {
 		dataInsert["summary"], _ = data.Get("summary")
 		dataInsert["content"], _ = data.Get("content")
 		dataInsert["catalog_id"], _ = data.Get("catalog_id")
+		dataInsert["poster_url"], _ = data.Get("poster_url")
 		dataInsert["update_time"] = 0
 		dataInsert["create_time"] = time.Now().Unix()
+		if dataInsert["poster_url"] == "" {
+			dataInsert["poster_url"] = global.RandImgIdx()
+		}
 		_, err = table.Insert(dataInsert)
 		if err != nil { // validate ok
 			this._JSONFail(err.Error())
@@ -162,7 +167,11 @@ func (this *Article) Edit() {
 		dataUpdate["summary"], _ = data.Get("summary")
 		dataUpdate["content"], _ = data.Get("content")
 		dataUpdate["catalog_id"], _ = data.Get("catalog_id")
+		dataUpdate["poster_url"], _ = data.Get("poster_url")
 		dataUpdate["update_time"] = time.Now().Unix()
+		if dataUpdate["poster_url"] == "" {
+			dataUpdate["poster_url"] = global.RandImgIdx()
+		}
 		_, err = table.UpdateBy(gmap.M{"article_id": id}, dataUpdate)
 		if err != nil { // validate ok
 			this._JSONFail(err.Error())

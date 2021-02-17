@@ -11,6 +11,7 @@ import (
 	"gblog/router"
 	"github.com/snail007/gmc"
 	gcore "github.com/snail007/gmc/core"
+	"github.com/snail007/gmc/http/server"
 	gcache "github.com/snail007/gmc/module/cache"
 	gdb "github.com/snail007/gmc/module/db"
 	glog "github.com/snail007/gmc/module/log"
@@ -21,8 +22,7 @@ import (
 	"strings"
 	"time"
 )
-
-func Initialize(s gcore.HTTPServer) (err error) {
+func Initialize(s *ghttpserver.HTTPServer) (err error) {
 	defer func() {
 		if err != nil {
 			err = gmc.Err.Wrap(err)
@@ -39,7 +39,7 @@ func Initialize(s gcore.HTTPServer) (err error) {
 		return
 	}
 	ctx.SetIsDebug(*isDebug)
-	ctx.SetServer(s)
+	ctx.SetServer(gcore.HTTPServer(s))
 	cfg := ctx.Config()
 
 	//init logger
@@ -115,6 +115,7 @@ create table article(
   article_id integer PRIMARY KEY AUTOINCREMENT,
   title text,
   summary text,
+  poster_url text,
   content text,
   catalog_id int,
   create_time int,

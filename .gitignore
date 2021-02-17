@@ -12,3 +12,5 @@ go.sum
 /static/v4
 /attachment
 gblog-release*
+/vendor
+/gblog
