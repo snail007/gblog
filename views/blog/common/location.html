@@ -1,0 +1,12 @@
+<p class="weizhi">
+    您现在的位置是：<a href="/">网站首页</a>
+    {{if .catalog}}
+        &gt; <a href="/list/{{.catalog.catalog_id}}">{{.catalog.name}}</a>
+    {{end}}
+    {{if eq .U.PATH "/timeline"}}
+        &gt; <a href="/timeline">时光机</a>
+    {{end}}
+    {{if eq .U.PATH "/search"}}
+        &gt; <a href="javascript:void(0);">搜索结果</a>
+    {{end}}
+</p>

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <title>{{val . "title"}}</title>
+    {{template "admin/common/head" .}}
+</head>
+<body>
+{{.GMC_LAYOUT_CONTENT}}
+{{template "admin/common/foot"}}
+
+{{/* markdown editor */}}
+<link rel="stylesheet" type="text/css" href="/static/js/meditor/css/editormd.min.css">
+<link rel="stylesheet" type="text/css" href="/static/js/meditor/css/editormd.logo.min.css">
+<link rel="stylesheet" type="text/css" href="/static/js/meditor/css/editormd.preview.min.css">
+
+<link rel="stylesheet" type="text/css" href="/static/js/jquery-tagsinput/jquery.tagsinput.min.css">
+<script type="text/javascript" src="/static/js/jquery-tagsinput/jquery.tagsinput.min.js"></script>
+
+{{/* file upload plugin */}}
+<script src="/static/js/jquery-file-upload/js/vendor/jquery.ui.widget.js"></script>
+<script src="/static/js/jquery.iframe-transport.js"></script>
+<script src="/static/js/jquery-file-upload/js/jquery.fileupload.js"></script>
+
+<script type="text/javascript" src="/static/js/main.min.js"></script>
+<script type="text/javascript" src="/static/js/jquery.form.js"></script>
+<script type="text/javascript" src="/static/js/form.js"></script>
+<script type="text/javascript" src="/static/js/meditor/editormd.min.js"></script>
+<script type="text/javascript" src="/static/js/init.js"></script>
+</body>
+</html>

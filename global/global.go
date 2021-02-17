@@ -1,8 +1,12 @@
 package global
 
 import (
+	"encoding/json"
 	gcore "github.com/snail007/gmc/core"
 	gconfig "github.com/snail007/gmc/module/config"
+	gcast "github.com/snail007/gmc/util/cast"
+	gmap "github.com/snail007/gmc/util/map"
+	"strings"
 )
 
 var (
@@ -33,6 +37,38 @@ func (B *BContext) ConfigFile() string {
 
 func (B *BContext) Config() gcore.Config {
 	return B.config
+}
+// key can be:
+// "basic.web_site_title": string,
+// "basic": map[string]interface{}
+func (B *BContext) BConfig(key string) interface{} {
+	db := B.DB()
+	keyArr := strings.Split(key, ".")
+	l := len(keyArr)
+	configType := keyArr[0]
+	rs, err := db.Query(db.AR().Cache("allConfig", 3600).From("config"))
+	if err != nil {
+		return ""
+	}
+	allConfig := rs.MapRows("key")
+	if v, ok := allConfig[configType]; !ok {
+		return "{}"
+	} else {
+		value :=gmap.M{}
+		err = json.Unmarshal([]byte(v["value"]), &value)
+		if err != nil {
+			return ""
+		}
+		if l == 1 {
+			return value
+		}
+		if v, ok := value[keyArr[1]]; !ok {
+			return ""
+		} else {
+			return gcast.ToString(v)
+		}
+	}
+	return ""
 }
 
 func (B *BContext) Log() gcore.Logger {

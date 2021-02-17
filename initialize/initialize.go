@@ -6,6 +6,7 @@
 package initialize
 
 import (
+	"fmt"
 	"gblog/global"
 	"gblog/router"
 	"github.com/snail007/gmc"
@@ -17,6 +18,8 @@ import (
 	"github.com/spf13/pflag"
 	"os"
 	"path/filepath"
+	"strings"
+	"time"
 )
 
 func Initialize(s gcore.HTTPServer) (err error) {
@@ -58,7 +61,7 @@ func Initialize(s gcore.HTTPServer) (err error) {
 		return
 	}
 	ctx.SetDB(gdb.DB())
-
+	gdb.DBSQLite3().Config.Cache = &DBCache{}
 	// auto init databases
 	err = checkTable(ctx.DB())
 	if err != nil {
@@ -86,19 +89,72 @@ func Initialize(s gcore.HTTPServer) (err error) {
 	return
 }
 
+type DBCache struct{}
+
+func (s *DBCache) Set(key string, val []byte, expire uint) (err error) {
+	return global.Context.Cache().Set(key, string(val), time.Second*time.Duration(expire))
+}
+
+func (s *DBCache) Get(key string) (data []byte, err error) {
+	d, err := global.Context.Cache().Get(key)
+	if err != nil {
+		return
+	}
+	data = []byte(d)
+	return
+}
+
 func checkTable(db gcore.Database) (err error) {
 	_, e := db.Query(db.AR().Raw("select * from article"))
 	if e == nil {
 		return
 	}
+	now := time.Now().Unix()
+	sql := `
+create table article(
+  article_id integer PRIMARY KEY AUTOINCREMENT,
+  title text,
+  summary text,
+  content text,
+  catalog_id int,
+  create_time int,
+  update_time int
+);
+create table catalog(
+  catalog_id integer PRIMARY KEY AUTOINCREMENT,
+  name text,
+  sequence integer default 0,
+  is_nav integer default 0
+);
+CREATE TABLE user (
+  user_id integer PRIMARY KEY AUTOINCREMENT,
+  username text,
+  nickname text,
+  password text,
+  is_delete integer default 0,
+  update_time integer,
+  create_time integer
+);
+create table config(
+  config_id integer PRIMARY KEY AUTOINCREMENT,
+  key text,
+  value text
+);
+insert into config (config_id, key, value) values (1,"basic",'{"file":"","key":"basic","web_site_blogger_email":"arraykeys@gmail.com","web_site_blogger_name":"狂奔的蜗牛","web_site_blogger_site":"https://github.com/snail007","web_site_copyright":"本博客内容，狂奔的蜗牛版权所有","web_site_description":"一个关注最新IT技术发展，专注于全栈技术架构与开发的技术博客。","web_site_icp":"","web_site_keywords":"狂奔的蜗牛，狂奔的蜗牛的博客，狂奔的蜗牛博客，博客系统，开源博客，snail007，蜗牛的博客，蜗牛，snail","web_site_logo":"/static/style/logo.png","web_site_stat":"","web_site_status":"on","web_site_title":"狂奔的蜗牛博客"}');
+insert into config (config_id, key, value) values (2,"system","{}");
+insert into config (config_id, key, value) values (3,"upload","{}");
+insert into catalog (catalog_id, name, sequence) values (0,"默认分类",0);
+insert into user (user_id, username, nickname, password, is_delete, update_time, create_time) values (1,'root',	'root',	'2df594b9710111099edbdb7edaa43301',	0,	%d,	%d);
+`
+	sql = fmt.Sprintf(sql, now, now)
 	// create table
-	_, err = db.Exec(db.AR().Raw("create table article(id integer PRIMARY KEY AUTOINCREMENT,title text,content text,catalog_id int,create_time int,update_time int)"))
-	if err != nil {
-		return
-	}
-	_, err = db.Exec(db.AR().Raw("create table catalog(id integer PRIMARY KEY AUTOINCREMENT,name text)"))
-	if err != nil {
-		return
+	for _, v := range strings.Split(strings.Trim(sql, ";\n\t "), ";") {
+		if v != "" {
+			_, err = db.Exec(db.AR().Raw(v))
+			if err != nil {
+				return
+			}
+		}
 	}
 	return
 }

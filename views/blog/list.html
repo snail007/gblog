@@ -1,0 +1,31 @@
+{{$catalogs:=.catalogs}}
+<article>
+    <div class="new_blog">
+        {{if len .articles }}
+            <ul class="blogs">
+                {{range $article:=.articles}}
+                    <li>
+                        <a href="/view/{{$article.article_id}}">
+                            <i><img src="/static/style/00{{$article.rand}}.jpg" alt="标题图片"></i>
+                            <h2>{{$article.title}}</h2>
+                        </a>
+                        <p class="blog_smalltext">{{$article.summary}}</p>
+                        <p class="blog_info"><span>{{$article.create_time|date "2006-01-02"}}</span><span>狂奔的蜗牛</span><span><a href="/list/{{$article.catalog_id}}">{{$article.catalog_name}}</a></span></p>
+                    </li>
+                {{end}}
+            </ul>
+            {{template "blog/paginator/default" .}}
+        {{else}}
+            <ul class="blogs">
+                    <li>
+                        <a href="javascript:void(0);">
+                            <i><img src="/static/style/001.jpg" alt="标题图片"></i>
+                            <h2>没有找到博文哎！</h2>
+                        </a>
+                        <p class="blog_smalltext"></p>
+                        <p class="blog_info"></p>
+                    </li>
+            </ul>
+        {{end}}
+    </div>
+</article>

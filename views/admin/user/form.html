@@ -1,0 +1,25 @@
+<div class="card">
+    <div class="card-body">
+        <form class="form-horizontal ajax-form" action="{{.admPath}}/user/{{if .user }}save?id={{.user.user_id}}{{else}}create{{end}}" method="post" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="exampleFormControlInput1">用户名</label>
+                <input type="text" name="username"  {{if .user }}readonly="true"{{end}} class="form-control" value="{{val .user "username"}}"  placeholder="请输入用户名">
+            </div>
+            <div class="form-group">
+                <label for="nickname">昵称</label>
+                <input type="text" name="nickname" class="form-control nickname" id="nickname" value="{{val .user "nickname"}}" placeholder="请输入昵称">
+            </div>
+            <div class="form-group">
+                <label for="password">用户密码</label>
+                <input type="password" name="password" class="form-control password" id="password" value="" placeholder="请输入用户密码">
+            </div>
+            <div class="form-group">
+                <label for="password1">重复用户密码</label>
+                <input type="password" name="password1" class="form-control password1" id="password1"  placeholder="请再次输入用户密码">
+            </div>
+            <div class="col-auto">
+                <button type="submit" class="btn btn-primary mb-2">{{if .user }}保存{{else}}添加{{end}}</button>
+            </div>
+        </form>
+    </div>
+</div>

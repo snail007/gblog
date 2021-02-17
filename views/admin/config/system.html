@@ -1,0 +1,99 @@
+<div class="container-fluid p-t-15">
+
+    <div class="row">
+
+        <div class="col-lg-12">
+            <div class="card">
+                {{template "admin/config/common" .}}
+                <div class="tab-content">
+                    <div class="tab-pane active">
+
+                        <form action="{{.admPath}}/config/conf" method="post" name="edit-form" class="edit-form ajax-form">
+                            <input type="hidden" name="key" value="system"/>
+                            <div class="form-group">
+                                <label for="config_group">配置分组</label>
+                                <textarea class="form-control" id="config_group" rows="5" name="config_group"
+                                          placeholder="请输入配置分组">base:基本
+system:系统
+develop:开发
+upload:上传</textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="form_item_type">配置类型</label>
+                                <textarea class="form-control" id="form_item_type" rows="5" name="form_item_type"
+                                          placeholder="请输入配置类型">text:单行文本
+textarea:多行文本
+checkbox:复选框
+radio:单选按钮
+switch:开关
+array:数组
+select:下拉框
+image:单张图片
+ueditor:UEditor 编辑器
+tags:标签</textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="wipe_cache_type">清除缓存类型</label>
+                                <div class="controls-box clearfix">
+                                    <div class="custom-control custom-checkbox custom-control-inline">
+                                        <input type="checkbox" class="custom-control-input" name="wipe_cache_type[]"
+                                               id="app_cache">
+                                        <label class="custom-control-label" for="app_cache">应用缓存</label>
+                                    </div>
+                                    <div class="custom-control custom-checkbox custom-control-inline">
+                                        <input type="checkbox" class="custom-control-input" name="wipe_cache_type[]"
+                                               id="app_log">
+                                        <label class="custom-control-label" for="app_log">应用日志</label>
+                                    </div>
+                                    <div class="custom-control custom-checkbox custom-control-inline">
+                                        <input type="checkbox" class="custom-control-input" name="wipe_cache_type[]"
+                                               id="template_cache">
+                                        <label class="custom-control-label" for="template_cache">模板缓存</label>
+                                    </div>
+                                </div>
+                                <small class="help-block">清除缓存时，要删除的缓存类型</small>
+                            </div>
+                            <div class="form-group">
+                                <label for="develop_mode">开发模式</label>
+                                <div class="controls-box clearfix">
+                                    <div class="custom-control custom-radio custom-control-inline">
+                                        <input type="radio" id="develop_mode_1" name="develop_mode"
+                                               class="custom-control-input" value="0" checked="">
+                                        <label class="custom-control-label" for="develop_mode_1">关闭</label>
+                                    </div>
+                                    <div class="custom-control custom-radio custom-control-inline">
+                                        <input type="radio" id="develop_mode_2" name="develop_mode"
+                                               class="custom-control-input" value="1">
+                                        <label class="custom-control-label" for="develop_mode_2">开启</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="app_trace">显示页面Trace</label>
+                                <div class="controls-box clearfix">
+                                    <div class="custom-control custom-radio custom-control-inline">
+                                        <input type="radio" id="app_trace_1" name="app_trace"
+                                               class="custom-control-input" value="0" checked="">
+                                        <label class="custom-control-label" for="app_trace_1">否</label>
+                                    </div>
+                                    <div class="custom-control custom-radio custom-control-inline">
+                                        <input type="radio" id="app_trace_2" name="app_trace"
+                                               class="custom-control-input" value="1">
+                                        <label class="custom-control-label" for="app_trace_2">是</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-primary m-r-5">保 存</button>
+                            </div>
+                        </form>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+</div>

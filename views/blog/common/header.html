@@ -1,0 +1,24 @@
+{{$catalog:=.catalog}}
+<header style="position: relative;">
+    <div class="touxiang"><i><img src="{{.bc_basic.web_site_logo}}" alt="{{.bc_basic.web_site_blogger_name|html}}"></i>
+        <h2>{{.bc_basic.web_site_blogger_name|html}}</h2>
+        <p>{{.bc_basic.web_site_description|html}}</p>
+    </div>
+    <p class="guanzhu"><a href="{{.bc_basic.web_site_blogger_site}}" target="_blank">关注我</a></p>
+    <nav>
+        <ul>
+            <li {{if eq .U.PATH "/"}}class="current"{{end}}><a href="/">博客首页</a></li>
+            {{range $nav:=.navs}}
+                <li {{if $catalog}}{{if eq $catalog.catalog_id $nav.catalog_id}}class="current"{{end}}{{end}}><a href="/list/{{$nav.catalog_id}}">{{$nav.name}}</a></li>
+            {{end}}
+            <li {{if eq .U.PATH "/timeline"}}class="current"{{end}}><a href="/timeline">时光机</a></li>
+            <li {{if eq .U.PATH "/catalogs"}}class="current"{{end}}><a href="/catalogs">博文目录</a></li>
+        </ul>
+    </nav>
+    <div class="search" style="position: absolute;">
+        <form action="/search" method="get">
+            <input name="keyword" id="keyword" class="input_text" value="" style="color: rgb(153, 153, 153);"  placeholder="请输入关键字词" type="text">
+            <input class="input_submit" value="搜索" type="submit">
+        </form>
+    </div>
+</header>

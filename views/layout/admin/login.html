@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+    <title>登录页面 - 使用GMC框架构建</title>
+    <link rel="icon" href="/static/images/logo-ico.png" type="image/ico">
+    <link href="/static/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/static/css/materialdesignicons.min.css" rel="stylesheet">
+    <link href="/static/css/style.min.css" rel="stylesheet">
+    <style>
+        .login-form .has-feedback {
+            position: relative;
+        }
+        .login-form .has-feedback .form-control {
+            padding-left: 36px;
+        }
+        .login-form .has-feedback .mdi {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: auto;
+            width: 36px;
+            height: 36px;
+            line-height: 36px;
+            z-index: 4;
+            color: #dcdcdc;
+            display: block;
+            text-align: center;
+            pointer-events: none;
+        }
+        .login-form .has-feedback.row .mdi {
+            left: 15px;
+        }
+        .login-form .form-group:last-child,
+        .login-right p:last-child {
+            margin-bottom: 0px;
+        }
+        .login-right {
+            background: #67b26f!important;
+            background: -moz-linear-gradient(45deg,#67b26f 0,#4ca2cd 100%)!important;
+            background: -webkit-linear-gradient(45deg,#67b26f 0,#4ca2cd 100%)!important;
+            background: linear-gradient(45deg,#67b26f 0,#4ca2cd 100%)!important;
+            filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#67b26f', endColorstr='#4ca2cd', GradientType=1 )!important;
+        }
+        .login-box {
+            max-width: 700px;
+        }
+        .login-right {
+            max-width: 50%;
+        }
+    </style>
+</head>
+<body class="center-vh" style="background-image: url(/static/images/login-bg-3.jpg); background-size: cover;">
+{{.GMC_LAYOUT_CONTENT}}
+<script type="text/javascript" src="/static/js/jquery.min.js"></script>
+<script type="text/javascript" src="/static/js/jquery.form.js"></script>
+<script type="text/javascript" src="/static/js/login.js"></script>
+<script type="text/javascript" src="/static/js/init.js"></script>
+</body>
+</html>

@@ -1,0 +1,39 @@
+{{$controllerPath:="/catalog"}}
+<div class="card">
+    <div class="card-body">
+        <form class="form-horizontal ajax-form" action="{{.admPath}}{{$controllerPath}}/{{if .data}}edit{{else}}create{{end}}" method="post" enctype="application/x-www-form-urlencoded">
+            {{if .data }}
+            {{$name:="catalog_id"}}
+            <input type="hidden" name="{{$name}}" id="{{$name}}" value="{{val .data $name}}">
+            {{end}}
+            <div class="form-group">
+                {{$name:="name"}}
+                <label for="{{$name}}">目录名称</label>
+                <input type="text" class="form-control" name="{{$name}}" id="{{$name}}" placeholder="" value="{{val .data $name}}">
+            </div>
+            <div class="form-group">
+                {{$name:="sequence"}}
+                <label for="{{$name}}">排序数字</label>
+                <input type="text" class="form-control" name="{{$name}}" id="{{$name}}" placeholder="" value="{{val .data $name "1"}}">
+            </div>
+            <div class="form-group">
+                {{$name:="is_nav"}}
+                <label for="{{$name}}">顶部导航</label>
+                <input type="hidden" name="{{$name}}" id="{{$name}}">
+                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false"></button>
+                <ul class="dropdown-menu" value="{{val .data $name "0"}}">
+                    <li><a class="dropdown-item" href="javascript:void(0);" value="1">是</a></li>
+                    <li><a class="dropdown-item" href="javascript:void(0);" value="0">否</a></li>
+                </ul>
+            </div>
+            <div class="col-auto">
+                <button type="submit" class="btn btn-primary mb-2">
+					<span class="spinner-grow spinner-grow-sm" role="status" style="display: none;" aria-hidden="true"></span>
+					{{if .data }}保存{{else}}添加{{end}}
+				</button>
+                <a href="{{.admPath}}{{$controllerPath}}/list" class="btn btn-default mb-2">返回</a>
+            </div>
+        </form>
+    </div>
+</div>

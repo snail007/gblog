@@ -1,0 +1,23 @@
+<footer>
+    <p>
+        <small>
+            {{.bc_basic.web_site_copyright}} Copyright © 2010 - {{now | date "2006"}}
+        </small>
+    </p>
+    {{if .bc_basic.web_site_blogger_email}}
+        <p>
+            <small>
+                联系方式：<a href="mailto:{{.bc_basic.web_site_blogger_email|html}}">{{.bc_basic.web_site_blogger_email|html}}</a>
+            </small>
+        </p>
+    {{end}}
+    <p>
+        <small>
+            site source code all rights reserved by: <a href="https://github.com/snail007" target="_blank">snail007</a>
+        </small>
+    </p>
+    <p></p>
+</footer>
+{{if .bc_basic.web_site_stat}}
+    <script>{{.bc_basic.web_site_stat}}</script>
+{{end}}

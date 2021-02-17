@@ -1,0 +1,117 @@
+
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <title>后台管理系统 - 使用GMC框架构建</title>
+    {{template "admin/common/head" .}}
+    <link rel="stylesheet" type="text/css" href="/static/js/bootstrap-multitabs/multitabs.min.css">
+</head>
+
+<body data-logobg="color_8" data-headerbg="color_8" data-sidebarbg="color_8">
+<div class="lyear-layout-web">
+    <div class="lyear-layout-container">
+        <!--左侧导航-->
+        <aside class="lyear-layout-sidebar">
+
+            <!-- logo -->
+            <div id="logo" class="sidebar-header" data-sidebarbg="color_2">
+                <a href="{{.admPath}}/main/index"><img src="/static/images/logo-sidebar.png" title="snail007/gmc" alt="snail007/gmc" /></a>
+            </div>
+            <div class="lyear-layout-sidebar-info lyear-scroll">
+                <nav class="sidebar-main">
+                    <ul class="nav-drawer">
+                        <li class="nav-item active"> <a class="multitabs" href="{{.admPath}}/main/main"><i class="mdi mdi-home"></i> <span>后台首页</span></a> </li>
+{{/*                        <li class="nav-item nav-item-has-subnav">*/}}
+{{/*                            <a href="javascript:void(0)"><i class="mdi mdi-account"></i> <span>用户管理</span></a>*/}}
+{{/*                            <ul class="nav nav-subnav">*/}}
+{{/*                                <li> <a class="multitabs" href="{{.admPath}}/user/list">用户列表</a> </li>*/}}
+{{/*                                <li> <a class="multitabs" href="{{.admPath}}/user/add">添加用户</a> </li>*/}}
+{{/*                            </ul>*/}}
+{{/*                        </li>*/}}
+                        <li class="nav-item nav-item-has-subnav">
+                            <a href="javascript:void(0)"><i class="mdi mdi-tools"></i> <span>文章管理</span></a>
+                            <ul class="nav nav-subnav">
+                                <li> <a class="multitabs" href="{{.admPath}}/article/list">我的文章</a></li>
+                                <li> <a class="multitabs" href="{{.admPath}}/catalog/list">文章目录</a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item nav-item-has-subnav">
+                            <a href="javascript:void(0)"><i class="mdi mdi-blogger"></i> <span>博客配置</span></a>
+                            <ul class="nav nav-subnav">
+                                <li> <a class="multitabs" href="{{.admPath}}/config/conf?key=basic">配置管理</a></li>
+                            </ul>
+                        </li>
+{{/*                        <li class="nav-item nav-item-has-subnav">*/}}
+{{/*                            <a href="javascript:void(0)"><i class="mdi mdi-cogs"></i> <span>开发助手</span></a>*/}}
+{{/*                            <ul class="nav nav-subnav">*/}}
+{{/*                                <li> <a class="multitabs" href="{{.admPath}}/main/other">实用代码</a> </li>*/}}
+{{/*                            </ul>*/}}
+{{/*                        </li>*/}}
+                    </ul>
+                </nav>
+                <div class="sidebar-footer">
+                    <p class="copyright">Copyright &copy; {{now | date "2006"}}. <a target="_blank" href="https://github.com/snail007/gmc">snail007</a> All rights reserved.</p>
+                </div>
+            </div>
+
+        </aside>
+        <!--End 左侧导航-->
+
+        <!--头部信息-->
+        <header class="lyear-layout-header">
+
+            <nav class="navbar">
+
+                <div class="navbar-left">
+                    <div class="lyear-aside-toggler">
+                        <span class="lyear-toggler-bar"></span>
+                        <span class="lyear-toggler-bar"></span>
+                        <span class="lyear-toggler-bar"></span>
+                    </div>
+                </div>
+
+                <ul class="navbar-right d-flex align-items-center">
+
+                      <!--切换主题配色-->
+                    <li class="dropdown dropdown-profile">
+                         <a href="javascript:void(0)" data-toggle="dropdown" class="dropdown-toggle">
+                             <img class="img-avatar img-avatar-48 m-r-10" src="/static/images/users/avatar.png"/>
+                            <span>{{.admin.username}}</span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-right">
+                            <li>
+                                <a class="multitabs dropdown-item" data-url="{{.admPath}}/user/profile" href="javascript:void(0)"><i class="mdi mdi-account"></i> 个人信息</a>
+                            </li>
+                            <li>
+                                <a class="multitabs dropdown-item" data-url="{{.admPath}}/user/password" href="javascript:void(0)"><i class="mdi mdi-lock-outline"></i> 修改密码</a>
+                            </li>
+                            <li class="dropdown-divider"></li>
+                            <li>
+                                <a class="dropdown-item" href="{{.admPath}}/login/logout"><i class="mdi mdi-logout-variant"></i> 退出登录</a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+
+            </nav>
+
+        </header>
+        <!--End 头部信息-->
+
+        <!--页面主要内容-->
+        <main class="lyear-layout-content">
+
+            {{.GMC_LAYOUT_CONTENT}}
+
+        </main>
+        <!--End 页面主要内容-->
+    </div>
+</div>
+{{template "admin/common/foot"}}
+<script type="text/javascript" src="/static/js/perfect-scrollbar.min.js"></script>
+<script type="text/javascript" src="/static/js/bootstrap-multitabs/multitabs.min.js"></script>
+<script type="text/javascript" src="/static/js/jquery.cookie.min.js"></script>
+<script type="text/javascript" src="/static/js/index.min.js"></script>
+<script type="text/javascript" src="/static/js/init.js"></script>
+</body>
+</html>

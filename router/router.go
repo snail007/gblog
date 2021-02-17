@@ -6,20 +6,33 @@
 package router
 
 import (
-	"gblog/controller"
+	"gblog/controller/admin"
+	"gblog/controller/blog"
 	gcore "github.com/snail007/gmc/core"
 )
 
 func InitRouter(s gcore.HTTPServer) {
-	// acquire router object
 	r := s.Router()
+	admPath := s.Config().GetString("admin.urlpath")
+	urlPath := s.Config().GetString("attachment.url")
+	adm := r.Group(admPath)
+	adm.Controller("/admin", new(admin.Admin))
+	adm.ControllerMethod("/", new(admin.Login), "Index_")
+	adm.Controller("/login", new(admin.Login))
+	adm.Controller("/main", new(admin.Main))
+	adm.Controller("/user", new(admin.User))
+	adm.Controller("/catalog", new(admin.Catalog))
+	adm.Controller("/article", new(admin.Article))
+	adm.Controller("/config", new(admin.Config))
+	adm.Controller("/attachment", new(admin.Attachment))
 
-	// bind a controller, /demo is path of controller, after this you can visit http://127.0.0.1:7080/demo/hello
-	// "hello" is full lower case name of controller method.
-	admin := r.Group("/manage")
-	r.ControllerMethod("/login", new(controller.Admin), "Login")
-	admin.ControllerMethod("/", new(controller.Admin), "Login")
-	admin.Controller("/admin", new(controller.Admin))
+	r.ControllerMethod("/", new(blog.Blog), "List")
+	r.ControllerMethod("/list/:id", new(blog.Blog), "List")
+	r.ControllerMethod("/view/:id", new(blog.Blog), "Views")
+	r.ControllerMethod("/timeline", new(blog.Blog), "Timeline")
+	r.ControllerMethod("/search", new(blog.Blog), "Search")
+	r.ControllerMethod("/catalogs", new(blog.Blog), "Catalogs")
+	r.ControllerMethod(urlPath, new(blog.Blog), "Attachment")
 
 	// indicates router initialized
 	s.Logger().Infof("router inited.")

@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{if .title}}{{.title}}_文章列表-{{end}}{{.bc_basic.web_site_title}}</title>
+    {{template "blog/common/head" .}}
+</head>
+<body>
+{{template "blog/common/header" .}}
+<main>
+    {{template "blog/common/location" .}}
+    {{.GMC_LAYOUT_CONTENT}}
+</main>
+{{template "blog/common/foot" .}}
+</body>
+</html>

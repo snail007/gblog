@@ -1,0 +1,44 @@
+<div class="container-fluid p-t-15">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <h3>详细信息</h3>
+                    <hr>
+                    <table class="table table-condensed">
+                        <tbody>
+                        <tr>
+                            <td style="width: 150px;">文章标题</td>
+                            <td>{{val .data "title"}}</td>
+                        </tr>
+                        <tr>
+                            <td style="width: 150px;">文章摘要</td>
+                            <td>{{val .data "summary"}}</td>
+                        </tr>
+                        <tr>
+                            <td>文章内容</td>
+                            <td>{{val .data "content"}}</td>
+                        </tr>
+                        <tr>
+                            <td>文章目录</td>
+                            <td>{{.data.catalog_name}}</td>
+                        </tr>
+                        <tr>
+                            <td>修改时间</td>
+                            <td>{{if eq .data.update_time "0"}}-{{else}}{{.data.update_time | date "2006-01-02 15:04"}}{{end}}</td>
+                        </tr>
+                        <tr>
+                            <td>创建时间</td>
+                            <td>{{.data.create_time | date "2006-01-02 15:04"}}</td>
+                        </tr>
+						<tr>
+                            <td></td>
+                            <td><a class="btn btn-outline-success" href="javascript:history.go(-1);">返回</a></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

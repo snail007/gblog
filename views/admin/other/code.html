@@ -1,0 +1,440 @@
+<div class="container-fluid p-t-15">
+    <div class="lyear-divider">实用代码片段</div>
+    <div class="row">
+
+        <div class="col-md-6">
+            <div class="card card-bordered">
+                <header class="card-header">
+                    <div class="card-title">卡片</div>
+                </header>
+                <div class="card-body">
+                    <p class="text text-default">适用布局：全部.</p>
+                    <p class="text text-success">效果：</p>
+                    <div class="container" style="padding-bottom: 10px;">
+                        <div class="card card-bordered">
+                            <header class="card-header">
+                                <div class="card-title">浣溪沙 <small> - 秦观</small></div>
+                            </header>
+                            <div class="callout callout-danger">有边框的 <code>.card-bordered</code></div>
+                            <div class="card-body">
+
+                                <p>香靥凝羞一笑开。柳腰如醉肯相挨。日长春困下楼台。</p>
+                                <p>照水有情聊整鬓，倚阑无绪更兜鞋。眼边牵系懒归来。</p>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text text-success">代码如下：</p>
+                    <pre>{{html `<div class="card card-bordered">
+    <header class="card-header">
+        <div class="card-title">浣溪沙 <small> - 秦观</small></div>
+    </header>
+    <div class="callout callout-danger">有边框的 <code>.card-bordered</code></div>
+    <div class="card-body">
+        <p>香靥凝羞一笑开。柳腰如醉肯相挨。日长春困下楼台。</p>
+        <p>照水有情聊整鬓，倚阑无绪更兜鞋。眼边牵系懒归来。</p>
+    </div>
+</div>`|replace "\n" "<br>"}}</pre>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card card-bordered">
+                <header class="card-header">
+                    <div class="card-title">下拉框</div>
+                </header>
+                <div class="card-body">
+                    <p class="text text-default">适用布局：list、page、form.</p>
+                    <p class="text text-success">效果：</p>
+                    <div class="container" style="padding-bottom: 10px;">
+                        <input type="hidden" name="search_field">
+                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"
+                                aria-haspopup="true" aria-expanded="false"></button>
+                        <ul class="dropdown-menu" value="">
+                            <li><a class="dropdown-item" href="javascript:void(0);" value="username">用户名</a></li>
+                            <li><a class="dropdown-item" href="javascript:void(0);" value="nickname">昵称</a></li>
+                            <li><a class="dropdown-item" href="javascript:void(0);" value="user_id">用户ID</a></li>
+                        </ul>
+                    </div>
+                    <p class="text text-success">代码如下：</p>
+                    <pre>{{html `<input type="hidden" name="search_field">
+<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"
+        aria-haspopup="true" aria-expanded="false"></button>
+<ul class="dropdown-menu" value="">
+    <li><a class="dropdown-item" href="javascript:void(0);" value="username">用户名</a></li>
+    <li><a class="dropdown-item" href="javascript:void(0);" value="nickname">昵称</a></li>
+    <li><a class="dropdown-item" href="javascript:void(0);" value="user_id">用户ID</a></li>
+</ul>`|replace "\n" "<br>"}}</pre>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card card-bordered">
+                <header class="card-header">
+                    <div class="card-title">表单</div>
+                </header>
+                <div class="card-body">
+                    <p class="text text-default">适用布局：form.</p>
+                    <p class="text text-success">效果：</p>
+                    <div class="container" style="padding-bottom: 10px;">
+                        <div class="card">
+                            <div class="card-body">
+                                <form class="form-horizontal ajax-form" action="/user/create" method="post"
+                                      enctype="application/x-www-form-urlencoded">
+                                    <input type="hidden" value="{{val .user "user_id"}}">
+                                    <div class="form-group">
+                                        <label for="nickname">昵称</label>
+                                        <input type="text" name="nickname" class="form-control nickname" id="nickname"
+                                               value="{{val .user "nickname"}}" placeholder="请输入昵称">
+                                    </div>
+                                    <div class="col-auto">
+                                        <button type="submit" class="btn btn-primary mb-2">
+                                            <span class="spinner-grow spinner-grow-sm" role="status"
+                                                  style="display: none;" aria-hidden="true"></span>
+                                            {{if .user }}保存{{else}}添加{{end}}
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text text-success">代码如下：</p>
+                    <pre>{{html `<div class="card">
+    <div class="card-body">
+        <form class="form-horizontal ajax-form" action="/user/create" method="post" enctype="application/x-www-form-urlencoded">
+            <input type="hidden" value="{{val .user "user_id"}}">
+            <div class="form-group">
+                <label for="nickname">昵称</label>
+                <input type="text" name="nickname" class="form-control nickname" id="nickname" value="{{val .user "nickname"}}" placeholder="请输入昵称">
+            </div>
+            <div class="col-auto">
+                <button type="submit" class="btn btn-primary mb-2">
+                    <span class="spinner-grow spinner-grow-sm" role="status" style="display: none;" aria-hidden="true"></span>
+                    {{if .user }}保存{{else}}添加{{end}}
+                </button>
+            </div>
+        </form>
+    </div>
+</div>`|replace "\n" "<br>"}}</pre>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card card-bordered">
+                <header class="card-header">
+                    <div class="card-title">数据列表</div>
+                </header>
+                <div class="card-body">
+                    <p class="text text-default">适用布局：list.</p>
+                    <p class="text text-success">效果：</p>
+                    <div class="container" style="padding-bottom: 10px;">
+                        <div class="table-responsive">
+                            <table class="table table-bordered">
+                                <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>姓名</th>
+                                    <th>修改时间</th>
+                                    <th>创建时间</th>
+                                    <th>操作</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td>ID</td>
+                                    <td>张三</td>
+                                    <td>{{.update_time | date "2006-01-02 15:04"}}</td>
+                                    <td>{{.create_time | date "2006-01-02 15:04"}}</td>
+                                    <td>
+                                        <div class="btn-group">
+                                            <a class="btn btn-xs btn-default" href="/user/edit?id={{.user_id}}"
+                                               title="" data-toggle="tooltip"
+                                               data-original-title="编辑"><i class="mdi mdi-pencil"></i></a>
+                                            <a class="btn btn-xs btn-default ajax-get confirm"
+                                               href="/user/delete?ids={{.user_id}}" title=""
+                                               data-toggle="tooltip"
+                                               data-original-title="删除"><i class="mdi mdi-window-close"></i></a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <p class="text text-success">代码如下：</p>
+                    <pre>{{html `<div class="table-responsive">
+    <table class="table table-bordered">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>姓名</th>
+            <th>修改时间</th>
+            <th>创建时间</th>
+            <th>操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>ID</td>
+            <td>张三</td>
+            <td>{{.update_time | date "2006-01-02 15:04"}}</td>
+            <td>{{.create_time | date "2006-01-02 15:04"}}</td>
+            <td>
+                <div class="btn-group">
+                    <a class="btn btn-xs btn-default" href="/user/edit?id={{.user_id}}"
+                       title="" data-toggle="tooltip"
+                       data-original-title="编辑"><i class="mdi mdi-pencil"></i></a>
+                    <a class="btn btn-xs btn-default ajax-get confirm"
+                       href="/user/delete?ids={{.user_id}}" title=""
+                       data-toggle="tooltip"
+                       data-original-title="删除"><i class="mdi mdi-window-close"></i></a>
+                </div>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>`|replace "\n" "<br>"}}</pre>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card card-bordered">
+                <header class="card-header">
+                    <div class="card-title">普通表格</div>
+                </header>
+                <div class="card-body">
+                    <p class="text text-default">适用布局：全部.</p>
+                    <p class="text text-success">效果：</p>
+                    <div class="container" style="padding-bottom: 10px;">
+                        <div class="table-responsive">
+                            <table class="table table-bordered">
+                                <thead>
+                                <tr>
+                                    <th>日志ID</th>
+                                    <th>用户ID</th>
+                                    <th>域名</th>
+                                    <th>URL路径</th>
+                                    <th>访问者IP</th>
+                                    <th>创建时间</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td>{{.log_id}}</td>
+                                    <td>{{.user_id}}</td>
+                                    <td>{{.domain}}</td>
+                                    <td>{{.path}}</td>
+                                    <td>{{.ip}}</td>
+                                    <td>{{.create_time | date "2006-01-02 15:04:05"}}</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <p class="text text-success">代码如下：</p>
+                    <pre>{{html `<div class="table-responsive">
+    <table class="table table-bordered">
+        <thead>
+        <tr>
+            <th>日志ID</th>
+            <th>用户ID</th>
+            <th>域名</th>
+            <th>URL路径</th>
+            <th>访问者IP</th>
+            <th>创建时间</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>{{.log_id}}</td>
+            <td>{{.user_id}}</td>
+            <td>{{.domain}}</td>
+            <td>{{.path}}</td>
+            <td>{{.ip}}</td>
+            <td>{{.create_time | date "2006-01-02 15:04:05"}}</td>
+        </tr>
+        </tbody>
+    </table>
+</div>`|replace "\n" "<br>"}}</pre>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card card-bordered">
+                <header class="card-header">
+                    <div class="card-title">搜索</div>
+                </header>
+                <div class="card-body">
+                    <p class="text text-default">适用布局：list、page、form、全部.</p>
+                    <p class="text text-success">效果：</p>
+                    <div class="container" style="padding-bottom: 10px;">
+                        <div class="card-toolbar d-flex flex-column flex-md-row">
+                            <div class="btn-group mr-2" role="group">
+                                <a class="btn btn-success m-r-5" href="/user/list"><i class="mdi mdi-check"></i> 新增</a>
+                                <a class="btn btn-danger m-r-5" href="/user/list"><i class="mdi mdi-check"></i> 删除</a>
+                            </div>
+                            <form class="search-bar ml-md-auto" method="get" action="" role="form">
+                                <div class="input-group ml-md-auto">
+                                    <div class="btn-group btn-group-xs">
+                                        <input type="hidden" name="search_field">
+                                        <button type="button" class="btn btn-default dropdown-toggle"
+                                                data-toggle="dropdown" aria-haspopup="true"
+                                                aria-expanded="false"></button>
+                                        <ul class="dropdown-menu" value="">
+                                            <li><a class="dropdown-item" href="javascript:void(0);"
+                                                   value="user_id">用户ID</a>
+                                            </li>
+                                            <li><a class="dropdown-item" href="javascript:void(0);"
+                                                   value="domain">访问域名</a>
+                                            </li>
+                                            <li><a class="dropdown-item" href="javascript:void(0);"
+                                                   value="path">URL路径</a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <input type="text" class="form-control" name="keyword" placeholder="请输入">
+                                    {{if .G.keyword}}
+                                        <a class="btn btn-warning m-r-5" href="/user/list"><i
+                                                    class="mdi mdi-check"></i> 重置</a>
+                                    {{end}}
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <p class="text text-success">代码如下：</p>
+                    <pre>{{html `<div class="card-toolbar d-flex flex-column flex-md-row">
+    <div class="btn-group mr-2" role="group">
+        <a class="btn btn-success m-r-5" href="/user/list"><i class="mdi mdi-check"></i> 新增</a>
+        <a class="btn btn-danger m-r-5" href="/user/list"><i class="mdi mdi-check"></i> 删除</a>
+    </div>
+    <form class="search-bar ml-md-auto" method="get" action="" role="form">
+        <div class="input-group ml-md-auto">
+            <div class="btn-group btn-group-xs">
+                <input type="hidden" name="search_field">
+                <button type="button" class="btn btn-default dropdown-toggle"
+                        data-toggle="dropdown" aria-haspopup="true"
+                        aria-expanded="false"></button>
+                <ul class="dropdown-menu" value="">
+                    <li><a class="dropdown-item" href="javascript:void(0);"
+                           value="user_id">用户ID</a>
+                    </li>
+                    <li><a class="dropdown-item" href="javascript:void(0);"
+                           value="domain">访问域名</a>
+                    </li>
+                    <li><a class="dropdown-item" href="javascript:void(0);"
+                           value="path">URL路径</a>
+                    </li>
+                </ul>
+            </div>
+            <input type="text" class="form-control" name="keyword" placeholder="请输入">
+            {{if .G.keyword}}
+                <a class="btn btn-warning m-r-5" href="/user/list"><i
+                            class="mdi mdi-check"></i> 重置</a>
+            {{end}}
+        </div>
+    </form>
+</div>`|replace "\n" "<br>"}}</pre>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="col-md-6">
+            <div class="card card-bordered">
+                <header class="card-header">
+                    <div class="card-title">页面js执行</div>
+                </header>
+                <div class="card-body">
+                    <p class="text text-default">适用布局：全部.</p>
+                    <p class="text text-success">效果：</p>
+                    <div class="container" style="padding-bottom: 10px;">
+                        如果需要在页面全部渲染完毕，全部js执行完毕之后执行一些js代码，只要在页面定义一个<code>function init(){}</code>,所有的操作放在这个方法里面即可。
+                    </div>
+                    <p class="text text-success">代码如下：</p>
+                    <pre>{{html `<script>
+    function init() {
+        // do something
+    }
+</script>`|replace "\n" "<br>"}}</pre>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="col-md-6">
+            <div class="card card-bordered">
+                <header class="card-header">
+                    <div class="card-title">工具提示</div>
+                </header>
+                <div class="card-body">
+                    <p class="text text-default">适用布局：全部.</p>
+                    <p class="text text-success">效果：</p>
+                    <div class="container" style="padding-bottom: 10px;">
+                        <button type="button" class="btn btn-secondary" data-toggle="tooltip" data-placement="top"
+                                title="" data-original-title="Tooltip on 顶部">
+                            Tooltip on 顶部
+                        </button>
+                        <span class="mdi mdi-help-circle-outline" data-toggle="tooltip" title="提示文本"></span>
+                        <a tabindex="0" class="btn btn-lg btn-danger" role="button" data-toggle="popover"
+                           data-placement="top"
+                           data-trigger="focus" title=""
+                           data-content="《春秋左氏传》原名《左氏春秋》，汉朝时又名《春秋左氏》、《春秋内传》，汉朝以后才多称《左传》。"
+                           data-original-title="左传">下次点击时关闭</a>
+                    </div>
+                    <p class="text text-success">代码如下：</p>
+                    <pre>{{html `<button type="button" class="btn btn-secondary" data-toggle="tooltip" data-placement="top"
+                title="" data-original-title="Tooltip on 顶部">
+            Tooltip on 顶部
+        </button>
+        <span class="mdi mdi-help-circle-outline" data-toggle="tooltip" title="提示文本"></span>
+        <a tabindex="0" class="btn btn-lg btn-danger" role="button" data-toggle="popover"
+           data-placement="top"
+           data-trigger="focus" title=""
+           data-content="《春秋左氏传》原名《左氏春秋》，汉朝时又名《春秋左氏》、《春秋内传》，汉朝以后才多称《左传》。"
+           data-original-title="左传">下次点击时关闭</a>`|replace "\n" "<br>"}}</pre>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="col-md-6">
+            <div class="card card-bordered">
+                <header class="card-header">
+                    <div class="card-title">片段名称</div>
+                </header>
+                <div class="card-body">
+                    <p class="text text-default">适用布局：list、page、form、全部.</p>
+                    <p class="text text-success">效果：</p>
+                    <div class="container" style="padding-bottom: 10px;">
+                        片段html内容
+                    </div>
+                    <p class="text text-success">代码如下：</p>
+                    <pre>{{html `片段html内容`|replace "\n" "<br>"}}</pre>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="col-md-6">
+            <div class="card card-bordered">
+                <header class="card-header">
+                    <div class="card-title">片段名称</div>
+                </header>
+                <div class="card-body">
+                    <p class="text text-default">适用布局：list、page、form、全部.</p>
+                    <p class="text text-success">效果：</p>
+                    <div class="container" style="padding-bottom: 10px;">
+                        片段html内容
+                    </div>
+                    <p class="text text-success">代码如下：</p>
+                    <pre>{{html `片段html内容`|replace "\n" "<br>"}}</pre>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

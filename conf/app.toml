@@ -1,13 +1,16 @@
 ############################################################
-# Administrator account.
+# admin console url path prefix.
 ############################################################
 # 1.support of tls and optional client auth.
 # 2.showerrorstack if on, when a panic error occurred
 # call stack and error message will display on the browser.
 ############################################################
 [admin]
-user="rooot"
-password="admin"
+urlpath="/manage"
+
+[attachment]
+dir="attachment"
+url="/attachment"
 
 ############################################################
 # http server configuration 
@@ -95,10 +98,10 @@ layout="layout"
 ########################################################
 [session]
 # turn on/off session
-enable=false
-store="memory"
-cookiename="gmcsid"
-ttl=3600
+enable=true
+store="file"
+cookiename="gbsid"
+ttl=3600000
 
 [session.file]
 dir="{tmp}"
@@ -151,9 +154,9 @@ maxconnlifetime=3600
 wait=false
 
 [[cache.memory]]
-enable=false
+enable=true
 id="default"
-cleanupinterval=30
+cleanupinterval=300
 
 [[cache.file]]
 enable=false

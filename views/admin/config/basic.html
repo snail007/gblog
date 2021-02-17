@@ -1,0 +1,131 @@
+<div class="container-fluid p-t-15">
+
+    <div class="row">
+
+        <div class="col-lg-12">
+            <div class="card">
+                {{template "admin/config/common" .}}
+                <div class="tab-content">
+                    <div class="tab-pane active">
+
+                        <form action="{{.admPath}}/config/conf" method="post" name="edit-form"
+                              class="edit-form ajax-form">
+                            <input type="hidden" name="key" value="basic"/>
+                            <div class="form-group">
+                                <label for="web_site_title">博客标题</label>
+                                <input class="form-control" type="text" id="web_site_title" name="web_site_title"
+                                       value="{{.web_site_title}}">
+                            </div>
+                            <div class="form-group">
+                                <label for="web_site_blogger_name">博主昵称</label>
+                                <input class="form-control" type="text" id="web_site_blogger_name" name="web_site_blogger_name"
+                                       value="{{.web_site_blogger_name}}">
+                            </div>
+                            <div class="form-group">
+                                <label for="web_site_blogger_email">博主邮箱</label>
+                                <input class="form-control" type="text" id="web_site_blogger_email" name="web_site_blogger_email"
+                                       value="{{.web_site_blogger_email}}">
+                            </div>
+                            <div class="form-group">
+                                <label for="web_site_blogger_site">博主开源主页</label>
+                                <input class="form-control" type="text" id="web_site_blogger_site" name="web_site_blogger_site"
+                                       value="{{.web_site_blogger_site}}">
+                            </div>
+                            <div class="form-group">
+                                <label for="web_site_logo">博客LOGO图片</label>
+                                <div class="input-group">
+                                    <input type="text" name="web_site_logo" id="web_site_logo"
+                                           class="form-control"
+                                           value="{{val . "web_site_logo" "/static/style/logo.png"}}">
+                                    <label class="input-group-btn">
+                                            <span class="btn btn-primary">
+                                                <i class="glyphicon glyphicon-folder-open"></i>
+                                                上传文件<input type="file" id="fileupload" name="file"
+                                                           data-input="#web_site_logo"
+                                                           data-url="{{.admPath}}/attachment/upload"
+                                                           style="display: none;">
+                                            </span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="web_site_keywords">博客关键词</label>
+                                <input class="form-control" type="text" id="web_site_keywords" name="web_site_keywords"
+                                       value="{{.web_site_keywords|html}}"
+                                       placeholder="请输入站点关键词">
+                                <small class="help-block">网站搜索引擎关键字</small>
+                            </div>
+                            <div class="form-group">
+                                <label for="web_site_description">站点描述</label>
+                                <textarea class="form-control" id="web_site_description" rows="5"
+                                          name="web_site_description" placeholder="请输入站点描述">{{.web_site_description|html}}</textarea>
+                                <small class="help-block">网站描述，有利于搜索引擎抓取相关信息</small>
+                            </div>
+                            <div class="form-group">
+                                <label for="web_site_copyright">版权信息</label>
+                                <input class="form-control" type="text" id="web_site_copyright"
+                                       name="web_site_copyright" value="{{.web_site_copyright|html}}" placeholder="请输入版权信息">
+                            </div>
+                            <div class="form-group">
+                                <label for="web_site_icp">备案信息</label>
+                                <input class="form-control" type="text" id="web_site_icp" name="web_site_icp" value="{{.web_site_icp}}"
+                                       placeholder="请输入备案信息">
+                            </div>
+                            <div class="form-group">
+                                <label for="web_site_stat">博客统计代码</label>
+                                <textarea class="form-control" id="web_site_stat" rows="5"
+                                          name="web_site_stat" placeholder="请输入站点描述">{{.web_site_stat}}</textarea>
+                                <small class="help-block">网站统计js代码，来自您使用的第三方网站统计系统。</small>
+                            </div>
+                            <div class="form-group">
+                                <label>站点开关</label>
+                                <div class="custom-control custom-switch">
+                                    <input type="checkbox" class="custom-control-input" name="web_site_status" id="web_site_status" {{if .web_site_status}}checked="1"{{end}}>
+                                    <label class="custom-control-label" for="web_site_status"></label>
+                                </div>
+                                <small class="help-block">站点关闭后将不能访问，后台可正常登录</small>
+                            </div>
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-primary m-r-5">保 存</button>
+                            </div>
+                        </form>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+    function init() {
+        $(function () {
+            var loader;
+            var $input=$('#fileupload');
+            var targetInput=$($input.attr("data-input"))
+            $input.fileupload({
+                dataType: 'json',
+                beforeSend: function () {
+                    loader = $('body').lyearloading({
+                        opacity: 0.2,
+                        spinnerSize: 'lg'
+                    });
+                },
+                success: function (result, textStatus, jqXHR) {
+                    showNotify("上传成功", 'success');
+                    targetInput.val(result.url)
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    showNotify(errorThrown|textStatus, 'danger');
+                    console.log(textStatus, errorThrown)
+                },
+                done: function () {
+                    loader.destroy();
+                }
+            });
+        });
+    }
+</script>

@@ -1,0 +1,73 @@
+{{$controllerPath:="/article"}}
+<div class="card">
+    <div class="card-body">
+        <form class="form-horizontal ajax-form"
+              action="{{.admPath}}{{$controllerPath}}/{{if .data}}edit{{else}}create{{end}}" method="post"
+              enctype="application/x-www-form-urlencoded">
+            {{if .data }}
+                {{$name:="article_id"}}
+                <input type="hidden" name="{{$name}}" id="{{$name}}" value="{{val .data $name}}">
+            {{end}}
+            <div class="form-group">
+                {{$name:="catalog_id"}}
+                <label for="{{$name}}">文章目录</label>
+                <input type="hidden" name="{{$name}}" id="{{$name}}" value="">
+                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false"></button>
+                <ul class="dropdown-menu" value="{{val .data "catalog_id"}}">
+                    {{range $c:=.catalogs}}
+                        <li><a class="dropdown-item" href="javascript:void(0);"
+                               value="{{$c.catalog_id}}">{{$c.name}}</a></li>
+                    {{end}}
+                </ul>
+            </div>
+            <div class="form-group">
+                {{$name:="title"}}
+                <label for="{{$name}}">文章标题</label>
+                <input type="text" class="form-control" name="{{$name}}" id="{{$name}}" placeholder=""
+                       value="{{val .data $name}}">
+            </div>
+            <div class="form-group">
+                {{$name:="summary"}}
+                <label for="{{$name}}">文章摘要</label>
+                <input type="text" class="form-control" name="{{$name}}" id="{{$name}}" placeholder=""
+                       value="{{val .data $name}}">
+            </div>
+            <div class="form-group">
+                {{$name:="content"}}
+                <p>文章内容</p>
+                <div id="mkeditor">
+                    <textarea style="display:none;" name="{{$name}}" id="{{$name}}">{{val .data $name}}</textarea>
+                </div>
+            </div>
+            <div class="col-auto">
+                <button type="submit" class="btn btn-primary mb-2">
+                    <span class="spinner-grow spinner-grow-sm" role="status" style="display: none;"
+                          aria-hidden="true"></span>
+                    {{if .data }}保存{{else}}添加{{end}}
+                </button>
+                <a href="{{.admPath}}{{$controllerPath}}/list" class="btn btn-default mb-2">返回</a>
+            </div>
+        </form>
+    </div>
+</div>
+<script>
+    function init() {
+        var mkeditor;
+        $(function () {
+            mkeditor = editormd("mkeditor", {
+                width: "100%",
+                height: 640,
+                tocm: true,
+                emoji: true,
+                taskList: true,
+                tex: true,
+                flowChart: true,
+                sequenceDiagram: true,
+                codeFold: true,
+                syncScrolling: "single",
+                path: "/static/js/meditor/lib/"
+            });
+        });
+    }
+</script>
