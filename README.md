@@ -11,6 +11,7 @@ GOOS=linux GOARCH=amd64 ./pack.sh
 After you build it, just run:
 
 ```shell
+cd gblog-release
 ./gblog
 ```
 
