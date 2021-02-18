@@ -1,6 +1,6 @@
 # GBLOG
 
-A blog engine based on gmc golang framework.
+A blog engine based on [gmc](https://github.com/snail007/gmc) golang framework.
 
 # PREVIEW
 
