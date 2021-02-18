@@ -2,6 +2,16 @@
 
 A blog engine based on gmc golang framework.
 
+# PREVIEW
+
+![](/doc/images/intro1.png)
+
+![](/doc/images/intro2.png)
+
+![](/doc/images/intro3.png)
+
+![](/doc/images/intro4.png)
+
 # BUILD
 Building based on the docker, you must have docker installed.
 Then run
