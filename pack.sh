@@ -1,4 +1,5 @@
 #!/bin/bash
+GOVERSION=1.16
 
 cd initialize/
 gmct tpl --clean
@@ -7,26 +8,99 @@ gmct static --clean
 gmct static --dir ../static
 cd ..
 
-#go mod vendor
-
 rm -rf gblog-release
+
 mkdir gblog-release
-cp -R conf gblog-release/
+mkdir gblog-release/gblog-linux64-release
+mkdir gblog-release/gblog-linux32-release
+mkdir gblog-release/gblog-win64-release
+mkdir gblog-release/gblog-win32-release
+mkdir gblog-release/gblog-mac-release
 
-cd gblog-release/
-CGO_ENABLED=1 xgo --targets=linux/arm-5,linux/arm-6,linux/arm-7,linux/arm64,windows/amd64,windows/386,linux/amd64,linux/386,darwin-10.10/amd64,darwin-10.10/386 -go latest -ldflags "-s -w" ../
-#CGO_ENABLED=1 xgo.karalabe --targets=linux/amd64 -go latest ../
-#CGO_ENABLED=1 go build -ldflags "-s -w" -o gblog
-cd ../
+cp -R conf gblog-release/gblog-linux64-release
+cp -R conf gblog-release/gblog-linux32-release
+cp -R conf gblog-release/gblog-win64-release
+cp -R conf gblog-release/gblog-win32-release
+cp -R conf gblog-release/gblog-mac-release
 
-rm -rf gblog-release.tar.gz
-tar zcfv gblog-release.tar.gz gblog-release
+set -e
+
+# linux 64
+docker run -it --rm \
+-v $GOPATH:/go \
+-e BUILDDIR=github.com/snail007/gblog \
+-e GO111MODULE=on \
+-e CGO_ENABLED=1 \
+-e GOOS=linux \
+-e GOARCH=amd64 \
+snail007/golang:$GOVERSION \
+go build -ldflags "-s -w" -o gblog-linux64
+echo "gblog-linux64 success"
+
+# linux 32
+docker run -it --rm \
+-v $GOPATH:/go \
+-e BUILDDIR=github.com/snail007/gblog \
+-e GO111MODULE=on \
+-e CGO_ENABLED=1 \
+-e GOOS=linux \
+-e GOARCH=386 \
+snail007/golang:$GOVERSION \
+go build -ldflags "-s -w" -o gblog-linux32
+echo "gblog-linux32 success"
+
+# windows 64
+docker run -it --rm \
+-v $GOPATH:/go \
+-e BUILDDIR=github.com/snail007/gblog \
+-e GO111MODULE=on \
+-e CGO_ENABLED=1 \
+-e GOOS=windows \
+-e GOARCH=386 \
+snail007/golang:$GOVERSION \
+go build -ldflags "-s -w" -o gblog-win64.exe
+echo "gblog-win64.exe success"
+
+# windows 32
+docker run -it --rm \
+-v $GOPATH:/go \
+-e BUILDDIR=github.com/snail007/gblog \
+-e GO111MODULE=on \
+-e CGO_ENABLED=1 \
+-e GOOS=windows \
+-e GOARCH=386 \
+snail007/golang:$GOVERSION \
+go build -ldflags "-s -w" -o gblog-win32.exe
+echo "gblog-win32.exe success"
+
+# darwin 64
+CGO_ENABLED=1 GO111MODULE=on go build -ldflags "-s -w" -o gblog-mac
+echo "gblog-mac success"
+
+
+upx gblog-linux64
+upx gblog-linux32
+upx gblog-win64.exe
+upx gblog-win32.exe
+upx gblog-mac
+
+mv gblog-linux64 gblog-release/gblog-linux64-release/gblog
+mv gblog-linux32 gblog-release/gblog-linux32-release/gblog
+mv gblog-win64.exe gblog-release/gblog-win64-release/gblog.exe
+mv gblog-win32.exe gblog-release/gblog-win32-release/gblog.exe
+mv gblog-mac gblog-release/gblog-mac-release/gblog
+
+cd gblog-release
+tar zcfv gblog-linux64-release.tar.gz gblog-linux64-release
+tar zcfv gblog-linux32-release.tar.gz gblog-linux32-release
+tar zcfv gblog-win64-release.tar.gz gblog-win64-release
+tar zcfv gblog-win32-release.tar.gz gblog-win32-release
+tar zcfv gblog-mac-release.tar.gz gblog-mac-release
+cd ..
 
 cd initialize/
 gmct static --clean
 gmct tpl --clean
-cd ..
-
-#rm -rf vendor
+echo "done"
 
 

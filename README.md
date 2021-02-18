@@ -3,15 +3,22 @@
 A blog engine based on gmc golang framework.
 
 # BUILD
+Building based on the docker, you must have docker installed.
+Then run
 
-GOOS=linux GOARCH=amd64 ./pack.sh
+```shell script
+./pack.sh
+```
+After execute done, release directory location at : gblog-release.
+
+Include 32bit & 64bit of windows, linux, mac.
 
 # RUN
 
-After you build it, just run:
+After you pack it, just run:
 
 ```shell
-cd gblog-release
+cd gblog-release/gblog-linux64-release
 ./gblog
 ```
 
