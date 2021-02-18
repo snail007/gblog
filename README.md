@@ -12,6 +12,8 @@ A blog engine based on gmc golang framework.
 
 ![](/doc/images/intro4.png)
 
+![](/doc/images/intro5.png)
+
 # BUILD
 Building based on the docker, you must have docker installed.
 Then run
