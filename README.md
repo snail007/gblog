@@ -16,6 +16,8 @@ A blog engine based on [gmc](https://github.com/snail007/gmc) golang framework.
 
 ![](/doc/images/intro5.png)
 
+![](/doc/images/intro6.png)
+
 # BUILD
 Building based on the docker, you must have docker installed.
 Then run
