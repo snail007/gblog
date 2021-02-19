@@ -4,6 +4,8 @@ A blog engine based on [gmc](https://github.com/snail007/gmc) golang framework.
 
 # PREVIEW
 
+![](/doc/images/intro0.png)
+
 ![](/doc/images/intro1.png)
 
 ![](/doc/images/intro2.png)
