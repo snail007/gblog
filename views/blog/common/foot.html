@@ -1,7 +1,7 @@
 <footer>
     <p>
         <small>
-            {{.bc_basic.web_site_copyright}} Copyright © 2010 - {{now | date "2006"}}
+            {{.bc_basic.web_site_copyright|html}} Copyright © 2010 - {{now | date "2006"}}
         </small>
     </p>
     {{if .bc_basic.web_site_blogger_email}}
@@ -13,7 +13,7 @@
     {{end}}
     <p>
         <small>
-            site source code all rights reserved by: <a href="https://github.com/snail007" target="_blank">snail007</a>
+            Blog source code all rights reserved by: <a href="https://github.com/snail007" target="_blank">snail007</a>
         </small>
     </p>
     <p></p>
@@ -23,18 +23,27 @@
 {{end}}
 <button onclick="topFunction()" id="myBtn" title="回顶部">返回顶部</button>
 <script>
-    function scrollFunction() {console.log(121);
+    function scrollFunction() {
         if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 100) {
             document.getElementById("myBtn").style.display = "block";
         } else {
             document.getElementById("myBtn").style.display = "none";
         }
     }
+
     function topFunction() {
         document.body.scrollTop = 0;
         document.documentElement.scrollTop = 0;
     }
+
     window.init.push(function () {
-        window.onscroll = function() {scrollFunction()};
-    })
+        window.onscroll = function () {
+            scrollFunction()
+        };
+        $("body").on("click","a",function () {
+            if (this.href.indexOf(location.origin) != 0) {
+                $(this).attr("target", "_blank")
+            }
+        })
+    });
 </script>

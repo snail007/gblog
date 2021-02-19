@@ -9,7 +9,7 @@
         <ul>
             <li {{if eq .U.PATH "/"}}class="current"{{end}}><a href="/">博客首页</a></li>
             {{range $nav:=.navs}}
-                <li {{if $catalog}}{{if eq $catalog.catalog_id $nav.catalog_id}}class="current"{{end}}{{end}}><a href="/list/{{$nav.catalog_id}}">{{$nav.name}}</a></li>
+                <li {{if $catalog}}{{if eq $catalog.catalog_id $nav.catalog_id}}class="current"{{end}}{{end}}><a href="/list/{{$nav.catalog_id}}">{{$nav.name|html}}</a></li>
             {{end}}
             <li {{if eq .U.PATH "/timeline"}}class="current"{{end}}><a href="/timeline">时光机</a></li>
             <li {{if eq .U.PATH "/catalogs"}}class="current"{{end}}><a href="/catalogs">博文目录</a></li>

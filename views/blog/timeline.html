@@ -2,7 +2,7 @@
     <ul>
         {{if len .articles}}
             {{range $article:=.articles}}
-                <li><span>{{$article.create_time|date "2006-01-02"}}</span><a href="/view/{{$article.article_id}}">{{$article.title}}</a></li>
+                <li><span>{{$article.create_time|date "2006-01-02"}}</span><a href="/view/{{$article.article_id}}">{{$article.title|html}}</a></li>
             {{end}}
         {{else}}
             <li><span>0000-00-00</span><a href="javascript:void(0);">☹︎主人很懒还没写文章咧。</a></li>

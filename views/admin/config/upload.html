@@ -26,7 +26,7 @@
                         </div>
                         <div class="form-group">
                             <label for="github_token">访问Github API的token</label>
-                            <input class="form-control" type="text" id="github_token" name="github_token" value="{{.github_token}}" >
+                            <input class="form-control" type="text" id="github_token" name="github_token" value="{{.github_token|html}}" >
                             <small class="help-block">
                                 创建Github API的token步骤：<br>
                                 1.登录Github，点击右上角头像，点击：Settings。<br>
@@ -41,7 +41,7 @@
                         </div>
                         <div class="form-group">
                             <label for="github_repo">Github仓库</label>
-                            <input class="form-control" type="text" id="github_repo" name="github_repo" value="{{.github_repo}}" >
+                            <input class="form-control" type="text" id="github_repo" name="github_repo" value="{{.github_repo|html}}" >
                             <small class="help-block">格式：<i class="text text-danger">用户名</i>/<i class="text text-danger">仓库名</i>，比如：snail007/gmc</small>
                         </div>
                         <div class="form-group">

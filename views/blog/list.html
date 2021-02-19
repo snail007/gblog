@@ -6,13 +6,13 @@
                 {{range $article:=.articles}}
                     <li>
                         <a href="/view/{{$article.article_id}}">
-                            <i><img src="{{$article.poster_url}}" alt="{{$article.title}}"></i>
-                            <h2>{{$article.title}}</h2>
+                            <i><img src="{{$article.poster_url}}" alt="{{$article.title|html}}"></i>
+                            <h2>{{$article.title|html}}</h2>
                         </a>
-                        <p class="blog_smalltext">{{$article.summary}}</p>
+                        <p class="blog_smalltext">{{$article.summary|html}}</p>
                         <p class="blog_info">
                             <span>{{$article.create_time|date "2006-01-02"}}</span>
-                            <span><a href="/list/{{$article.catalog_id}}">{{$article.catalog_name}}</a></span>
+                            <span><a href="/list/{{$article.catalog_id}}">{{$article.catalog_name|html}}</a></span>
                             <span>狂奔的蜗牛</span>
                         </p>
                     </li>

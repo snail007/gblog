@@ -1,6 +1,10 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<meta name="keywords" content="{{.bc_basic.web_site_keywords|html}}" />
-<meta name="description" content="{{.bc_basic.web_site_description|html}}" />
+<meta name="keywords" content="{{.bc_basic.web_site_keywords|html}}"/>
+{{if .article}}
+    <meta name="description" content="{{.article.summary|html}}"/>
+{{else}}
+    <meta name="description" content="{{.bc_basic.web_site_description|html}}"/>
+{{end}}
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 {{if .bc_basic.web_site_icon}}
     <link rel="icon" href="{{.bc_basic.web_site_icon}}" type="image/x-icon"/>
@@ -8,4 +12,4 @@
 {{end}}
 <link href="/static/style/base.css" rel="stylesheet">
 <script src="/static/style/jquery.js"></script>
-<script>window["init"]=[];</script>
+<script>window["init"] = [];</script>

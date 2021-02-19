@@ -14,22 +14,22 @@
                             <div class="form-group">
                                 <label for="web_site_title">博客标题</label>
                                 <input class="form-control" type="text" id="web_site_title" name="web_site_title"
-                                       value="{{.web_site_title}}">
+                                       value="{{.web_site_title|html}}">
                             </div>
                             <div class="form-group">
                                 <label for="web_site_blogger_name">博主昵称</label>
                                 <input class="form-control" type="text" id="web_site_blogger_name" name="web_site_blogger_name"
-                                       value="{{.web_site_blogger_name}}">
+                                       value="{{.web_site_blogger_name|html}}">
                             </div>
                             <div class="form-group">
                                 <label for="web_site_blogger_email">博主邮箱</label>
                                 <input class="form-control" type="text" id="web_site_blogger_email" name="web_site_blogger_email"
-                                       value="{{.web_site_blogger_email}}">
+                                       value="{{.web_site_blogger_email|html}}">
                             </div>
                             <div class="form-group">
                                 <label for="web_site_blogger_site">博主开源主页</label>
                                 <input class="form-control" type="text" id="web_site_blogger_site" name="web_site_blogger_site"
-                                       value="{{.web_site_blogger_site}}">
+                                       value="{{.web_site_blogger_site|html}}">
                             </div>
                             <div class="form-group">
                                 <label for="web_site_logo">博客LOGO图片</label>
@@ -85,13 +85,13 @@
                             </div>
                             <div class="form-group">
                                 <label for="web_site_icp">备案信息</label>
-                                <input class="form-control" type="text" id="web_site_icp" name="web_site_icp" value="{{.web_site_icp}}"
+                                <input class="form-control" type="text" id="web_site_icp" name="web_site_icp" value="{{.web_site_icp|html}}"
                                        placeholder="请输入备案信息">
                             </div>
                             <div class="form-group">
                                 <label for="web_site_stat">博客统计代码</label>
                                 <textarea class="form-control" id="web_site_stat" rows="5"
-                                          name="web_site_stat" placeholder="请输入站点描述">{{.web_site_stat}}</textarea>
+                                          name="web_site_stat" placeholder="请输入站点描述">{{.web_site_stat|html}}</textarea>
                                 <small class="help-block">网站统计js代码，来自您使用的第三方网站统计系统。</small>
                             </div>
                             <div class="form-group">

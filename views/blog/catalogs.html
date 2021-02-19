@@ -5,7 +5,7 @@
             <li>
                 <a href="/list/{{$catalog.catalog_id}}">
                     <i><img src="{{$catalog.rand}}"></i>
-                    <h2>{{$catalog.name}}</h2>
+                    <h2>{{$catalog.name|html}}</h2>
                 </a>
                 <p class="blog_smalltext">{{if eq $catalog.total "0"}}还没文章哟。{{else}}有 {{$catalog.total}} 篇文章{{end}}</p>
                 <p class="blog_info"></p>

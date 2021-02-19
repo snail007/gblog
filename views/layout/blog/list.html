@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>{{if .title}}{{.title}}_文章列表-{{end}}{{.bc_basic.web_site_title}}</title>
+    <title>{{if .title}}{{.title|html}}_文章列表-{{end}}{{.bc_basic.web_site_title|html}}</title>
     {{template "blog/common/head" .}}
 </head>
 <body>

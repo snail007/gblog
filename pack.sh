@@ -1,5 +1,5 @@
 #!/bin/bash
-GOVERSION=1.16
+GOVERSION=1.14
 
 cd initialize/
 gmct tpl --clean

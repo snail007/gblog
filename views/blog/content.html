@@ -1,9 +1,9 @@
 <article>
     <div class="container">
-        <h1>{{.article.title}}</h1>
+        <h1>{{.article.title|html}}</h1>
         <p class="blog_info">
             <span>{{.article.create_time|date "2006-01-02 15:04"}}</span>
-            <span><a href="/list/{{.catalog.catalog_id}}">{{.catalog.name}}</a></span>
+            <span><a href="/list/{{.catalog.catalog_id}}">{{.catalog.name|html}}</a></span>
             <span>狂奔的蜗牛</span>
         </p>
 
@@ -13,10 +13,10 @@
 
         <div class="info-pre-next">
             {{if .articlePre}}
-                <p><span>上一篇</span><a href="/view/{{.articlePre.article_id}}">{{.articlePre.title}}</a></p>
+                <p><span>上一篇</span><a href="/view/{{.articlePre.article_id}}">{{.articlePre.title|html}}</a></p>
             {{end}}
             {{if .articleNext}}
-                <p><span>下一篇</span><a href="/view/{{.articleNext.article_id}}">{{.articleNext.title}}</a></p>
+                <p><span>下一篇</span><a href="/view/{{.articleNext.article_id}}">{{.articleNext.title|html}}</a></p>
             {{end}}
         </div>
         {{/*        <div class="otherlink">*/}}
