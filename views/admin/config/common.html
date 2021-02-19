@@ -1,6 +1,6 @@
 <ul class="nav nav-tabs page-tabs pt-2 pl-3 pr-3">
     <li class="nav-item"><a href="{{.admPath}}/config/conf?key=basic" class="nav-link {{if eq .G.key "basic"}}active{{end}}">基本</a></li>
 {{/*    <li class="nav-item"><a href="{{.admPath}}/config/conf?key=system" class="nav-link {{if eq .G.key "system"}}active{{end}}">系统</a></li>*/}}
-{{/*    <li class="nav-item"><a href="{{.admPath}}/config/conf?key=upload" class="nav-link {{if eq .G.key "upload"}}active{{end}}">上传</a></li>*/}}
+    <li class="nav-item"><a href="{{.admPath}}/config/conf?key=upload" class="nav-link {{if eq .G.key "upload"}}active{{end}}">上传</a></li>
     <li class="nav-item"><a href="{{.admPath}}/config/clearcache" class="nav-link ajax-get">清理缓存</a></li>
 </ul>

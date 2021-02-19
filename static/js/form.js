@@ -29,4 +29,29 @@ $(document).ready(function () {
         })
         return false;
     })
+    // fileupload
+    $(".fileupload").each(function () {
+        var loader;
+        var $input=$(this);
+        var targetInput=$($input.attr("data-input"))
+        $input.fileupload({
+            dataType: 'json',
+            beforeSend: function () {
+                loader = $('body').lyearloading({
+                    opacity: 0.2,
+                    spinnerSize: 'lg'
+                });
+            },
+            success: function (result, textStatus, jqXHR) {
+                showNotify("上传成功", 'success');
+                targetInput.val(result.url)
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                showNotify(errorThrown|textStatus, 'danger');
+            },
+            done: function () {
+                loader.destroy();
+            }
+        });
+    });
 });

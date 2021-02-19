@@ -108,7 +108,7 @@ func (this *Catalog) Create() {
 		if err != nil { // validate ok
 			this._JSONFail(err.Error())
 		}
-		this._JSONSuccess("", "", this.url("/catalog/list"))
+		this._JSONSuccess("", "", this.Ctx.POST("referer"))
 	} else {
 		// show create page
 		this.View.Layout("admin/form").Render("admin/catalog/form")
@@ -152,7 +152,7 @@ func (this *Catalog) Edit() {
 		if err != nil { // validate ok
 			this._JSONFail(err.Error())
 		}
-		this._JSONSuccess("", "", this.url("/catalog/list"))
+		this._JSONSuccess("", "", this.Ctx.POST("referer"))
 	} else {
 		// show create page
 		this.View.Set("data", row)
@@ -178,5 +178,5 @@ func (this *Catalog) Delete() {
 		this._JSONFail(err.Error())
 	})
 	gmc.DB.Table("article").UpdateBy(gmap.M{"catalog_id": ids}, gmap.M{"catalog_id": 0})
-	this._JSONSuccess("", nil, this.url("/catalog/list"))
+	this._JSONSuccess("", nil, this.Ctx.Header("Referer"))
 }

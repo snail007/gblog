@@ -2,8 +2,9 @@
     <div class="container">
         <h1>{{.article.title}}</h1>
         <p class="blog_info">
-            <span>{{.article.create_time|date "2006-01-02 15:04"}}</span><span>狂奔的蜗牛</span><span><a
-                        href="/list/{{.catalog.catalog_id}}">{{.catalog.name}}</a></span>
+            <span>{{.article.create_time|date "2006-01-02 15:04"}}</span>
+            <span><a href="/list/{{.catalog.catalog_id}}">{{.catalog.name}}</a></span>
+            <span>狂奔的蜗牛</span>
         </p>
 
         <div class="content" id="mkeditor">

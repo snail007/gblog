@@ -11,24 +11,38 @@
                     <form action="{{.admPath}}/config/conf" method="post" name="edit-form" class="edit-form ajax-form">
                         <input type="hidden" name="key" value="upload"/>
                         <div class="form-group">
-                            <label for="upload_file_ext">图片上传大小限制</label>
-                            <input class="js-tags-input form-control" type="text" id="upload_file_ext" name="upload_file_ext" value="doc,docx,xls,xlsx,ppt,pptx,pdf,wps,txt,rar,zip,gz,bz2,7z" >
-                            <small class="help-block">多个后缀用逗号隔开，不填写则不限制类型</small>
+                            <label for="upload_file_storage">图床类型</label>
+                            <div class="btn-group btn-group-xs">
+                                <input type="hidden" name="upload_file_storage">
+                                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"
+                                        aria-haspopup="true" aria-expanded="false"></button>
+                                <ul class="dropdown-menu" value="{{.upload_file_storage}}">
+                                    <li><a class="dropdown-item" href="javascript:void(0);" value="local">本地存储</a></li>
+                                    <li><a class="dropdown-item" href="javascript:void(0);" value="github">Github</a></li>
+                                </ul>
+                            </div>
+                            <br>
+                            <small class="help-block text text-danger">选择Github作为图床存储，务必填写下面的github信息才能使用。</small>
                         </div>
                         <div class="form-group">
-                            <label for="upload_image_size">图片上传大小限制</label>
-                            <input class="form-control" type="text" id="upload_image_size" name="upload_image_size" value="0" placeholder="请输入图片上传大小限制" >
-                            <small class="help-block">0为不限制大小，单位：kb</small>
+                            <label for="github_token">访问Github API的token</label>
+                            <input class="form-control" type="text" id="github_token" name="github_token" value="{{.github_token}}" >
+                            <small class="help-block">
+                                创建Github API的token步骤：<br>
+                                1.登录Github，点击右上角头像，点击：Settings。<br>
+                                2.点击左侧：Developer settings。<br>
+                                3.点击左侧：Personal access tokens。<br>
+                                4.点击右侧：Generate new token。<br>
+                                5."Note"一栏输入名称，比如：blog。<br>
+                                6.权限勾选 <b>repo</b>。<br>
+                                7.点击页面最下面的绿色按钮：Generate token。<br>
+                                8.然后就可以看见你创建的token，记得保存起来，只会出现这一次。
+                            </small>
                         </div>
                         <div class="form-group">
-                            <label for="upload_image_ext">允许上传的图片后缀</label>
-                            <input class="js-tags-input form-control" type="text" id="upload_image_ext" name="upload_image_ext" value="gif,jpg,jpeg,bmp,png" >
-                            <small class="help-block">多个后缀用逗号隔开，不填写则不限制类型</small>
-                        </div>
-                        <div class="form-group">
-                            <label for="upload_file_size">文件上传大小限制</label>
-                            <input class="form-control" type="text" id="upload_file_size" name="upload_file_size" value="0" placeholder="请输入文件上传大小限制" >
-                            <small class="help-block">0为不限制大小，单位：kb</small>
+                            <label for="github_repo">Github仓库</label>
+                            <input class="form-control" type="text" id="github_repo" name="github_repo" value="{{.github_repo}}" >
+                            <small class="help-block">格式：<i class="text text-danger">用户名</i>/<i class="text text-danger">仓库名</i>，比如：snail007/gmc</small>
                         </div>
                         <div class="form-group">
                             <button type="submit" class="btn btn-primary m-r-5">保 存</button>

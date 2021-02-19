@@ -141,9 +141,9 @@ create table config(
   key text,
   value text
 );
-insert into config (config_id, key, value) values (1,"basic",'{"file":"","key":"basic","web_site_blogger_email":"arraykeys@gmail.com","web_site_blogger_name":"狂奔的蜗牛","web_site_blogger_site":"https://github.com/snail007","web_site_copyright":"本博客内容，狂奔的蜗牛版权所有","web_site_description":"一个关注最新IT技术发展，专注于全栈技术架构与开发的技术博客。","web_site_icp":"","web_site_keywords":"狂奔的蜗牛，狂奔的蜗牛的博客，狂奔的蜗牛博客，博客系统，开源博客，snail007，蜗牛的博客，蜗牛，snail","web_site_logo":"/static/style/logo.png","web_site_stat":"","web_site_status":"on","web_site_title":"狂奔的蜗牛博客"}');
+insert into config (config_id, key, value) values (1,"basic",'{"file":"","key":"basic","web_site_blogger_email":"arraykeys@gmail.com","web_site_blogger_name":"狂奔的蜗牛","web_site_blogger_site":"https://github.com/snail007","web_site_copyright":"本博客内容，狂奔的蜗牛版权所有","web_site_description":"一个关注最新IT技术发展，专注于全栈技术架构与开发的技术博客。","web_site_icp":"","web_site_keywords":"狂奔的蜗牛，狂奔的蜗牛的博客，狂奔的蜗牛博客，博客系统，开源博客，snail007，蜗牛的博客，蜗牛，snail","web_site_logo":"/static/style/logo.png","web_site_icon":"/static/style/favicon.ico","web_site_stat":"","web_site_status":"on","web_site_title":"狂奔的蜗牛博客"}');
 insert into config (config_id, key, value) values (2,"system","{}");
-insert into config (config_id, key, value) values (3,"upload","{}");
+insert into config (config_id, key, value) values (3,"upload",'{"github_repo":"","github_token":"","key":"upload","upload_file_storage":"local"}');
 insert into catalog (catalog_id, name, sequence) values (0,"默认分类",0);
 insert into user (user_id, username, nickname, password, is_delete, update_time, create_time) values (1,'root',	'root',	'2df594b9710111099edbdb7edaa43301',	0,	%d,	%d);
 `

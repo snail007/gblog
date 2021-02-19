@@ -2,6 +2,7 @@ package blog
 
 import (
 	"encoding/json"
+	"fmt"
 	"gblog/global"
 	"github.com/snail007/gmc"
 	gcore "github.com/snail007/gmc/core"
@@ -28,7 +29,7 @@ var (
 		"Search":   true,
 		"Catalogs": true,
 	}
-	cacheSecond uint  = 3600
+	cacheSecond uint = 3600
 )
 
 func (this *Blog) Before() {
@@ -265,11 +266,20 @@ func (this *Blog) Attachment() {
 		this.Ctx.WriteHeader(http.StatusNotFound)
 		return
 	}
-	rootDir := gfile.Abs(this.Config.GetString("attachment.dir"))
-	file := gfile.Abs(filepath.Join(rootDir, filepath.Clean(id)))
-	if !strings.Contains(file, rootDir) {
-		this.Ctx.WriteHeader(http.StatusNotFound)
-		return
+	storageType := global.Context.BConfig("upload.upload_file_storage")
+	switch storageType {
+	case "local":
+		rootDir := gfile.Abs(this.Config.GetString("attachment.dir"))
+		file := gfile.Abs(filepath.Join(rootDir, filepath.Clean(id)))
+		if !strings.Contains(file, rootDir) {
+			this.Ctx.WriteHeader(http.StatusNotFound)
+			return
+		}
+		this.Ctx.WriteFile(file)
+	case "github":
+		userRepo := gcast.ToString(global.Context.BConfig("upload.github_repo"))
+		u := fmt.Sprintf("https://cdn.jsdelivr.net/gh/%s/%s", userRepo, filepath.Clean(id))
+		this.Ctx.Redirect(u)
 	}
-	this.Ctx.WriteFile(file)
+
 }

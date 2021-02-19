@@ -118,7 +118,7 @@ func (this *Article) Create() {
 		if err != nil { // validate ok
 			this._JSONFail(err.Error())
 		}
-		this._JSONSuccess("", "", this.url("/article/list"))
+		this._JSONSuccess("", "", this.Ctx.POST("referer"))
 	} else {
 		catalogTable := gmc.DB.Table("catalog")
 		catalogs, err := catalogTable.GetAll(gmap.M{"sequence": "asc"})
@@ -176,7 +176,7 @@ func (this *Article) Edit() {
 		if err != nil { // validate ok
 			this._JSONFail(err.Error())
 		}
-		this._JSONSuccess("", "", this.url("/article/list"))
+		this._JSONSuccess("", "", this.Ctx.POST("referer"))
 	} else {
 		catalogTable := gmc.DB.Table("catalog")
 		catalogs, err := catalogTable.GetAll(gmap.M{"sequence": "asc"})
@@ -202,5 +202,5 @@ func (this *Article) Delete() {
 	this.StopE(err, func() {
 		this._JSONFail(err.Error())
 	})
-	this._JSONSuccess("", nil, this.url("/article/list"))
+	this._JSONSuccess("", nil, this.Ctx.Header("Referer"))
 }
