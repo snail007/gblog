@@ -16,29 +16,36 @@ import (
 	gdb "github.com/snail007/gmc/module/db"
 	glog "github.com/snail007/gmc/module/log"
 	gfile "github.com/snail007/gmc/util/file"
-	"github.com/spf13/pflag"
 	"os"
 	"path/filepath"
 	"strings"
 	"time"
 )
+
 func Initialize(s *ghttpserver.HTTPServer) (err error) {
 	defer func() {
 		if err != nil {
 			err = gmc.Err.Wrap(err)
 		}
 	}()
-	// init command line
-	isDebug := pflag.BoolP("debug", "d", false, "enable debug mode")
-	conf := pflag.StringP("conf", "c", "conf/app.toml", "path of config file")
-	pflag.Parse()
+	isDebugI,_:=s.Ctx().Get("debug")
+	isDebug:=isDebugI.(bool)
+
+	if isDebug {
+		s.Logger().Infof("gblog running in debug mode")
+		s.Config().Debug()
+	}
+
+	dir, _ := os.Getwd()
+	s.Logger().Infof("working dir : %s", gfile.Abs(dir))
+	s.Logger().Infof("config file used: %s", gfile.Abs(s.Config().ConfigFileUsed()))
 
 	// init Context
-	ctx, err := global.NewBContext(*conf)
+	ctx, err := global.NewBContext(s.Config())
 	if err != nil {
 		return
 	}
-	ctx.SetIsDebug(*isDebug)
+	ctx.SetIsDebug(isDebug)
 	ctx.SetServer(gcore.HTTPServer(s))
 	cfg := ctx.Config()
 
@@ -48,6 +55,8 @@ func Initialize(s *ghttpserver.HTTPServer) (err error) {
 	// init db directory
 	dataFile := cfg.Get("database.sqlite3").([]interface{})[0].(map[string]interface{})["database"].(string)
 	dataDir := filepath.Dir(dataFile)
+
+	s.Logger().Infof("data dir used: %s", gfile.Abs(dataDir))
 	if !gfile.Exists(dataDir) {
 		err = os.MkdirAll(dataDir, 0700)
 		if err != nil {

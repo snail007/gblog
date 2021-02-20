@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	gcore "github.com/snail007/gmc/core"
-	gconfig "github.com/snail007/gmc/module/config"
 	gcast "github.com/snail007/gmc/util/cast"
 	gmap "github.com/snail007/gmc/util/map"
 	"math/rand"
@@ -105,14 +104,10 @@ func (B *BContext) SetIsDebug(isDebug bool) {
 	B.isDebug = isDebug
 }
 
-func NewBContext(configFile string) (c *BContext, err error) {
-	cfg, err := gconfig.NewConfigFile(configFile)
-	if err != nil {
-		return
-	}
+func NewBContext(config gcore.Config) (c *BContext, err error) {
 	c = &BContext{
-		configFile: configFile,
-		config:     cfg,
+		configFile: config.ConfigFileUsed(),
+		config:     config,
 	}
 	return
 }

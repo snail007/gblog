@@ -26,7 +26,7 @@ tlscert="conf/server.crt"
 tlskey="conf/server.key"
 tlsclientauth=false
 tlsclientsca="./conf/clintsca.crt"
-printroute=true
+printroute=false
 showerrorstack=true
 
 ############################################################
