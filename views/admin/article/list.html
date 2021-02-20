@@ -7,27 +7,59 @@
             <div class="card">
                 <div class="card-toolbar d-flex flex-column flex-md-row">
                     <div class="toolbar-btn-action">
-                        <a class="btn btn-primary m-r-5" href="{{$adminPath}}{{$controllerPath}}/create"><i class="mdi mdi-plus"></i>
+                        <a class="btn btn-primary m-r-5" href="{{$adminPath}}{{$controllerPath}}/create"><i
+                                    class="mdi mdi-plus"></i>
                             新增</a>
-                        <a class="btn btn-danger m-r-5 ajax-post confirm" href="{{$adminPath}}{{$controllerPath}}/delete"
-                           target-form="ids"><i class="mdi mdi-check"></i> 删除</a>
+                        <a class="btn btn-danger m-r-5 ajax-post confirm"
+                           href="{{$adminPath}}{{$controllerPath}}/delete"
+                           target-form="ids"><i class="mdi mdi-pen-remove"></i> 删除</a>
+                        <a class="btn btn-warning m-r-5 ajax-post confirm"
+                           href="{{$adminPath}}{{$controllerPath}}/move"
+                           target-form="ids"><i class="mdi mdi-file-move"></i> 移动</a>
+                    </div>
+                    <div class="btn-group btn-group-xs">
+                        <input type="hidden" name="catalog_id" class="ids">
+                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"
+                                aria-haspopup="true" aria-expanded="false"></button>
+                        <ul class="dropdown-menu" value="">
+                            {{range $c:=.catalogs}}
+                                <li><a class="dropdown-item" href="javascript:void(0);"
+                                       value="{{$c.catalog_id}}">{{$c.name}}</a></li>
+                            {{end}}
+                        </ul>
                     </div>
                     {{if .enable_search}}
                         <form class="search-bar ml-md-auto" method="get" action="" role="form">
-                             <div class="input-group ml-md-auto">
-								<div class="btn-group btn-group-xs">
-									<input type="hidden" name="search_field">
-									<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"
-											aria-haspopup="true" aria-expanded="false"></button>
-									<ul class="dropdown-menu" value="">
-										<li><a class="dropdown-item" href="javascript:void(0);" value="title">文章标题</a></li>
-										<li><a class="dropdown-item" href="javascript:void(0);" value="content">文章内容</a></li>
-									</ul>
-								</div>
+                            <div class="input-group ml-md-auto">
+                                <div class="btn-group btn-group-xs">
+                                    <input type="hidden" name="catalog_id">
+                                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"
+                                            aria-haspopup="true" aria-expanded="false"></button>
+                                    <ul class="dropdown-menu" value="{{val .G "catalog_id"}}" callback="pageTo">
+                                        <li><a class="dropdown-item" href="javascript:void(0);"
+                                               value="">全部文章</a></li>
+                                        {{range $c:=.catalogs}}
+                                            <li><a class="dropdown-item" href="javascript:void(0);"
+                                                   value="{{$c.catalog_id}}">{{$c.name}}</a></li>
+                                        {{end}}
+                                    </ul>
+                                </div>
+                                <div class="btn-group btn-group-xs">
+                                    <input type="hidden" name="search_field">
+                                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"
+                                            aria-haspopup="true" aria-expanded="false"></button>
+                                    <ul class="dropdown-menu" value="">
+                                        <li><a class="dropdown-item" href="javascript:void(0);" value="title">文章标题</a>
+                                        </li>
+                                        <li><a class="dropdown-item" href="javascript:void(0);" value="content">文章内容</a>
+                                        </li>
+                                    </ul>
+                                </div>
                                 <input type="text" class="form-control" name="keyword" placeholder="请输入">
-								{{if .G.keyword}}
-                                	<a class="btn btn-warning m-r-5" href="{{.admPath}}{{$controllerPath}}/list"><i class="mdi mdi-check"></i> 重置</a>
-                            	{{end}}
+                                {{if .G.keyword}}
+                                    <a class="btn btn-warning m-r-5" href="{{.admPath}}{{$controllerPath}}/list"><i
+                                                class="mdi mdi-check"></i> 重置</a>
+                                {{end}}
                             </div>
                         </form>
                     {{end}}
@@ -62,7 +94,9 @@
                                             <label class="custom-control-label" for="ids-{{val $row $idName}}"></label>
                                         </div>
                                     </td>
-                                    <td><a href="{{$adminPath}}{{$controllerPath}}/detail?{{$idName}}={{val $row $idName}}">{{val $row $idName}}</a></td>
+                                    <td>
+                                        <a href="{{$adminPath}}{{$controllerPath}}/detail?{{$idName}}={{val $row $idName}}">{{val $row $idName}}</a>
+                                    </td>
                                     <td>{{$row.title}}</td>
                                     <td>{{$row.catalog_name}}</td>
                                     <td>{{if eq $row.update_time "0"}}-{{else}}{{$row.update_time | date "2006-01-02 15:04"}}{{end}}</td>
@@ -70,11 +104,13 @@
                                     <td>
                                         <div class="btn-group">
                                             <a class="btn btn-xs btn-default"
-                                               href="{{$adminPath}}{{$controllerPath}}/edit?{{$idName}}={{val $row $idName}}" title=""
+                                               href="{{$adminPath}}{{$controllerPath}}/edit?{{$idName}}={{val $row $idName}}"
+                                               title=""
                                                data-toggle="tooltip"
                                                data-original-title="编辑"><i class="mdi mdi-pencil"></i></a>
                                             <a class="btn btn-xs btn-default ajax-get confirm"
-                                               href="{{$adminPath}}{{$controllerPath}}/delete?ids={{val $row $idName}}" title=""
+                                               href="{{$adminPath}}{{$controllerPath}}/delete?ids={{val $row $idName}}"
+                                               title=""
                                                data-toggle="tooltip"
                                                data-original-title="删除"><i class="mdi mdi-window-close"></i></a>
                                         </div>
@@ -90,3 +126,10 @@
         </div>
     </div>
 </div>
+
+<script>
+    function pageTo(catalogID, name,isInit) {
+        if(isInit){return;}
+        location="{{$adminPath}}{{$controllerPath}}/list?catalog_id="+catalogID;
+    }
+</script>

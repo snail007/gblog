@@ -18,6 +18,10 @@ func (this *Article) List() {
 	where := gmap.M{}
 	search := this.Ctx.GET("search_field")
 	keyword := this.Ctx.GET("keyword")
+	catalogID := this.Ctx.GET("catalog_id")
+	if catalogID != "" {
+		where["catalog_id"] = catalogID
+	}
 	if enableSearch && search != "" && keyword != "" {
 		data, err := validate.FromRequest(this.Request)
 		if err != nil {
@@ -28,7 +32,7 @@ func (this *Article) List() {
 		if !v.Validate() {
 			this.Stop(v.Errors.One())
 		}
-		where = gmap.M{search + " like": "%" + keyword + "%"}
+		where[search+" like"] = "%" + keyword + "%"
 	}
 	page := gcast.ToInt(this.Ctx.GET("page"))
 	pageSize := gcast.ToInt(this.Ctx.GET("count"))
@@ -58,6 +62,7 @@ func (this *Article) List() {
 		}
 		rows[k]["catalog_name"] = catalog_name
 	}
+	this.View.Set("catalogs", catalogs)
 	this.View.Set("rows", rows)
 	this.View.Set("enable_search", enableSearch)
 	this.View.Set("paginator", this.Ctx.NewPager(pageSize, int64(total)))
@@ -199,6 +204,30 @@ func (this *Article) Delete() {
 	}
 	table := gmc.DB.Table("article")
 	_, err := table.DeleteByIDs(ids)
+	this.StopE(err, func() {
+		this._JSONFail(err.Error())
+	})
+	this._JSONSuccess("", nil, this.Ctx.Header("Referer"))
+}
+
+func (this *Article) Move() {
+	var ids []string
+	this.Request.ParseForm()
+	id := this.Request.Form["ids"]
+	if len(id) > 0 {
+		ids = append(ids, id...)
+	}
+	catalogID := this.Ctx.POST("catalog_id")
+	catalogTable := gmc.DB.Table("catalog")
+	catalog, err := catalogTable.GetByID(catalogID)
+	if err != nil {
+		this._JSONFail(err.Error())
+	}
+	if len(catalog) == 0 {
+		this._JSONFail("catalog not found")
+	}
+	table := gmc.DB.Table("article")
+	_, err = table.UpdateByIDs(ids, gmap.M{"catalog_id": catalogID})
 	this.StopE(err, func() {
 		this._JSONFail(err.Error())
 	})
