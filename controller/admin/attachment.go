@@ -35,22 +35,21 @@ func (this *Attachment) Upload() {
 		if err != nil {
 			this.jsonFail(isEditor, err.Error())
 		}
-
-		rootDir := this.Config.GetString("attachment.dir")
-		subDir := time.Now().Format("2006-01-02")
-		uploadDir := filepath.Join(rootDir, subDir)
-		if !gfile.Exists(uploadDir) {
-			os.MkdirAll(uploadDir, 0755)
-		}
 		ext := filepath.Ext(file.Filename)
 		if ext == "" {
 			this.jsonFail(isEditor, "unknown file extension")
 		}
+		subDir := time.Now().Format("2006-01-02")
 		randFilename := fmt.Sprintf("%d_%d%s", time.Now().Unix(), rand.Int63(), ext)
 
 		storageType := global.Context.BConfig("upload.upload_file_storage")
 		switch storageType {
 		case "local":
+			rootDir := this.Config.GetString("attachment.dir")
+			uploadDir := filepath.Join(rootDir, subDir)
+			if !gfile.Exists(uploadDir) {
+				os.MkdirAll(uploadDir, 0755)
+			}
 			savePath := filepath.Join(uploadDir, randFilename)
 			err = this.uploadToLocal(savePath, file)
 		case "github":
