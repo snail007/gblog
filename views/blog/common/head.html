@@ -1,5 +1,9 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<meta name="keywords" content="{{.bc_basic.web_site_keywords|html}}"/>
+{{if .article}}
+    <meta name="keywords" content="{{.article.title|html}}，{{.bc_basic.web_site_keywords|html}}"/>
+{{else}}
+    <meta name="keywords" content="{{.bc_basic.web_site_keywords|html}}"/>
+{{end}}
 {{if .article}}
     <meta name="description" content="{{.article.summary|html}}"/>
 {{else}}
