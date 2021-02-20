@@ -58,7 +58,7 @@
                     <textarea style="display:none;" name="{{$name}}" id="{{$name}}">{{val .data $name}}</textarea>
                 </div>
             </div>
-            <input type="hidden" name="referer"  value="{{val .H "Referer"}}">
+            <input type="hidden" name="referer" value="{{val .H "Referer"}}">
             <div class="col-auto">
                 <button type="submit" class="btn btn-primary mb-2">
                     <span class="spinner-grow spinner-grow-sm" role="status" style="display: none;"
@@ -77,9 +77,9 @@
             mkeditor = editormd("mkeditor", {
                 width: "100%",
                 height: 640,
-                imageUpload    : true,
-                imageFormats   : ["jpg", "jpeg", "gif", "png", "bmp", "webp"],
-                imageUploadURL : "{{.admPath}}/attachment/upload",
+                imageUpload: true,
+                imageFormats: ["jpg", "jpeg", "gif", "png", "bmp", "webp"],
+                imageUploadURL: "{{.admPath}}/attachment/upload",
                 tocm: true,
                 tocTitle: "目录导航",
                 emoji: true,
@@ -88,7 +88,7 @@
                 flowChart: true,
                 sequenceDiagram: true,
                 codeFold: true,
-                htmlDecode: "img",
+                htmlDecode: "style,script,iframe|on*",
                 syncScrolling: "single",
                 path: "/static/js/meditor/lib/"
             });
