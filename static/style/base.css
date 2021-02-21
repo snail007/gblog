@@ -266,3 +266,7 @@ main { overflow: hidden; }
 }
 
 #mkeditor.markdown-body{width: 90%;}
+
+#mkeditor .editormd-toc-menu>.markdown-toc li>ul, .editormd-preview-container .editormd-toc-menu>.markdown-toc li>ul{
+ left: 120px;
+}

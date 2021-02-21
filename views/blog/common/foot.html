@@ -41,6 +41,9 @@
             scrollFunction()
         };
         $("body").on("click","a",function () {
+            if(!$(this).parentsUntil(".editormd-toc-menu")[0]){
+                return;
+            }
             if (this.href.indexOf(location.origin) != 0) {
                 $(this).attr("target", "_blank")
             }
