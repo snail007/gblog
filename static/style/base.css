@@ -51,7 +51,7 @@ nav ul li a:hover, li.current a { background: #e01109; color: #fff; }
 .blogs li:hover img { transform: scale(1.1) }
 /*aside*/
 aside div { background: #fff; margin-bottom: 20px }
-header .search {width: 250px;position: absolute;right: 0;top: 200px;background: #ed4040; position: relative; border: #ed4040 2px solid; border-radius: 5px; overflow: hidden; }
+header .search {width: 250px;position: absolute;right: 0;top: 200px;background: #ed4040; border: #ed4040 2px solid; border-radius: 5px; overflow: hidden; }
 .search input.input_submit { border: 0; color: #fff; outline: none; position: absolute; top: 0; right: 0; width: 25%; display: block; font-size: 15px; height: 36px; line-height: 36px; text-indent: 1em; cursor: pointer; background: no-repeat left 10px center; background-size: 21px; }
 .search input.input_text { border: 0; line-height: 36px; height: 36px; font-size: 14px; width: 75%; outline: none; text-indent: 1em; }
 h2.aside_title { padding: 20px; }
@@ -190,8 +190,9 @@ top:0px;
  @media only screen and (max-width: 1200px) {
 header, main { width: 90%;}
 header{position: relative;}
-article { width: 68%; }
+article { width: 100%; }
 aside { width: 30%; }
+#search{display: block;position: relative;top:0px;margin: -5px auto 12px;width: 95%;}
 }
  @media only screen and (max-width: 768px) {
 article { width: 100%; }

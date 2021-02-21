@@ -15,7 +15,7 @@
             <li {{if eq .U.PATH "/catalogs"}}class="current"{{end}}><a href="/catalogs">博文目录</a></li>
         </ul>
     </nav>
-    <div class="search" style="position: absolute;">
+    <div id="search" class="search">
         <form action="/search" method="get">
             <input name="keyword" id="keyword" class="input_text" value="" style="color: rgb(153, 153, 153);"  placeholder="请输入关键字词" type="text">
             <input class="input_submit" value="搜索" type="submit">
