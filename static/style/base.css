@@ -13,9 +13,8 @@ header, main { width: 1200px; margin: auto }
 article { width: 100%; float: left; }
 aside { width: 320px; float: right; }
 footer { width: 100%; padding-bottom: 20px; text-align: center; clear: both }
-.touxiang { float: left; width: 50%; margin: 20px 0; }
-.touxiang i { width: 100px; height: 100px; background: #fff; display: block; float: left; margin-right: 20px; border-radius: 100%; }
-.touxiang i img { width: 101px; }
+.touxiang { float: left; width: 50%; margin: 20px 0;overflow: hidden; }
+.touxiang i,.touxiang img { overflow: hidden;width: 100px; height: 100px; background: #fff; display: block; float: left; margin-right: 20px; border-radius: 100%; }
 .touxiang h2 { margin: 20px 0 10px 0; }
 .touxiang p { color: #949494; }
 .guanzhu { float: right; background: #e01109; color: #fff; width: 120px; line-height: 30px; text-align: center; border-radius: 3px; position: relative; top: 40px; right: 0; cursor: pointer; }

@@ -50,6 +50,7 @@ func (this *Config) Conf() {
 		if err != nil {
 			this._JSONFail(err.Error())
 		}
+		global.Context.Cache().Clear()
 		this._JSONSuccess("")
 	}
 	value, err := this.configValue(key)

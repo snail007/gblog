@@ -1,6 +1,7 @@
 package admin
 
 import (
+	"gblog/global"
 	"github.com/gookit/validate"
 	"github.com/snail007/gmc"
 	gdb "github.com/snail007/gmc/module/db"
@@ -108,6 +109,7 @@ func (this *Catalog) Create() {
 		if err != nil { // validate ok
 			this._JSONFail(err.Error())
 		}
+		global.Context.Cache().Clear()
 		this._JSONSuccess("", "", this.Ctx.POST("referer"))
 	} else {
 		// show create page
@@ -152,6 +154,7 @@ func (this *Catalog) Edit() {
 		if err != nil { // validate ok
 			this._JSONFail(err.Error())
 		}
+		global.Context.Cache().Clear()
 		this._JSONSuccess("", "", this.Ctx.POST("referer"))
 	} else {
 		// show create page
@@ -178,5 +181,6 @@ func (this *Catalog) Delete() {
 		this._JSONFail(err.Error())
 	})
 	gmc.DB.Table("article").UpdateBy(gmap.M{"catalog_id": ids}, gmap.M{"catalog_id": 0})
+	global.Context.Cache().Clear()
 	this._JSONSuccess("", nil, this.Ctx.Header("Referer"))
 }

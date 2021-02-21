@@ -123,6 +123,7 @@ func (this *Article) Create() {
 		if err != nil { // validate ok
 			this._JSONFail(err.Error())
 		}
+		global.Context.Cache().Clear()
 		this._JSONSuccess("", "", this.Ctx.POST("referer"))
 	} else {
 		catalogTable := gmc.DB.Table("catalog")
@@ -181,6 +182,7 @@ func (this *Article) Edit() {
 		if err != nil { // validate ok
 			this._JSONFail(err.Error())
 		}
+		global.Context.Cache().Clear()
 		this._JSONSuccess("", "", this.Ctx.POST("referer"))
 	} else {
 		catalogTable := gmc.DB.Table("catalog")
@@ -207,6 +209,7 @@ func (this *Article) Delete() {
 	this.StopE(err, func() {
 		this._JSONFail(err.Error())
 	})
+	global.Context.Cache().Clear()
 	this._JSONSuccess("", nil, this.Ctx.Header("Referer"))
 }
 
@@ -231,5 +234,6 @@ func (this *Article) Move() {
 	this.StopE(err, func() {
 		this._JSONFail(err.Error())
 	})
+	global.Context.Cache().Clear()
 	this._JSONSuccess("", nil, this.Ctx.Header("Referer"))
 }
