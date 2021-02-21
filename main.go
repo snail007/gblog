@@ -11,18 +11,41 @@ import (
 	"github.com/snail007/gmc"
 	gcore "github.com/snail007/gmc/core"
 	"github.com/snail007/gmc/http/server"
+	gdaemon "github.com/snail007/gmc/util/process/daemon"
+	ghook "github.com/snail007/gmc/util/process/hook"
 	"github.com/spf13/pflag"
 	"runtime/debug"
 )
 
 func main() {
 
+	if err := gdaemon.Start(); err != nil {
+		fmt.Println(err)
+		return
+	}
+	if gdaemon.CanRun() {
+		//call actual main()
+		go start()
+	}
+	ghook.RegistShutdown(func() {
+		gdaemon.Clean()
+	})
+	ghook.WaitShutdown()
+}
+
+func start() {
+	var app gcore.App
+	defer func() {
+		if app != nil && app.Logger() != nil {
+			app.Logger().WaitAsyncDone()
+		}
+	}()
 	isDebug := pflag.BoolP("debug", "d", false, "enable debug mode")
 	conf := pflag.StringP("conf", "c", "conf/app.toml", "path of config file")
 	pflag.Parse()
 
 	// 1. create an default app to run.
-	app := gmc.New.AppDefault()
+	app = gmc.New.AppDefault()
 	app.Ctx().Set("debug", *isDebug)
 	app.SetConfigFile(*conf)
 	httpServer := ghttpserver.NewHTTPServer(app.Ctx())
