@@ -174,7 +174,7 @@ func (this *Blog) Views() {
 
 	rs, err = db.Query(this.cache("articlePre-" + article["article_id"]).
 		From("article").
-		Where(gmap.M{"article_id <": id, "catalog_id": article["catalog_id"]}).
+		Where(gmap.M{"create_time <": article["create_time"], "catalog_id": article["catalog_id"]}).
 		OrderBy("create_time","desc").Limit(1))
 	if err != nil {
 		this.Stop(err)
@@ -183,7 +183,7 @@ func (this *Blog) Views() {
 
 	rs, err = db.Query(this.cache("articlesNext-" + article["article_id"]).
 		From("article").
-		Where(gmap.M{"article_id >": id, "catalog_id": article["catalog_id"]}).
+		Where(gmap.M{"create_time >": article["create_time"], "catalog_id": article["catalog_id"]}).
 		OrderBy("create_time","asc").Limit(1))
 	if err != nil {
 		this.Stop(err)
