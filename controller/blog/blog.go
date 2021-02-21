@@ -172,13 +172,19 @@ func (this *Blog) Views() {
 
 	articlePre, articleNext := gmap.Mss{}, gmap.Mss{}
 
-	rs, err = db.Query(this.cache("articlePre-" + article["article_id"]).From("article").Where(gmap.M{"article_id <": id, "catalog_id": article["catalog_id"]}))
+	rs, err = db.Query(this.cache("articlePre-" + article["article_id"]).
+		From("article").
+		Where(gmap.M{"article_id <": id, "catalog_id": article["catalog_id"]}).
+		OrderBy("create_time","desc"))
 	if err != nil {
 		this.Stop(err)
 	}
 	articlePre = rs.Row()
 
-	rs, err = db.Query(this.cache("articlesNext-" + article["article_id"]).From("article").Where(gmap.M{"article_id >": id, "catalog_id": article["catalog_id"]}))
+	rs, err = db.Query(this.cache("articlesNext-" + article["article_id"]).
+		From("article").
+		Where(gmap.M{"article_id >": id, "catalog_id": article["catalog_id"]}).
+		OrderBy("create_time","asc"))
 	if err != nil {
 		this.Stop(err)
 	}
