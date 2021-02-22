@@ -1,5 +1,7 @@
 ;jQuery(function () {
-    if (typeof window["init"] == "function") {
-        window["init"]()
+    if(window.init){
+        for(var i=0;i<window.init.length;i++){
+            window.init[i]();
+        }
     }
 });

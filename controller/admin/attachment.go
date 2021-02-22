@@ -53,7 +53,7 @@ func (this *Attachment) Upload() {
 			savePath := filepath.Join(uploadDir, randFilename)
 			err = this.uploadToLocal(savePath, file)
 		case "github":
-			savePath := subDir + "/" + randFilename
+			savePath := "attachment/" + subDir + "/" + randFilename
 			err = this.uploadToGithub(savePath, file)
 		}
 
@@ -87,7 +87,7 @@ func (this *Attachment) uploadToGithub(filePath string, file *multipart.FileHead
 		return
 	}
 	data := strings.Split(userRepo, "/")
-	ctx1, cancel1 := context.WithTimeout(context.Background(), time.Second*15)
+	ctx1, cancel1 := context.WithTimeout(context.Background(), time.Second*60)
 	defer cancel1()
 	ts := oauth2.StaticTokenSource(
 		&oauth2.Token{AccessToken: token},
@@ -104,7 +104,7 @@ func (this *Attachment) uploadToGithub(filePath string, file *multipart.FileHead
 		Branch:    repo.DefaultBranch,
 		Committer: &github.CommitAuthor{Name: github.String("gblog"), Email: github.String("bot@gblog")},
 	}
-	ctx2, cancel2 := context.WithTimeout(context.Background(), time.Second*15)
+	ctx2, cancel2 := context.WithTimeout(context.Background(), time.Second*60)
 	defer cancel2()
 	_, _, err = client.Repositories.CreateFile(ctx2, data[0], data[1], filePath, opts)
 	return

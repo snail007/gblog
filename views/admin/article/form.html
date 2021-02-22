@@ -51,6 +51,14 @@
                     </label>
                 </div>
             </div>
+            {{if eq .showCreateTime "1"}}
+                <div class="form-group">
+                    {{$name:="create_time"}}
+                    {{$time:=""}}
+                    <label for="{{$name}}">发布时间 <small>可以选择未来时间，预发布</small></label>
+                    <input {{if .data}} value="{{.data.create_time | date "2006-01-02 15:04:05"}}" {{end}}  class="form-control" type="text" data-provide="datetimepicker" name="create_time" placeholder="发布时间"  data-side-by-side="true" data-format="YYYY-MM-DD HH:mm:ss">
+                </div>
+            {{end}}
             <div class="form-group">
                 {{$name:="content"}}
                 <p>文章内容</p>
@@ -71,7 +79,7 @@
     </div>
 </div>
 <script>
-    function init() {
+    window.init.push(function() {
         var mkeditor;
         $(function () {
             mkeditor = editormd("mkeditor", {
@@ -93,5 +101,5 @@
                 path: "/static/js/meditor/lib/"
             });
         });
-    }
+    })
 </script>

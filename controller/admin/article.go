@@ -60,6 +60,11 @@ func (this *Article) List() {
 				catalog_name = c["name"]
 			}
 		}
+		isPrePublish := "0"
+		if time.Now().Unix() < gcast.ToInt64(v["create_time"]) {
+			isPrePublish = "1"
+		}
+		rows[k]["is_pre_publish"] = isPrePublish
 		rows[k]["catalog_name"] = catalog_name
 	}
 	this.View.Set("catalogs", catalogs)
@@ -115,7 +120,13 @@ func (this *Article) Create() {
 		dataInsert["catalog_id"], _ = data.Get("catalog_id")
 		dataInsert["poster_url"], _ = data.Get("poster_url")
 		dataInsert["update_time"] = 0
-		dataInsert["create_time"] = time.Now().Unix()
+		t, err := time.ParseInLocation("2006-01-02 15:04:05", this.Ctx.POST("create_time"), time.Local)
+		if err != nil {
+			t = time.Now()
+		} else if t.Before(time.Now()) {
+			t = time.Now()
+		}
+		dataInsert["create_time"] = t.Unix()
 		if dataInsert["poster_url"] == "" {
 			dataInsert["poster_url"] = global.RandImgIdx()
 		}
@@ -132,6 +143,7 @@ func (this *Article) Create() {
 			this.Stop(err)
 		}
 		// show create page
+		this.View.Set("showCreateTime", "1")
 		this.View.Set("catalogs", catalogs)
 		this.View.Layout("admin/form").Render("admin/article/form")
 	}
@@ -147,11 +159,11 @@ func (this *Article) Edit() {
 	if id == "" {
 		id = this.Ctx.POST("article_id")
 	}
-	row, err := table.GetByID(id)
+	article, err := table.GetByID(id)
 	if err != nil {
 		this._JSONFail(err.Error())
 	}
-	if len(row) == 0 {
+	if len(article) == 0 {
 		this._JSONFail("data not found")
 	}
 	if this.Ctx.IsPOST() {
@@ -178,6 +190,15 @@ func (this *Article) Edit() {
 		if dataUpdate["poster_url"] == "" {
 			dataUpdate["poster_url"] = global.RandImgIdx()
 		}
+		createTimeDB := gcast.ToInt64(article["create_time"])
+		createTime := this.Ctx.POST("create_time")
+		if createTime != "" && createTimeDB > time.Now().Unix() {
+			t, err := time.ParseInLocation("2006-01-02 15:04:05", createTime, time.Local)
+			if err != nil {
+				t = time.Now()
+			}
+			dataUpdate["create_time"] = t.Unix()
+		}
 		_, err = table.UpdateBy(gmap.M{"article_id": id}, dataUpdate)
 		if err != nil { // validate ok
 			this._JSONFail(err.Error())
@@ -190,9 +211,15 @@ func (this *Article) Edit() {
 		if err != nil {
 			this.Stop(err)
 		}
-		// show create page
+		// show page
+		createTime := gcast.ToInt64(article["create_time"])
+		showCreateTime := "0"
+		if createTime > time.Now().Unix() {
+			showCreateTime = "1"
+		}
+		this.View.Set("showCreateTime", showCreateTime)
 		this.View.Set("catalogs", catalogs)
-		this.View.Set("data", row)
+		this.View.Set("data", article)
 		this.View.Layout("admin/form").Render("admin/article/form")
 	}
 }

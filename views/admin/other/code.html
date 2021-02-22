@@ -352,13 +352,13 @@
                     <p class="text text-default">适用布局：全部.</p>
                     <p class="text text-success">效果：</p>
                     <div class="container" style="padding-bottom: 10px;">
-                        如果需要在页面全部渲染完毕，全部js执行完毕之后执行一些js代码，只要在页面定义一个<code>function init(){}</code>,所有的操作放在这个方法里面即可。
+                        如果需要在页面全部渲染完毕，全部js执行完毕之后执行一些js代码，只要把要执行的function push入全局变量init数组里面即可,所有的操作放在这个方法里面即可。
                     </div>
                     <p class="text text-success">代码如下：</p>
                     <pre>{{html `<script>
-    function init() {
+    window.init.push(function() {
         // do something
-    }
+    });
 </script>`|replace "\n" "<br>"}}</pre>
                 </div>
             </div>

@@ -172,19 +172,19 @@ func (this *Blog) Views() {
 
 	articlePre, articleNext := gmap.Mss{}, gmap.Mss{}
 
-	rs, err = db.Query(this.cache("articlePre-" + article["article_id"]).
+	rs, err = db.Query(this.cache("articlePre-"+article["article_id"]).
 		From("article").
 		Where(gmap.M{"create_time <": article["create_time"], "catalog_id": article["catalog_id"]}).
-		OrderBy("create_time","desc").Limit(1))
+		OrderBy("create_time", "desc").Limit(1))
 	if err != nil {
 		this.Stop(err)
 	}
 	articlePre = rs.Row()
 
-	rs, err = db.Query(this.cache("articlesNext-" + article["article_id"]).
+	rs, err = db.Query(this.cache("articlesNext-"+article["article_id"]).
 		From("article").
 		Where(gmap.M{"create_time >": article["create_time"], "catalog_id": article["catalog_id"]}).
-		OrderBy("create_time","asc").Limit(1))
+		OrderBy("create_time", "asc").Limit(1))
 	if err != nil {
 		this.Stop(err)
 	}
@@ -284,7 +284,7 @@ func (this *Blog) Attachment() {
 		this.Ctx.WriteFile(file)
 	case "github":
 		userRepo := gcast.ToString(global.Context.BConfig("upload.github_repo"))
-		u := fmt.Sprintf("https://cdn.jsdelivr.net/gh/%s/%s", userRepo, filepath.Clean(id))
+		u := fmt.Sprintf("https://cdn.jsdelivr.net/gh/%s/%s", userRepo, "attachment/"+filepath.Clean(id))
 		this.Ctx.Redirect(u)
 	}
 

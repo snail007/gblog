@@ -54,12 +54,13 @@
                             <tbody>
                             {{ range $row := .rows}}
                                 <tr>
-                                    <td>
-                                        <div class="custom-control custom-checkbox">
+                                    <td class="order" title="拖动可排序">
+                                        <div class="custom-control custom-checkbox" >
                                             <input type="checkbox" class="custom-control-input ids" name="ids"
                                                    value="{{val $row $idName}}"
                                                    id="ids-{{val $row $idName}}">
                                             <label class="custom-control-label" for="ids-{{val $row $idName}}"></label>
+                                            <i class="custom-control mdi mdi-format-align-justify" style="padding:0"></i>
                                         </div>
                                     </td>
                                     <td><a href="{{$adminPath}}{{$controllerPath}}/detail?{{$idName}}={{val $row $idName}}">{{val $row $idName}}</a></td>
@@ -90,3 +91,19 @@
         </div>
     </div>
 </div>
+<script src="/static/js/sortable.js"></script>
+<script>
+    window.init.push(function(){
+        Sortable.create($("tbody")[0], {
+            animation: 150, // ms, animation speed moving items when sorting, `0` — without animation
+            handle: ".order", // Restricts sort start click/touch to the specified element
+            onUpdate: function (evt){
+                var data={};
+                $("tbody tr").each(function(i){
+                    data[$(this).find("td").eq(0).find("input").attr("value")]=i;
+                });
+                $.post("{{$adminPath}}{{$controllerPath}}/saveorder",data);
+            }
+        });
+    });
+</script>

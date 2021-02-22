@@ -40,7 +40,7 @@ func (this *Catalog) List() {
 		start = 0
 	}
 	table := gmc.DB.Table("catalog")
-	rows, total, err := table.Page(where, start, pageSize, gmap.M{"sequence": "asc"})
+	rows, total, err := table.Page(where, start, pageSize, gmap.M{"0:is_nav": "desc", "1:sequence": "asc"})
 	if err != nil {
 		this.Stop(err)
 	}
@@ -160,6 +160,28 @@ func (this *Catalog) Edit() {
 		// show create page
 		this.View.Set("data", row)
 		this.View.Layout("admin/form").Render("admin/catalog/form")
+	}
+}
+
+//保存拖拽排序
+func (this *Catalog) SaveOrder() {
+	data := this.Ctx.POSTData()
+	if len(data) == 0 {
+		this._JSONFail("数据不能为空！")
+	}
+	d := []gmap.M{}
+	db := gmc.DB.DB()
+	for k, v := range data {
+		d = append(d, map[string]interface{}{
+			"catalog_id": k,
+			"sequence":   v,
+		})
+	}
+	_, err := db.Exec(db.AR().UpdateBatch("catalog", d, []string{"catalog_id"}))
+	if err != nil {
+		this._JSONFail("修改排序失败！"+err.Error())
+	} else {
+		this._JSONSuccess("")
 	}
 }
 
