@@ -149,7 +149,9 @@ func (this *Blog) List() {
 func (this *Blog) Views() {
 	id := this.Param.ByName("id")
 	db := gmc.DB.DB()
-	rs, err := db.Query(this.cache("article-" + id).From("article").Where(gmap.M{"article_id": id}))
+	rs, err := db.Query(this.cache("article-" + id).From("article").Where(
+		gmap.M{"article_id": id, "create_time <=": time.Now().Unix()},
+	))
 	if err != nil {
 		this.Stop(err)
 	}
@@ -200,7 +202,10 @@ func (this *Blog) Views() {
 
 func (this *Blog) Timeline() {
 	db := gmc.DB.DB()
-	rs, err := db.Query(this.cache("timeline").From("article").OrderBy("create_time", "desc"))
+	rs, err := db.Query(this.cache("timeline").
+		From("article").
+		Where(gmap.M{"create_time <=": time.Now().Unix()}).
+		OrderBy("create_time", "desc"))
 	if err != nil {
 		this.Stop(err)
 	}
@@ -215,7 +220,10 @@ func (this *Blog) Search() {
 		return
 	}
 	db := gmc.DB.DB()
-	rs, err := db.Query(this.cache("search").From("article").OrderBy("create_time", "desc"))
+	rs, err := db.Query(this.cache("search").
+		From("article").
+		Where(gmap.M{"create_time <=": time.Now().Unix()}).
+		OrderBy("create_time", "desc"))
 	if err != nil {
 		this.Stop(err)
 	}
@@ -245,7 +253,11 @@ func (this *Blog) Catalogs() {
 	}
 	catalogs := rs.Rows()
 
-	rs, err = db.Query(this.cache("catalogsSummary").Select("count(*) as total,catalog_id").From("article").GroupBy("catalog_id"))
+	rs, err = db.Query(this.cache("catalogsSummary").
+		Select("count(*) as total,catalog_id").
+		From("article").
+		Where(gmap.M{"create_time <=": time.Now().Unix()}).
+		GroupBy("catalog_id"))
 	if err != nil {
 		this.Stop(err)
 	}

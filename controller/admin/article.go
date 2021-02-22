@@ -192,10 +192,13 @@ func (this *Article) Edit() {
 		}
 		createTimeDB := gcast.ToInt64(article["create_time"])
 		createTime := this.Ctx.POST("create_time")
-		if createTime != "" && createTimeDB > time.Now().Unix() {
+		now := time.Now()
+		if createTime != "" && createTimeDB > now.Unix() {
 			t, err := time.ParseInLocation("2006-01-02 15:04:05", createTime, time.Local)
 			if err != nil {
-				t = time.Now()
+				t = now
+			} else if t.Before(now) {
+				t = now
 			}
 			dataUpdate["create_time"] = t.Unix()
 		}

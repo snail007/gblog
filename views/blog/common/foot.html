@@ -13,7 +13,9 @@
     {{end}}
     <p>
         <small>
-            <a style="text-decoration: underline;" href="https://github.com/snail007/gblog">Blog source code</a> all rights reserved by: <a style="text-decoration: underline;" href="https://github.com/snail007" target="_blank">snail007</a>
+            <a style="text-decoration: underline;" href="https://github.com/snail007/gblog">Blog source code</a> all
+            rights reserved by: <a style="text-decoration: underline;" href="https://github.com/snail007"
+                                   target="_blank">snail007</a>
         </small>
     </p>
     <p></p>
@@ -40,11 +42,11 @@
         window.onscroll = function () {
             scrollFunction()
         };
-        $("body").on("click","a",function () {
-            if(!$(this).parentsUntil(".editormd-toc-menu")[0]){
+        $("body").on("click", "a", function () {
+            if (!$(this).parentsUntil(".editormd-toc-menu")[0]) {
                 return;
             }
-            if (this.href.indexOf(location.origin) != 0) {
+            if (this.href.indexOf("http") == 0 && this.href.indexOf(location.origin) != 0) {
                 $(this).attr("target", "_blank")
             }
         })
