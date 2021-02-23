@@ -6,10 +6,12 @@
 # call stack and error message will display on the browser.
 ############################################################
 [admin]
+# without end slash in the last
 urlpath="/manage"
 
 [attachment]
 dir="attachment"
+# without end slash in the last
 url="/attachment"
 
 ############################################################

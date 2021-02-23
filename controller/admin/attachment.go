@@ -62,7 +62,7 @@ func (this *Attachment) Upload() {
 		}
 
 		urlPath := this.Config.GetString("attachment.url")
-		link := urlPath + "?id=" + subDir + "/" + randFilename
+		link := urlPath + "/" + subDir + "/" + randFilename
 		this.jsonSuccess(isEditor, "", link)
 	} else {
 		this.Ctx.WriteHeader(http.StatusBadRequest)

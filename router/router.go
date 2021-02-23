@@ -33,6 +33,7 @@ func InitRouter(s gcore.HTTPServer) {
 	r.ControllerMethod("/search", new(blog.Blog), "Search")
 	r.ControllerMethod("/catalogs", new(blog.Blog), "Catalogs")
 	r.ControllerMethod(urlPath, new(blog.Blog), "Attachment")
+	r.ControllerMethod(urlPath+"/*id", new(blog.Blog), "Attachment")
 
 	// indicates router initialized
 	s.Logger().Infof("router inited.")

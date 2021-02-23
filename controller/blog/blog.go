@@ -281,6 +281,9 @@ func (this *Blog) Catalogs() {
 func (this *Blog) Attachment() {
 	id := this.Ctx.GET("id")
 	if id == "" {
+		id = strings.TrimPrefix(this.Ctx.GetParam("id"), "/")
+	}
+	if id == "" {
 		this.Ctx.WriteHeader(http.StatusNotFound)
 		return
 	}
