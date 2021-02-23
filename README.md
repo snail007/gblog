@@ -4,7 +4,11 @@ A blog engine based on [gmc](https://github.com/snail007/gmc) golang framework.
 
 # PREVIEW
 
-[online snail007's blog](https://www.host900.com/)
+[Demo](https://gblog-demo.herokuapp.com/)
+
+[Demo Manage](https://gblog-demo.herokuapp.com/manange/) root 123456
+
+[snail007's blog using gblog](https://www.host900.com/)
 
 ![](/doc/images/intro0.png)
 
