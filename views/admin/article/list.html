@@ -21,7 +21,7 @@
                         <input type="hidden" name="catalog_id" class="ids">
                         <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"
                                 aria-haspopup="true" aria-expanded="false"></button>
-                        <ul class="dropdown-menu" value="">
+                        <ul class="dropdown-menu" value="0">
                             {{range $c:=.catalogs}}
                                 <li><a class="dropdown-item" href="javascript:void(0);"
                                        value="{{$c.catalog_id}}">{{$c.name}}</a></li>

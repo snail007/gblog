@@ -5,7 +5,6 @@ import (
 	"github.com/gookit/validate"
 	"github.com/snail007/gmc"
 	gdb "github.com/snail007/gmc/module/db"
-	gcast "github.com/snail007/gmc/util/cast"
 	gmap "github.com/snail007/gmc/util/map"
 )
 
@@ -30,17 +29,8 @@ func (this *Catalog) List() {
 		}
 		where = gmap.M{search + " like": "%" + keyword + "%"}
 	}
-	page := gcast.ToInt(this.Ctx.GET("page"))
-	pageSize := gcast.ToInt(this.Ctx.GET("count"))
-	if pageSize <= 0 || pageSize > 100 {
-		pageSize = 10
-	}
-	start := (page - 1) * pageSize
-	if start < 0 {
-		start = 0
-	}
 	table := gmc.DB.Table("catalog")
-	rows, total, err := table.Page(where, start, pageSize, gmap.M{"0:is_nav": "desc", "1:sequence": "asc"})
+	rows, err := table.MGetBy(where, gmap.M{"0:is_nav": "desc", "1:sequence": "asc"})
 	if err != nil {
 		this.Stop(err)
 	}
@@ -63,7 +53,6 @@ func (this *Catalog) List() {
 	}
 	this.View.Set("rows", rows)
 	this.View.Set("enable_search", enableSearch)
-	this.View.Set("paginator", this.Ctx.NewPager(pageSize, int64(total)))
 	this.View.Layout("admin/list").Render("admin/catalog/list")
 }
 
@@ -179,7 +168,7 @@ func (this *Catalog) SaveOrder() {
 	}
 	_, err := db.Exec(db.AR().UpdateBatch("catalog", d, []string{"catalog_id"}))
 	if err != nil {
-		this._JSONFail("修改排序失败！"+err.Error())
+		this._JSONFail("修改排序失败！" + err.Error())
 	} else {
 		this._JSONSuccess("")
 	}
