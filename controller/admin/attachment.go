@@ -27,7 +27,7 @@ type Attachment struct {
 func (this *Attachment) Upload() {
 	if this.Ctx.IsPOST() {
 		// do upload
-		isCompress := this.Ctx.GET("compress","1") == "1"
+		isCompress := this.Ctx.GET("compress", "1") == "1"
 		file, err := this.Ctx.FormFile("file", 0)
 		isEditor := false
 		if err != nil {
@@ -77,7 +77,10 @@ func (this *Attachment) uploadToLocal(savePath string, file *multipart.FileHeade
 		return err
 	}
 	if isCompress && bimage.IsSupported(savePath) {
-		err = bimage.CompressTo(savePath, savePath, 6, 1024, 0)
+		e := bimage.CompressTo(savePath, savePath, 6, 1024, 0)
+		if e != nil {
+			this.Logger.Warnf("compress gif fail, error: %s, file: %s", e, file.Filename)
+		}
 	}
 	return
 }
@@ -95,7 +98,12 @@ func (this *Attachment) uploadToGithub(filePath string, file *multipart.FileHead
 		return
 	}
 	if isCompress && bimage.IsSupportedByBytes(contents) {
-		contents, err = bimage.Compress(contents, 6, 1024, 0)
+		b, e := bimage.Compress(contents, 6, 1024, 0)
+		if e == nil {
+			contents = b
+		}else{
+			this.Logger.Warnf("compress gif fail, error: %s, file: %s", e, file.Filename)
+		}
 	}
 	data := strings.Split(userRepo, "/")
 	ctx1, cancel1 := context.WithTimeout(context.Background(), time.Second*60)
@@ -131,6 +139,7 @@ func (this *Attachment) jsonSuccess(isEditor bool, msg string, data ...interface
 	} else {
 		this._JSONSuccess(msg, "", data[0])
 	}
+	this.Stop()
 }
 func (this *Attachment) jsonFail(isEditor bool, msg string) {
 	if isEditor {
@@ -142,4 +151,5 @@ func (this *Attachment) jsonFail(isEditor bool, msg string) {
 	} else {
 		this._JSONSuccess(msg)
 	}
+	this.Stop()
 }
