@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"gblog/global"
+	"gblog/util/bimage"
 	"github.com/google/go-github/v33/github"
 	gcast "github.com/snail007/gmc/util/cast"
 	gfile "github.com/snail007/gmc/util/file"
@@ -26,6 +27,7 @@ type Attachment struct {
 func (this *Attachment) Upload() {
 	if this.Ctx.IsPOST() {
 		// do upload
+		isCompress := this.Ctx.GET("compress","1") == "1"
 		file, err := this.Ctx.FormFile("file", 0)
 		isEditor := false
 		if err != nil {
@@ -51,10 +53,10 @@ func (this *Attachment) Upload() {
 				os.MkdirAll(uploadDir, 0755)
 			}
 			savePath := filepath.Join(uploadDir, randFilename)
-			err = this.uploadToLocal(savePath, file)
+			err = this.uploadToLocal(savePath, file, isCompress)
 		case "github":
 			savePath := "attachment/" + subDir + "/" + randFilename
-			err = this.uploadToGithub(savePath, file)
+			err = this.uploadToGithub(savePath, file, isCompress)
 		}
 
 		if err != nil {
@@ -69,12 +71,18 @@ func (this *Attachment) Upload() {
 	}
 }
 
-func (this *Attachment) uploadToLocal(savePath string, file *multipart.FileHeader) (err error) {
+func (this *Attachment) uploadToLocal(savePath string, file *multipart.FileHeader, isCompress bool) (err error) {
 	err = this.Ctx.SaveUploadedFile(file, savePath)
+	if err != nil {
+		return err
+	}
+	if isCompress && bimage.IsSupported(savePath) {
+		err = bimage.CompressTo(savePath, savePath, 6, 1024, 0)
+	}
 	return
 }
 
-func (this *Attachment) uploadToGithub(filePath string, file *multipart.FileHeader) (err error) {
+func (this *Attachment) uploadToGithub(filePath string, file *multipart.FileHeader, isCompress bool) (err error) {
 	token := gcast.ToString(global.Context.BConfig("upload.github_token"))
 	userRepo := gcast.ToString(global.Context.BConfig("upload.github_repo"))
 	f, err := file.Open()
@@ -85,6 +93,9 @@ func (this *Attachment) uploadToGithub(filePath string, file *multipart.FileHead
 	contents, err := ioutil.ReadAll(f)
 	if err != nil {
 		return
+	}
+	if isCompress && bimage.IsSupportedByBytes(contents) {
+		contents, err = bimage.Compress(contents, 6, 1024, 0)
 	}
 	data := strings.Split(userRepo, "/")
 	ctx1, cancel1 := context.WithTimeout(context.Background(), time.Second*60)
