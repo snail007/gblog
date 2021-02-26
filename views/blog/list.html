@@ -1,4 +1,5 @@
 {{$catalogs:=.catalogs}}
+{{$bc_basic:=.bc_basic}}
 <article>
     <div class="new_blog">
         {{if len .articles }}
@@ -13,7 +14,7 @@
                         <p class="blog_info">
                             <span>{{$article.create_time|date "2006-01-02"}}</span>
                             <span><a href="/list/{{$article.catalog_id}}">{{$article.catalog_name|html}}</a></span>
-                            <span>狂奔的蜗牛</span>
+                            <span>{{$bc_basic.web_site_blogger_name|html}}</span>
                         </p>
                     </li>
                 {{end}}
