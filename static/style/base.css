@@ -42,7 +42,7 @@ nav ul li a:hover, li.current a { background: #e01109; color: #fff; }
 .blogs h2 { margin: 0 0 14px 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .blog_smalltext { overflow: hidden; -webkit-box-orient: vertical; display: -webkit-box; -webkit-line-clamp: 2; font-size: 14px; color: #666; margin-bottom: 14px; }
 .blog_info { color: #888; font-size: 13px; }
-.blog_info span { margin-right: 15px; position: relative; padding-left: 20px; line-height: 20px; }
+.blog_info span { position: relative; padding-left: 15px; line-height: 20px; }
 .blog_info span a { color: #518f97 }
 .blog_info span a:hover { color: #e01109; }
 .blog_info span:nth-child(n):before { position: absolute; content: ""; width: 20px; height: 20px; left: 0; top: 0; }
