@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"gblog/global"
 	"gblog/router"
+	"github.com/blevesearch/bleve"
 	"github.com/snail007/gmc"
 	gcore "github.com/snail007/gmc/core"
 	"github.com/snail007/gmc/http/server"
@@ -16,6 +17,8 @@ import (
 	gdb "github.com/snail007/gmc/module/db"
 	glog "github.com/snail007/gmc/module/log"
 	gfile "github.com/snail007/gmc/util/file"
+	_ "gblog/util/bleve"
+	"github.com/yanyiwu/gojieba"
 	"os"
 	"path/filepath"
 	"strings"
@@ -28,8 +31,8 @@ func Initialize(s *ghttpserver.HTTPServer) (err error) {
 			err = gmc.Err.Wrap(err)
 		}
 	}()
-	isDebugI,_:=s.Ctx().Get("debug")
-	isDebug:=isDebugI.(bool)
+	isDebugI, _ := s.Ctx().Get("debug")
+	isDebug := isDebugI.(bool)
 
 	if isDebug {
 		s.Logger().Infof("gblog running in debug mode")
@@ -91,10 +94,60 @@ func Initialize(s *ghttpserver.HTTPServer) (err error) {
 	}
 	ctx.SetCache(gcache.Cache())
 
+	// init indexer
+	err = initIndexer(ctx)
+	if err != nil {
+		return
+	}
+
+	//register ctx to global
 	global.Context = ctx
 
 	// init router
 	router.InitRouter(s)
+	return
+}
+
+func initIndexer(ctx *global.BContext) (err error) {
+	indexMapping := bleve.NewIndexMapping()
+	err = indexMapping.AddCustomTokenizer("gojieba",
+		map[string]interface{}{
+			"dictpath":     gojieba.DICT_PATH,
+			"hmmpath":      gojieba.HMM_PATH,
+			"userdictpath": gojieba.USER_DICT_PATH,
+			"type":         "gojieba",
+		},
+	)
+	if err != nil {
+		return
+	}
+	err = indexMapping.AddCustomAnalyzer("gojieba",
+		map[string]interface{}{
+			"type":      "gojieba",
+			"tokenizer": "gojieba",
+		},
+	)
+	if err != nil {
+		return
+	}
+	indexMapping.DefaultAnalyzer = "gojieba"
+
+	indexer, err := bleve.NewMemOnly(indexMapping)
+	if err != nil {
+		return
+	}
+	ctx.SetIndexer(indexer)
+	article := gdb.Table("article")
+	rows, err := article.GetAll()
+	ctx.Log().Infof("indexing articles ...")
+	for _, row := range rows {
+		doc := fmt.Sprintf("%s\n%s\n%s", row["title"], row["summary"], row["content"])
+		err = indexer.Index(row["article_id"], doc)
+		if err != nil {
+			return
+		}
+	}
+	ctx.Log().Infof("indexing articles success")
 	return
 }
 

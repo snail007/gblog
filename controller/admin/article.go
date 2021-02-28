@@ -1,6 +1,7 @@
 package admin
 
 import (
+	"fmt"
 	"gblog/global"
 	"github.com/gookit/validate"
 	"github.com/snail007/gmc"
@@ -130,11 +131,17 @@ func (this *Article) Create() {
 		if dataInsert["poster_url"] == "" {
 			dataInsert["poster_url"] = global.RandImgIdx()
 		}
-		_, err = table.Insert(dataInsert)
+		id, err := table.Insert(dataInsert)
 		if err != nil { // validate ok
 			this._JSONFail(err.Error())
 		}
 		global.Context.Cache().Clear()
+		// insert index data
+		doc := fmt.Sprintf("%s\n%s\n%s", dataInsert["title"], dataInsert["summary"], dataInsert["content"])
+		err = global.Context.Indexer().Index(fmt.Sprintf("%d", id), doc)
+		if err != nil {
+			this.Logger.Warnf("insert index data fail, %d , error: %s", id, err)
+		}
 		this._JSONSuccess("", "", this.Ctx.POST("referer"))
 	} else {
 		catalogTable := gmc.DB.Table("catalog")
@@ -207,6 +214,18 @@ func (this *Article) Edit() {
 			this._JSONFail(err.Error())
 		}
 		global.Context.Cache().Clear()
+
+		// delete & insert index data
+		err = global.Context.Indexer().Delete(id)
+		if err != nil {
+			this.Logger.Warnf("delete index data fail, %d , error: %s", id, err)
+		}
+		doc := fmt.Sprintf("%s\n%s\n%s", dataUpdate["title"], dataUpdate["summary"], dataUpdate["content"])
+		err = global.Context.Indexer().Index(id, doc)
+		if err != nil {
+			this.Logger.Warnf("insert index data fail, %d , error: %s", id, err)
+		}
+
 		this._JSONSuccess("", "", this.Ctx.POST("referer"))
 	} else {
 		catalogTable := gmc.DB.Table("catalog")
@@ -240,6 +259,13 @@ func (this *Article) Delete() {
 		this._JSONFail(err.Error())
 	})
 	global.Context.Cache().Clear()
+	for _, id := range ids {
+		//delete index data
+		err = global.Context.Indexer().Delete(id)
+		if err != nil {
+			this.Logger.Warnf("delete index data fail, %d , error: %s", id, err)
+		}
+	}
 	this._JSONSuccess("", nil, this.Ctx.Header("Referer"))
 }
 

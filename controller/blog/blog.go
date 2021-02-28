@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"gblog/global"
+	"github.com/blevesearch/bleve"
 	"github.com/snail007/gmc"
 	gcore "github.com/snail007/gmc/core"
 	gcast "github.com/snail007/gmc/util/cast"
@@ -215,32 +216,66 @@ func (this *Blog) Timeline() {
 }
 func (this *Blog) Search() {
 	keyword := strings.Trim(this.Ctx.GET("keyword"), " \t")
-	if keyword == "" || len(keyword) == 1 {
+	if keyword == "" || len(keyword) == 1 || len(keyword) >= 50 {
 		this.Ctx.WriteHeader(http.StatusNotFound)
 		return
 	}
-	db := gmc.DB.DB()
-	rs, err := db.Query(this.cache("search").
-		From("article").
-		Where(gmap.M{"create_time <=": time.Now().Unix()}).
-		OrderBy("create_time", "desc"))
+	var articles = []gmap.Mss{}
+	req := bleve.NewSearchRequest(bleve.NewQueryStringQuery(keyword))
+	req.Size=100
+	req.Highlight = bleve.NewHighlight()
+	res, err := global.Context.Indexer().Search(req)
 	if err != nil {
 		this.Stop(err)
 	}
-	articlesAll := rs.Rows()
-	titleMatch, summaryMatch, contentMatch := []gmap.Mss{}, []gmap.Mss{}, []gmap.Mss{}
-	keyword = strings.ToLower(keyword)
-	for _, v := range articlesAll {
-		if strings.Contains(strings.ToLower(v["title"]), keyword) {
-			titleMatch = append(titleMatch, v)
-		} else if strings.Contains(strings.ToLower(v["summary"]), keyword) {
-			summaryMatch = append(summaryMatch, v)
-		} else if strings.Contains(strings.ToLower(v["content"]), keyword) {
-			contentMatch = append(contentMatch, v)
+	if res.Total > 0 {
+		if res.Request.Size > 0 {
+			articlesIDArr := []string{}
+			for _, hit := range res.Hits {
+				articlesIDArr = append(articlesIDArr, hit.ID)
+			}
+			db := gmc.DB.DB()
+			rs, err := db.Query(this.cache("search").
+				From("article").
+				Where(gmap.M{"create_time <=": time.Now().Unix()}).
+				OrderBy("create_time", "desc"))
+			if err != nil {
+				this.Stop(err)
+			}
+			rows := rs.MapRows("article_id")
+			for _, articleID := range articlesIDArr {
+				article, ok := rows[articleID]
+				if !ok {
+					continue
+				}
+				articles = append(articles, article)
+			}
 		}
 	}
-	articles := append(titleMatch, summaryMatch...)
-	articles = append(articles, contentMatch...)
+	if len(articles) == 0 {
+		db := gmc.DB.DB()
+		rs, err := db.Query(this.cache("search").
+			From("article").
+			Where(gmap.M{"create_time <=": time.Now().Unix()}).
+			OrderBy("create_time", "desc"))
+		if err != nil {
+			this.Stop(err)
+		}
+		articlesAll := rs.Rows()
+		titleMatch, summaryMatch, contentMatch := []gmap.Mss{}, []gmap.Mss{}, []gmap.Mss{}
+		keyword = strings.ToLower(keyword)
+		for _, v := range articlesAll {
+			if strings.Contains(strings.ToLower(v["title"]), keyword) {
+				titleMatch = append(titleMatch, v)
+			} else if strings.Contains(strings.ToLower(v["summary"]), keyword) {
+				summaryMatch = append(summaryMatch, v)
+			} else if strings.Contains(strings.ToLower(v["content"]), keyword) {
+				contentMatch = append(contentMatch, v)
+			}
+		}
+		articles = append(titleMatch, summaryMatch...)
+		articles = append(articles, contentMatch...)
+	}
 	this.View.Set("articles", articles)
 	this.View.Layout("blog/timeline").Render("blog/timeline")
 }

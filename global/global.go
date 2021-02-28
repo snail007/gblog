@@ -3,6 +3,7 @@ package global
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/blevesearch/bleve"
 	gcore "github.com/snail007/gmc/core"
 	gcast "github.com/snail007/gmc/util/cast"
 	gmap "github.com/snail007/gmc/util/map"
@@ -22,6 +23,15 @@ type BContext struct {
 	configFile string
 	isDebug    bool
 	server     gcore.HTTPServer
+	indexer    bleve.Index
+}
+
+func (B *BContext) Indexer() bleve.Index {
+	return B.indexer
+}
+
+func (B *BContext) SetIndexer(indexer bleve.Index) {
+	B.indexer = indexer
 }
 
 func (B *BContext) Server() gcore.HTTPServer {
