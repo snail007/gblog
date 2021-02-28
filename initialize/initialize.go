@@ -9,6 +9,8 @@ import (
 	"fmt"
 	"gblog/global"
 	"gblog/router"
+	_ "gblog/util/bleve"
+	"gblog/util/bleve/dict"
 	"github.com/blevesearch/bleve"
 	"github.com/snail007/gmc"
 	gcore "github.com/snail007/gmc/core"
@@ -17,8 +19,6 @@ import (
 	gdb "github.com/snail007/gmc/module/db"
 	glog "github.com/snail007/gmc/module/log"
 	gfile "github.com/snail007/gmc/util/file"
-	_ "gblog/util/bleve"
-	"github.com/yanyiwu/gojieba"
 	"os"
 	"path/filepath"
 	"strings"
@@ -95,9 +95,11 @@ func Initialize(s *ghttpserver.HTTPServer) (err error) {
 	ctx.SetCache(gcache.Cache())
 
 	// init indexer
-	err = initIndexer(ctx)
-	if err != nil {
-		return
+	if cfg.GetBool("search.enablefulltextindex"){
+		err = initIndexer(ctx)
+		if err != nil {
+			return
+		}
 	}
 
 	//register ctx to global
@@ -109,13 +111,39 @@ func Initialize(s *ghttpserver.HTTPServer) (err error) {
 }
 
 func initIndexer(ctx *global.BContext) (err error) {
+	dictPath := "data/dict"
+	os.RemoveAll(dictPath)
+	err = os.Mkdir(dictPath, 0755)
+	if err != nil {
+		return
+	}
+	files, err := dict.Dict.ReadDir(".")
+	if err != nil {
+		return
+	}
+	for _, f := range files {
+		if f.IsDir() {
+			continue
+		}
+		pathD := filepath.Join(dictPath, filepath.Base(f.Name()))
+		bs, err := dict.Dict.ReadFile(f.Name())
+		if err != nil {
+			return err
+		}
+		err = os.WriteFile(pathD, bs, 0644)
+		if err != nil {
+			return err
+		}
+	}
 	indexMapping := bleve.NewIndexMapping()
 	err = indexMapping.AddCustomTokenizer("gojieba",
 		map[string]interface{}{
-			"dictpath":     gojieba.DICT_PATH,
-			"hmmpath":      gojieba.HMM_PATH,
-			"userdictpath": gojieba.USER_DICT_PATH,
-			"type":         "gojieba",
+			"dictpath":      filepath.Join(dictPath, "jieba.dict.utf8"),
+			"hmmpath":       filepath.Join(dictPath, "hmm_model.utf8"),
+			"userdictpath":  filepath.Join(dictPath, "user.dict.utf8"),
+			"idfpath":       filepath.Join(dictPath, "idf.utf8"),
+			"stopwordspath": filepath.Join(dictPath, "stop_words.utf8"),
+			"type":          "gojieba",
 		},
 	)
 	if err != nil {

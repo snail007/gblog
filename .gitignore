@@ -14,3 +14,4 @@ go.sum
 gblog-release*
 /vendor
 /gblog
+/conf/dict

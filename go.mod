@@ -1,6 +1,6 @@
 module gblog
 
-go 1.12
+go 1.16
 
 require (
 	github.com/blevesearch/bleve v1.0.14

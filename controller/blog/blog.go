@@ -221,34 +221,36 @@ func (this *Blog) Search() {
 		return
 	}
 	var articles = []gmap.Mss{}
-	req := bleve.NewSearchRequest(bleve.NewQueryStringQuery(keyword))
-	req.Size=100
-	req.Highlight = bleve.NewHighlight()
-	res, err := global.Context.Indexer().Search(req)
-	if err != nil {
-		this.Stop(err)
-	}
-	if res.Total > 0 {
-		if res.Request.Size > 0 {
-			articlesIDArr := []string{}
-			for _, hit := range res.Hits {
-				articlesIDArr = append(articlesIDArr, hit.ID)
-			}
-			db := gmc.DB.DB()
-			rs, err := db.Query(this.cache("search").
-				From("article").
-				Where(gmap.M{"create_time <=": time.Now().Unix()}).
-				OrderBy("create_time", "desc"))
-			if err != nil {
-				this.Stop(err)
-			}
-			rows := rs.MapRows("article_id")
-			for _, articleID := range articlesIDArr {
-				article, ok := rows[articleID]
-				if !ok {
-					continue
+	if this.Ctx.Config().GetBool("search.enablefulltextindex") {
+		req := bleve.NewSearchRequest(bleve.NewQueryStringQuery(keyword))
+		req.Size = 100
+		req.Highlight = bleve.NewHighlight()
+		res, err := global.Context.Indexer().Search(req)
+		if err != nil {
+			this.Stop(err)
+		}
+		if res.Total > 0 {
+			if res.Request.Size > 0 {
+				articlesIDArr := []string{}
+				for _, hit := range res.Hits {
+					articlesIDArr = append(articlesIDArr, hit.ID)
 				}
-				articles = append(articles, article)
+				db := gmc.DB.DB()
+				rs, err := db.Query(this.cache("search").
+					From("article").
+					Where(gmap.M{"create_time <=": time.Now().Unix()}).
+					OrderBy("create_time", "desc"))
+				if err != nil {
+					this.Stop(err)
+				}
+				rows := rs.MapRows("article_id")
+				for _, articleID := range articlesIDArr {
+					article, ok := rows[articleID]
+					if !ok {
+						continue
+					}
+					articles = append(articles, article)
+				}
 			}
 		}
 	}

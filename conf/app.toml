@@ -9,6 +9,10 @@
 # without end slash in the last
 urlpath="/manage"
 
+[search]
+# enable this will need 300MB or more additional memory
+enablefulltextindex=false
+
 [attachment]
 dir="attachment"
 # without end slash in the last
