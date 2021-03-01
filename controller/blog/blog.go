@@ -221,7 +221,7 @@ func (this *Blog) Search() {
 		return
 	}
 	var articles = []gmap.Mss{}
-	if this.Ctx.Config().GetBool("search.enablefulltextindex") {
+	if this.Ctx.Config().GetBool("search.enablefulltextindex") && global.Context.Indexer() != nil {
 		req := bleve.NewSearchRequest(bleve.NewQueryStringQuery(keyword))
 		req.Size = 100
 		req.Highlight = bleve.NewHighlight()

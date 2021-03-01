@@ -12,7 +12,7 @@ type JiebaTokenizer struct {
 	handle *gojieba.Jieba
 }
 
-func NewJiebaTokenizer(dictpath, hmmpath, userdictpath, idfpath, stopwordspath string) *JiebaTokenizer {
+func newJiebaTokenizer(dictpath, hmmpath, userdictpath, idfpath, stopwordspath string) *JiebaTokenizer {
 	x := gojieba.NewJieba(dictpath, hmmpath, userdictpath, idfpath, stopwordspath)
 	return &JiebaTokenizer{x}
 }
@@ -60,7 +60,7 @@ func tokenizerConstructor(config map[string]interface{}, cache *registry.Cache) 
 	if !ok {
 		return nil, errors.New("config stopwordspath not found")
 	}
-	return NewJiebaTokenizer(dictpath, hmmpath, userdictpath, idfpath, stopwordspath), nil
+	return newJiebaTokenizer(dictpath, hmmpath, userdictpath, idfpath, stopwordspath), nil
 }
 
 func init() {

@@ -15,3 +15,5 @@ gblog-release*
 /vendor
 /gblog
 /conf/dict
+/gblog-linux64-bleve
+/gblog-linux64
