@@ -221,7 +221,33 @@ func (this *Blog) Search() {
 		return
 	}
 	var articles = []gmap.Mss{}
-	if this.Ctx.Config().GetBool("search.enablefulltextindex") && global.Context.Indexer() != nil {
+
+	// sql search
+	db := gmc.DB.DB()
+	rs, err := db.Query(this.cache("search").
+		From("article").
+		Where(gmap.M{"create_time <=": time.Now().Unix()}).
+		OrderBy("create_time", "desc"))
+	if err != nil {
+		this.Stop(err)
+	}
+	articlesAll := rs.Rows()
+	titleMatch, summaryMatch, contentMatch := []gmap.Mss{}, []gmap.Mss{}, []gmap.Mss{}
+	keyword = strings.ToLower(keyword)
+	for _, v := range articlesAll {
+		if strings.Contains(strings.ToLower(v["title"]), keyword) {
+			titleMatch = append(titleMatch, v)
+		} else if strings.Contains(strings.ToLower(v["summary"]), keyword) {
+			summaryMatch = append(summaryMatch, v)
+		} else if strings.Contains(strings.ToLower(v["content"]), keyword) {
+			contentMatch = append(contentMatch, v)
+		}
+	}
+	articles = append(titleMatch, summaryMatch...)
+	articles = append(articles, contentMatch...)
+
+	// sql search empty, try bleve search
+	if len(articles) == 0 && global.Context.Indexer() != nil && this.Ctx.Config().GetBool("search.enablefulltextindex") {
 		req := bleve.NewSearchRequest(bleve.NewQueryStringQuery(keyword))
 		req.Size = 100
 		req.Highlight = bleve.NewHighlight()
@@ -254,30 +280,7 @@ func (this *Blog) Search() {
 			}
 		}
 	}
-	if len(articles) == 0 {
-		db := gmc.DB.DB()
-		rs, err := db.Query(this.cache("search").
-			From("article").
-			Where(gmap.M{"create_time <=": time.Now().Unix()}).
-			OrderBy("create_time", "desc"))
-		if err != nil {
-			this.Stop(err)
-		}
-		articlesAll := rs.Rows()
-		titleMatch, summaryMatch, contentMatch := []gmap.Mss{}, []gmap.Mss{}, []gmap.Mss{}
-		keyword = strings.ToLower(keyword)
-		for _, v := range articlesAll {
-			if strings.Contains(strings.ToLower(v["title"]), keyword) {
-				titleMatch = append(titleMatch, v)
-			} else if strings.Contains(strings.ToLower(v["summary"]), keyword) {
-				summaryMatch = append(summaryMatch, v)
-			} else if strings.Contains(strings.ToLower(v["content"]), keyword) {
-				contentMatch = append(contentMatch, v)
-			}
-		}
-		articles = append(titleMatch, summaryMatch...)
-		articles = append(articles, contentMatch...)
-	}
+
 	this.View.Set("articles", articles)
 	this.View.Layout("blog/timeline").Render("blog/timeline")
 }
