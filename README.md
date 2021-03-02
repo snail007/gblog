@@ -8,8 +8,8 @@ A blog engine based on [gmc](https://github.com/snail007/gmc) golang framework.
 1. libc >=2.14 (debian 8+,ubuntu 14.10+,centos 7+)
 
 ## WITH BLEVE
-1. libc >=2.18 (debian 8+,ubuntu 16.04+,centos 8+)
-2. libstdc++ >=6.0.21 (debian 8+,ubuntu 16.04+,centos 8+)
+1. libc >=2.18 (debian 9+,ubuntu 16.04+,centos 8+)
+2. libstdc++ >=6.0.21 (debian 9+,ubuntu 16.04+,centos 8+)
 
 # PREVIEW
 
