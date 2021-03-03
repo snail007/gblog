@@ -18,6 +18,13 @@ import (
 	"path/filepath"
 )
 
+const (
+	typeJPEG uint = iota + 1
+	typePNG
+	typeGIF
+	typeBMP
+)
+
 func CompressTo(src, dst string, level, width, height uint) (err error) {
 	src, _ = filepath.Abs(src)
 	dst, _ = filepath.Abs(dst)
@@ -62,7 +69,7 @@ func Compress(src []byte, level, width, height uint) (data []byte, err error) {
 	}
 
 	buf := new(bytes.Buffer)
-	if gifObj != nil {
+	if img == nil && gifObj != nil {
 		newGif := &gif.GIF{
 			Image:           nil,
 			Delay:           gifObj.Delay,
@@ -139,19 +146,23 @@ func getSupportedImage(data []byte) (typ uint, img image.Image, gifObj *gif.GIF,
 	d := data[:l]
 	switch http.DetectContentType(d) {
 	case "image/bmp":
+		typ = typeBMP
 		img, err = bmp.Decode(bytes.NewReader(data))
 	case "image/jpeg":
+		typ = typeJPEG
 		img, err = jpeg.Decode(bytes.NewReader(data))
 	case "image/gif":
 		gifObj, err = gif.DecodeAll(bytes.NewReader(data))
 		if err == nil {
 			if len(gifObj.Image) == 1 {
+				typ = typeGIF
 				img = gifObj.Image[0]
 			} else {
 				err = fmt.Errorf("image format not supported")
 			}
 		}
 	case "image/png":
+		typ = typePNG
 		img, err = png.Decode(bytes.NewReader(data))
 	default:
 		err = fmt.Errorf("image format not supported")
