@@ -181,7 +181,7 @@ func TextMask(imageBytes []byte, txt string) (bs []byte, err error) {
 	ctx.SetDst(imgRGB)
 
 	count := uint64(0)
-	rCnt, gCnt, bCnt := uint64(0), uint64(0), uint64(0)
+	rValue, gValue, bValue := uint64(0), uint64(0), uint64(0)
 	startX := 5
 	startY := imgSrc.Bounds().Dy() - 5
 	for y := startY; y < startY+100; y++ {
@@ -194,35 +194,41 @@ func TextMask(imageBytes []byte, txt string) (bs []byte, err error) {
 			}
 			p := imgSrc.At(x, y)
 			r, g, b, _ := p.RGBA()
-			rCnt += uint64(r / 255)
-			gCnt += uint64(g / 255)
-			bCnt += uint64(b / 255)
+			rValue += uint64(r)
+			gValue += uint64(g)
+			bValue += uint64(b)
 			count++
 		}
 	}
-	perCnt := (rCnt + gCnt + bCnt) / count / 3
-	if rCnt > perCnt {
-		rCnt += rCnt / 2
-	} else {
-		rCnt -= rCnt / 2
-	}
-	if gCnt > perCnt {
-		gCnt += gCnt / 2
-	} else {
-		gCnt -= gCnt / 2
-	}
-	if bCnt > perCnt {
-		bCnt += bCnt / 2
-	} else {
-		bCnt -= bCnt / 2
-	}
+	rValue = rValue / count
+	gValue = gValue / count
+	bValue = bValue / count
 
+	if rValue == 0 && rValue == gValue && rValue == bValue {
+		rValue, gValue, gValue = 1, 1, 1
+	}
+	avgValue := (rValue + gValue + bValue) / 3
+	if rValue > avgValue {
+		rValue += rValue / 2
+	} else {
+		rValue -= rValue / 2
+	}
+	if gValue > avgValue {
+		gValue += gValue / 2
+	} else {
+		gValue -= gValue / 2
+	}
+	if bValue > avgValue {
+		bValue += bValue / 2
+	} else {
+		bValue -= bValue / 2
+	}
 	pt := freetype.Pt(5, imgSrc.Bounds().Dy()-15)
 	ctx.SetFontSize(12)
 	ctx.SetSrc(image.NewUniform(color.RGBA{
-		R: uint8(rCnt),
-		G: uint8(gCnt),
-		B: uint8(bCnt),
+		R: uint8(rValue / 255),
+		G: uint8(gValue / 255),
+		B: uint8(bValue / 255),
 		A: 255}))
 	ctx.DrawString(txt, pt)
 
