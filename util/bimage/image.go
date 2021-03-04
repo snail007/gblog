@@ -2,10 +2,14 @@ package bimage
 
 import (
 	"bytes"
+	_ "embed"
 	"fmt"
+	"github.com/golang/freetype"
+	"github.com/golang/freetype/truetype"
 	"github.com/snail007/resize"
 	"golang.org/x/image/bmp"
 	"image"
+	"image/color"
 	"image/color/palette"
 	"image/draw"
 	"image/gif"
@@ -24,6 +28,16 @@ const (
 	typeGIF
 	typeBMP
 )
+
+var (
+	//go:embed simkai.ttf
+	fontBytes []byte
+	font      *truetype.Font
+)
+
+func init() {
+	font, _ = freetype.ParseFont(fontBytes)
+}
 
 func CompressTo(src, dst string, level, width, height uint) (err error) {
 	src, _ = filepath.Abs(src)
@@ -136,6 +150,50 @@ func IsSupportedByFormFile(file *multipart.FileHeader) bool {
 func IsSupportedByBytes(data []byte) bool {
 	_, _, _, err := getSupportedImage(data)
 	return err == nil
+}
+func TextMaskByFile(imageSrc, txt string) (err error) {
+	imageBytes, err := ioutil.ReadFile(imageSrc)
+	if err != nil {
+		return
+	}
+	bs, err := TextMask(imageBytes, txt)
+	if err != nil {
+		return
+	}
+	err = ioutil.WriteFile(imageSrc, bs, 0644)
+	return
+}
+func TextMask(imageBytes []byte, txt string) (bs []byte, err error) {
+	_, imgSrc, _, err := getSupportedImage(imageBytes)
+	if err != nil {
+		return
+	}
+	imgRGB := image.NewNRGBA(imgSrc.Bounds())
+	for y := 0; y < imgSrc.Bounds().Dy(); y++ {
+		for x := 0; x < imgSrc.Bounds().Dx(); x++ {
+			imgRGB.Set(x, y, imgSrc.At(x, y))
+		}
+	}
+	ctx := freetype.NewContext()
+	ctx.SetDPI(100)
+	ctx.SetFont(font)
+	ctx.SetFontSize(12)
+	ctx.SetClip(imgSrc.Bounds())
+	ctx.SetDst(imgRGB)
+	ctx.SetSrc(image.NewUniform(color.RGBA{R: 255, G: 255, B: 255, A: 255}))
+	pt := freetype.Pt(10, imgSrc.Bounds().Dy()-10)
+	ctx.DrawString(txt, pt)
+
+	ctx.SetSrc(image.NewUniform(color.RGBA{R: 0, G: 0, B: 0, A: 190}))
+	pt = freetype.Pt(10, 20)
+	ctx.DrawString(txt, pt)
+
+	buf := new(bytes.Buffer)
+	err = jpeg.Encode(buf, imgRGB, &jpeg.Options{Quality: 100})
+	if err != nil {
+		return
+	}
+	return buf.Bytes(), nil
 }
 
 func getSupportedImage(data []byte) (typ uint, img image.Image, gifObj *gif.GIF, err error) {

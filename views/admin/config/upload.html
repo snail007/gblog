@@ -45,6 +45,11 @@
                             <small class="help-block">格式：<i class="text text-danger">用户名</i>/<i class="text text-danger">仓库名</i>，比如：snail007/gmc</small>
                         </div>
                         <div class="form-group">
+                            <label for="image_mask_text">图片水印</label>
+                            <input class="form-control" type="text" id="image_mask_text" name="image_mask_text" value="{{.image_mask_text|html}}" >
+                            <small class="help-block">图片水印文字，不打水印留空即可</small>
+                        </div>
+                        <div class="form-group">
                             <button type="submit" class="btn btn-primary m-r-5">保 存</button>
                         </div>
                     </form>

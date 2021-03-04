@@ -76,11 +76,17 @@ func (this *Attachment) uploadToLocal(savePath string, file *multipart.FileHeade
 	if err != nil {
 		return err
 	}
+	// try compress
 	if isCompress && bimage.IsSupported(savePath) {
 		e := bimage.CompressTo(savePath, savePath, 6, 1024, 0)
 		if e != nil {
-			this.Logger.Warnf("compress gif fail, error: %s, file: %s", e, file.Filename)
+			this.Logger.Warnf("compress fail, error: %s, file: %s", e, file.Filename)
 		}
+	}
+	// try mask
+	maskText := strings.Trim(gcast.ToString(global.Context.BConfig("upload.image_mask_text")), " \r\n")
+	if maskText != "" {
+		bimage.TextMaskByFile(savePath, maskText)
 	}
 	return
 }
@@ -97,14 +103,28 @@ func (this *Attachment) uploadToGithub(filePath string, file *multipart.FileHead
 	if err != nil {
 		return
 	}
+
+	// try compress
 	if isCompress && bimage.IsSupportedByBytes(contents) {
 		b, e := bimage.Compress(contents, 6, 1024, 0)
 		if e == nil {
 			contents = b
-		}else{
-			this.Logger.Warnf("compress gif fail, error: %s, file: %s", e, file.Filename)
+		} else {
+			this.Logger.Warnf("compress fail, error: %s, file: %s", e, file.Filename)
 		}
 	}
+
+	// try mask
+	maskText := strings.Trim(gcast.ToString(global.Context.BConfig("upload.image_mask_text")), " \r\n")
+	if maskText != "" {
+		b, e := bimage.TextMask(contents, maskText)
+		if e == nil {
+			contents = b
+		} else {
+			this.Logger.Warnf("mask image fail,text: %s, error: %s, file: %s", maskText, e, file.Filename)
+		}
+	}
+
 	data := strings.Split(userRepo, "/")
 	ctx1, cancel1 := context.WithTimeout(context.Background(), time.Second*60)
 	defer cancel1()

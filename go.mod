@@ -4,6 +4,7 @@ go 1.16
 
 require (
 	github.com/blevesearch/bleve v1.0.14
+	github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0
 	github.com/google/go-github/v33 v33.0.0
 	github.com/gookit/validate v1.2.8
 	github.com/snail007/gmc v0.0.0-20210226070819-fecffab274db
