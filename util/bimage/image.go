@@ -175,17 +175,55 @@ func TextMask(imageBytes []byte, txt string) (bs []byte, err error) {
 		}
 	}
 	ctx := freetype.NewContext()
-	ctx.SetDPI(100)
+	ctx.SetDPI(80)
 	ctx.SetFont(font)
-	ctx.SetFontSize(12)
 	ctx.SetClip(imgSrc.Bounds())
 	ctx.SetDst(imgRGB)
-	ctx.SetSrc(image.NewUniform(color.RGBA{R: 255, G: 255, B: 255, A: 255}))
-	pt := freetype.Pt(10, imgSrc.Bounds().Dy()-10)
-	ctx.DrawString(txt, pt)
 
-	ctx.SetSrc(image.NewUniform(color.RGBA{R: 0, G: 0, B: 0, A: 190}))
-	pt = freetype.Pt(10, 20)
+	count := uint64(0)
+	rCnt, gCnt, bCnt := uint64(0), uint64(0), uint64(0)
+	startX := 5
+	startY := imgSrc.Bounds().Dy() - 5
+	for y := startY; y < startY+100; y++ {
+		if y > imgSrc.Bounds().Dy() {
+			break
+		}
+		for x := startX; x < startX+100; x++ {
+			if x > imgSrc.Bounds().Dx() {
+				break
+			}
+			p := imgSrc.At(x, y)
+			r, g, b, _ := p.RGBA()
+			rCnt += uint64(r / 255)
+			gCnt += uint64(g / 255)
+			bCnt += uint64(b / 255)
+			count++
+		}
+	}
+	perCnt := (rCnt + gCnt + bCnt) / count / 3
+	if rCnt > perCnt {
+		rCnt += rCnt / 2
+	} else {
+		rCnt -= rCnt / 2
+	}
+	if gCnt > perCnt {
+		gCnt += gCnt / 2
+	} else {
+		gCnt -= gCnt / 2
+	}
+	if bCnt > perCnt {
+		bCnt += bCnt / 2
+	} else {
+		bCnt -= bCnt / 2
+	}
+
+	pt := freetype.Pt(5, imgSrc.Bounds().Dy()-15)
+	ctx.SetFontSize(12)
+	ctx.SetSrc(image.NewUniform(color.RGBA{
+		R: uint8(rCnt),
+		G: uint8(gCnt),
+		B: uint8(bCnt),
+		A: 255}))
 	ctx.DrawString(txt, pt)
 
 	buf := new(bytes.Buffer)
