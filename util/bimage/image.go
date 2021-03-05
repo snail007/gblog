@@ -6,7 +6,9 @@ import (
 	"fmt"
 	"github.com/golang/freetype"
 	"github.com/golang/freetype/truetype"
+	gcore "github.com/snail007/gmc/core"
 	"github.com/snail007/resize"
+	"github.com/snail007/uasurfer"
 	"golang.org/x/image/bmp"
 	"image"
 	"image/color"
@@ -39,25 +41,25 @@ func init() {
 	font, _ = freetype.ParseFont(fontBytes)
 }
 
-func CompressTo(src, dst string, level, width, height uint) (err error) {
+func CompressTo(src, dst string, level, width, height uint, ctx gcore.Ctx) (err error) {
 	src, _ = filepath.Abs(src)
 	dst, _ = filepath.Abs(dst)
-	data, err := CompressFile(src, level, width, height)
+	data, err := CompressFile(src, level, width, height, ctx)
 	if err != nil {
 		return
 	}
 	return ioutil.WriteFile(dst, data, 0755)
 }
 
-func CompressFile(file string, level, width, height uint) (data []byte, err error) {
+func CompressFile(file string, level, width, height uint, ctx gcore.Ctx) (data []byte, err error) {
 	srcData, err := ioutil.ReadFile(file)
 	if err != nil {
 		return
 	}
-	return Compress(srcData, level, width, height)
+	return Compress(srcData, level, width, height, ctx)
 }
 
-func Compress(src []byte, level, width, height uint) (data []byte, err error) {
+func Compress(src []byte, level, width, height uint, ctx gcore.Ctx) (data []byte, err error) {
 	_, img, gifObj, err := getSupportedImage(src)
 	if err != nil {
 		return
@@ -75,11 +77,25 @@ func Compress(src []byte, level, width, height uint) (data []byte, err error) {
 		imgWidth = uint(img.Bounds().Dx())
 		imgHeight = uint(img.Bounds().Dy())
 	}
+
 	if width > imgWidth {
 		width = imgWidth
 	}
 	if height > imgHeight {
 		height = imgHeight
+	}
+
+	// fix macOS paste image larger than real
+	ua := uasurfer.Parse(ctx.Header("user-agent"))
+	if ctx.GET("from") == "1" && ua.OS.Platform == uasurfer.PlatformMac {
+		realWidth := imgWidth / 2
+		realHeight := imgHeight / 2
+		if width > realWidth {
+			width = realWidth
+		}
+		if height > realHeight {
+			height = realHeight
+		}
 	}
 
 	buf := new(bytes.Buffer)
