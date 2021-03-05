@@ -4,15 +4,26 @@
             <div class="card bg-primary text-white">
                 <div class="card-body clearfix">
                     <div class="flex-box">
-                        <span class="img-avatar img-avatar-48 bg-translucent"><i class="mdi mdi-currency-cny fs-22"></i></span>
+                        <span class="img-avatar img-avatar-48 bg-translucent"><i class="mdi mdi-summit fs-22"></i></span>
                         <span class="fs-22 lh-22">{{.stat.articleCount}}</span>
                     </div>
                     <div class="text-right">文章总数</div>
                 </div>
             </div>
         </div>
-        <div class="col-md-6 col-xl-3" style="cursor: pointer;" onclick="location='{{.admPath}}/article/create'">
+        <div class="col-md-6 col-xl-3" style="cursor: pointer;" onclick="location='{{.admPath}}/article/list'">
             <div class="card bg-danger text-white">
+                <div class="card-body clearfix">
+                    <div class="flex-box">
+                        <span class="img-avatar img-avatar-48 bg-translucent"><i class="mdi mdi-view-list fs-22"></i></span>
+                        <span class="fs-22 lh-22 mdi mdi-tooltip-edit"></span>
+                    </div>
+                    <div class="text-right">我的文章</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-xl-3" style="cursor: pointer;" onclick="location='{{.admPath}}/article/create'">
+            <div class="card bg-info text-white">
                 <div class="card-body clearfix">
                     <div class="flex-box">
                         <span class="img-avatar img-avatar-48 bg-translucent"><i class="mdi mdi-account fs-22"></i></span>

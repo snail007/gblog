@@ -204,9 +204,6 @@ func TextMask(imageBytes []byte, txt string) (bs []byte, err error) {
 	gValue = gValue / count
 	bValue = bValue / count
 
-	if rValue == 0 && rValue == gValue && rValue == bValue {
-		rValue, gValue, gValue = 1, 1, 1
-	}
 	avgValue := (rValue + gValue + bValue) / 3
 	if rValue > avgValue {
 		rValue += rValue / 2
@@ -223,13 +220,14 @@ func TextMask(imageBytes []byte, txt string) (bs []byte, err error) {
 	} else {
 		bValue -= bValue / 2
 	}
+
+	rV := uint8(255 - rValue/255)
+	gV := uint8(255 - gValue/255)
+	bV := uint8(255 - bValue/255)
+
 	pt := freetype.Pt(5, imgSrc.Bounds().Dy()-15)
 	ctx.SetFontSize(12)
-	ctx.SetSrc(image.NewUniform(color.RGBA{
-		R: uint8(rValue / 255),
-		G: uint8(gValue / 255),
-		B: uint8(bValue / 255),
-		A: 255}))
+	ctx.SetSrc(image.NewUniform(color.RGBA{R: rV, G: gV, B: bV, A: 255}))
 	ctx.DrawString(txt, pt)
 
 	buf := new(bytes.Buffer)
