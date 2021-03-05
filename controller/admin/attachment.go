@@ -27,7 +27,11 @@ type Attachment struct {
 func (this *Attachment) Upload() {
 	if this.Ctx.IsPOST() {
 		// do upload
-		isCompress := this.Ctx.GET("compress", "1") == "1"
+		isCompress := global.Context.BConfig("upload.upload_image_compress") != "0"
+		if this.Ctx.GET("compress", "1") != "0" {
+			isCompress = false
+		}
+
 		file, err := this.Ctx.FormFile("file", 0)
 		isEditor := false
 		if err != nil {
@@ -78,14 +82,17 @@ func (this *Attachment) uploadToLocal(savePath string, file *multipart.FileHeade
 	}
 	// try compress
 	if isCompress && bimage.IsSupported(savePath) {
-		e := bimage.CompressTo(savePath, savePath, 5, 1024, 0, this.Ctx)
+		e := bimage.CompressTo(savePath, savePath,
+			gcast.ToUint(global.Context.BConfig("upload.upload_image_compress")),
+			gcast.ToUint(global.Context.BConfig("upload.image_resize_width")),
+			0, this.Ctx)
 		if e != nil {
 			this.Logger.Warnf("compress fail, error: %s, file: %s", e, file.Filename)
 		}
 	}
 	// try mask
 	maskText := strings.Trim(gcast.ToString(global.Context.BConfig("upload.image_mask_text")), " \r\n")
-	if maskText != "" {
+	if maskText != "" && this.Ctx.GET("water", "1") != "0" {
 		bimage.TextMaskByFile(savePath, maskText)
 	}
 	return
@@ -106,7 +113,10 @@ func (this *Attachment) uploadToGithub(filePath string, file *multipart.FileHead
 
 	// try compress
 	if isCompress && bimage.IsSupportedByBytes(contents) {
-		b, e := bimage.Compress(contents, 6, 1024, 0, this.Ctx)
+		b, e := bimage.Compress(contents,
+			gcast.ToUint(global.Context.BConfig("upload.upload_image_compress")),
+			gcast.ToUint(global.Context.BConfig("upload.image_resize_width")),
+			0, this.Ctx)
 		if e == nil {
 			contents = b
 		} else {
@@ -116,7 +126,7 @@ func (this *Attachment) uploadToGithub(filePath string, file *multipart.FileHead
 
 	// try mask
 	maskText := strings.Trim(gcast.ToString(global.Context.BConfig("upload.image_mask_text")), " \r\n")
-	if maskText != "" {
+	if maskText != "" && this.Ctx.GET("water", "1") != "0" {
 		b, e := bimage.TextMask(contents, maskText)
 		if e == nil {
 			contents = b

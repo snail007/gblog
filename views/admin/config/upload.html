@@ -7,8 +7,8 @@
             {{template "admin/config/common" .}}
             <div class="tab-content">
                 <div class="tab-pane active">
-
                     <form action="{{.admPath}}/config/conf" method="post" name="edit-form" class="edit-form ajax-form">
+                        <h2>图床选项</h2>
                         <input type="hidden" name="key" value="upload"/>
                         <div class="form-group">
                             <label for="upload_file_storage">图床类型</label>
@@ -43,6 +43,36 @@
                             <label for="github_repo">Github仓库</label>
                             <input class="form-control" type="text" id="github_repo" name="github_repo" value="{{.github_repo|html}}" >
                             <small class="help-block">格式：<i class="text text-danger">用户名</i>/<i class="text text-danger">仓库名</i>，比如：snail007/gmc</small>
+                        </div>
+                        <h2>图片选项</h2>
+                        <div class="form-group">
+                            <label for="upload_file_storage">图片压缩</label>
+                            <div class="btn-group btn-group-xs">
+                                <input type="hidden" name="upload_image_compress">
+                                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"
+                                        aria-haspopup="true" aria-expanded="false"></button>
+                                <ul class="dropdown-menu" value="{{val . "upload_image_compress" "5"}}">
+                                    <li><a class="dropdown-item" href="javascript:void(0);" value="0">不压缩</a></li>
+                                    <li><a class="dropdown-item" href="javascript:void(0);" value="1">1</a></li>
+                                    <li><a class="dropdown-item" href="javascript:void(0);" value="2">2</a></li>
+                                    <li><a class="dropdown-item" href="javascript:void(0);" value="3">3</a></li>
+                                    <li><a class="dropdown-item" href="javascript:void(0);" value="4">4</a></li>
+                                    <li><a class="dropdown-item" href="javascript:void(0);" value="5">5</a></li>
+                                    <li><a class="dropdown-item" href="javascript:void(0);" value="6">6</a></li>
+                                    <li><a class="dropdown-item" href="javascript:void(0);" value="7">7</a></li>
+                                    <li><a class="dropdown-item" href="javascript:void(0);" value="8">8</a></li>
+                                    <li><a class="dropdown-item" href="javascript:void(0);" value="9">9</a></li>
+                                    <li><a class="dropdown-item" href="javascript:void(0);" value="10">10</a></li>
+                                </ul>
+                            </div>
+                            <br>
+                            <small class="help-block">选择是否压缩上传的图片，压缩等级。数字越大压缩越厉害，图片质量越差。一般5比较平衡。</small>
+                        </div>
+                        <div class="form-group">
+                            <label for="image_mask_text">图片缩放</label>
+                            <input class="form-control" type="text" id="image_resize_width" name="image_resize_width" value="{{val . "image_resize_width" "1024"|html}}" >
+                            <small class="help-block text text-danger">图片缩放必须打开上面的图片压缩，才有效。</small>
+                            <small class="help-block">这里是设置上传的图片最大宽度，比如1024，会等比计算高度，0代表不缩放图片。超过这个宽度的图片才会被缩放，小于这个宽度的图片不会被放大。</small>
                         </div>
                         <div class="form-group">
                             <label for="image_mask_text">图片水印</label>

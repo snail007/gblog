@@ -53,34 +53,38 @@ func (B *BContext) Config() gcore.Config {
 // key can be:
 // "basic.web_site_title": string,
 // "basic": map[string]interface{}
-func (B *BContext) BConfig(key string) interface{} {
+func (B *BContext) BConfig(key string,defaultValue ...string) (value interface{}) {
+	defaultValue0:=""
+	if len(defaultValue)>0{
+		defaultValue0=defaultValue[0]
+	}
 	db := B.DB()
 	keyArr := strings.Split(key, ".")
 	l := len(keyArr)
 	configType := keyArr[0]
 	rs, err := db.Query(db.AR().Cache("allConfig", 3600).From("config"))
 	if err != nil {
-		return ""
+		return defaultValue0
 	}
 	allConfig := rs.MapRows("key")
 	if v, ok := allConfig[configType]; !ok {
-		return "{}"
+		return defaultValue0
 	} else {
 		value := gmap.M{}
 		err = json.Unmarshal([]byte(v["value"]), &value)
 		if err != nil {
-			return ""
+			return defaultValue0
 		}
 		if l == 1 {
 			return value
 		}
 		if v, ok := value[keyArr[1]]; !ok {
-			return ""
+			return defaultValue0
 		} else {
 			return gcast.ToString(v)
 		}
 	}
-	return ""
+	return defaultValue0
 }
 
 func (B *BContext) Log() gcore.Logger {

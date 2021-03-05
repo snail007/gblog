@@ -110,7 +110,10 @@ func Compress(src []byte, level, width, height uint, ctx gcore.Ctx) (data []byte
 		}
 		b := image.Rect(0, 0, gifObj.Config.Width, gifObj.Config.Height)
 		for _, v := range gifObj.Image {
-			newImg := resize.Resize(width, height, v, resize.NearestNeighbor)
+			var newImg image.Image = v
+			if width != 0 || height != 0 {
+				newImg = resize.Resize(width, height, v, resize.Lanczos3)
+			}
 			bufGif := new(bytes.Buffer)
 			err = jpeg.Encode(bufGif, newImg, &jpeg.Options{
 				Quality: 100 / 10 * int(10-level),
@@ -125,7 +128,10 @@ func Compress(src []byte, level, width, height uint, ctx gcore.Ctx) (data []byte
 		}
 		err = gif.EncodeAll(buf, newGif)
 	} else {
-		newImg := resize.Resize(width, height, img, resize.NearestNeighbor)
+		var newImg = img
+		if width != 0 || height != 0 {
+			newImg = resize.Resize(width, height, img, resize.Lanczos3)
+		}
 		err = jpeg.Encode(buf, newImg, &jpeg.Options{
 			Quality: 100 / 10 * int(10-level),
 		})
