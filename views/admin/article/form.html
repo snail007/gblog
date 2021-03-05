@@ -102,7 +102,7 @@
                 console.log("粘贴内容非图片");
                 return;
             }
-            uploadImg(file, Editor);
+            uploadImg(file, Editor,"1");
         });
 
         var dashboard = document.getElementById(Editor.id)
@@ -122,12 +122,13 @@
         })
     }
 
-    function uploadImg(file, Editor) {
+    function uploadImg(file, Editor,fromPaste) {
+        fromPaste=fromPaste||""
         var formData = new FormData();
         var fileName = new Date().getTime() + "." + file.name.split(".").pop();
         formData.append('editormd-image-file', file, fileName);
         $.ajax({
-            url: Editor.settings.imageUploadURL,
+            url: Editor.settings.imageUploadURL+"?from="+fromPaste,
             type: 'post',
             data: formData,
             processData: false,

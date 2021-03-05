@@ -78,7 +78,7 @@ func (this *Attachment) uploadToLocal(savePath string, file *multipart.FileHeade
 	}
 	// try compress
 	if isCompress && bimage.IsSupported(savePath) {
-		e := bimage.CompressTo(savePath, savePath, 6, 1024, 0)
+		e := bimage.CompressTo(savePath, savePath, 5, 1024, 0, this.Ctx)
 		if e != nil {
 			this.Logger.Warnf("compress fail, error: %s, file: %s", e, file.Filename)
 		}
@@ -106,7 +106,7 @@ func (this *Attachment) uploadToGithub(filePath string, file *multipart.FileHead
 
 	// try compress
 	if isCompress && bimage.IsSupportedByBytes(contents) {
-		b, e := bimage.Compress(contents, 6, 1024, 0)
+		b, e := bimage.Compress(contents, 6, 1024, 0, this.Ctx)
 		if e == nil {
 			contents = b
 		} else {
