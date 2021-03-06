@@ -28,7 +28,7 @@ func (this *Attachment) Upload() {
 	if this.Ctx.IsPOST() {
 		// do upload
 		isCompress := global.Context.BConfig("upload.upload_image_compress") != "0"
-		if this.Ctx.GET("compress", "1") != "0" {
+		if this.Ctx.GET("compress", "1") == "0" {
 			isCompress = false
 		}
 
