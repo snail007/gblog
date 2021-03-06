@@ -97,7 +97,7 @@
                                     <td>
                                         <a href="{{$adminPath}}{{$controllerPath}}/detail?{{$idName}}={{val $row $idName}}">{{val $row $idName}}</a>
                                     </td>
-                                    <td>{{$row.title}}</td>
+                                    <td><a class="text text-info" href="/view/{{val $row $idName}}" target="_blank">{{$row.title}}</a></td>
                                     <td>{{$row.catalog_name}}</td>
                                     <td>{{if eq $row.update_time "0"}}-{{else}}{{$row.update_time | date "2006-01-02 15:04"}}{{end}}</td>
                                     <td {{if eq $row.is_pre_publish "1"}}class="text text-danger"{{end}}>{{$row.create_time | date "2006-01-02 15:04"}}</td>
