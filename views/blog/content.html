@@ -11,7 +11,7 @@
             <textarea style="display:none;">{{.article.content}}</textarea>
         </div>
         <div id="copyright">
-            <p>作者：<b>{{.bc_basic.web_site_blogger_name|html}}</b> 出处： <a href="{{.U.SCHEME}}://{{.U.HOST}}/">{{.U.SCHEME}}://{{.U.HOST}}/</a></p>
+            <p>作者：<b>{{.bc_basic.web_site_blogger_name|html}}</b> 出处： <a id="blog_link" href="//{{.U.HOST}}/">{{.U.SCHEME}}://{{.U.HOST}}/</a></p>
             <p>本文版权归作者所有，欢迎转载。未经作者同意下，必须在文章页面明显标出原文链接及作者，否则保留追究法律责任的权利。</p>
             <p>如果您认为这篇文章还不错或者有所收获，可以分享给您的小伙伴，因为你的支持是我继续写作，分享的最大动力！</p>
         </div>
@@ -56,5 +56,8 @@
                 path: "/static/js/meditor/lib/"
             });
         });
+        var link=location.protocol+$("#blog_link").attr("href");
+        $("#blog_link").html(link);
+        $("#blog_link").attr("href",link);
     })
 </script>
