@@ -11,6 +11,13 @@
             </small>
         </p>
     {{end}}
+    {{if .bc_basic.web_site_icp}}
+        <p>
+            <small>
+                备案信息：{{.bc_basic.web_site_icp|html}}
+            </small>
+        </p>
+    {{end}}
     <p>
         <small>
             <a style="text-decoration: underline;" href="https://github.com/snail007/gblog">Blog source code</a> all

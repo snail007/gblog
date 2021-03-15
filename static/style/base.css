@@ -271,3 +271,5 @@ main { overflow: hidden; }
 #mkeditor .editormd-toc-menu>.markdown-toc li>ul, .editormd-preview-container .editormd-toc-menu>.markdown-toc li>ul{
  left: 120px;
 }
+#copyright{font-size: 0.8em;padding:10px 1%;line-height: 25px;color: #666;background-color: aliceblue;
+}
