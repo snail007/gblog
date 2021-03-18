@@ -48,14 +48,12 @@ func start() {
 	isDebug := pflag.BoolP("debug", "d", false, "enable debug mode")
 	conf := pflag.StringP("conf", "c", "conf/app.toml", "path of config file")
 	pflag.Parse()
-
 	if !gfile.Exists(*conf) {
 		os.MkdirAll(filepath.Dir(*conf), 0755)
 		err := ioutil.WriteFile(*conf, emconf.ConfAPP, 0755)
 		if err != nil {
 			panic(err)
 		}
-		os.Exit(0)
 	}
 	// 1. create an default app to run.
 	app = gmc.New.AppDefault()

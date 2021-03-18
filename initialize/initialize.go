@@ -92,7 +92,7 @@ func Initialize(s *ghttpserver.HTTPServer) (err error) {
 	ctx.SetCache(gcache.Cache())
 
 	// init indexer
-	if cfg.GetBool("search.enablefulltextindex"){
+	if cfg.GetBool("search.enablefulltextindex") {
 		err = initIndexer(ctx)
 		if err != nil {
 			return
@@ -106,7 +106,6 @@ func Initialize(s *ghttpserver.HTTPServer) (err error) {
 	router.InitRouter(s)
 	return
 }
-
 
 type DBCache struct{}
 
@@ -164,9 +163,9 @@ insert into config (config_id, key, value) values (1,"basic",'{"file":"","key":"
 insert into config (config_id, key, value) values (2,"system","{}");
 insert into config (config_id, key, value) values (3,"upload",'{"github_speed_url":"https://cdn.jsdelivr.net/gh/%u/%p","github_repo":"","github_token":"","image_mask_text":"","key":"upload","upload_file_storage":"local","image_resize_width":"1024","upload_image_compress":"5"}');
 insert into catalog (catalog_id, name, sequence) values (0,"默认分类",0);
-insert into user (user_id, username, nickname, password, is_delete, update_time, create_time) values (1,'root',	'root',	'2df594b9710111099edbdb7edaa43301',	0,	%d,	%d);
+insert into user (user_id, username, nickname, password, is_delete, update_time, create_time) values (1,'root',	'root',	'2df594b9710111099edbdb7edaa43301',	0,	{now},	{now});
 `
-	sql = fmt.Sprintf(sql, now, now)
+	sql = strings.Replace(sql, "{now}", fmt.Sprintf("%d", now), -1)
 	// create table
 	for _, v := range strings.Split(strings.Trim(sql, ";\n\t "), ";") {
 		if v != "" {
