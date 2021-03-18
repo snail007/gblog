@@ -55,6 +55,7 @@ func start() {
 		if err != nil {
 			panic(err)
 		}
+		os.Exit(0)
 	}
 	// 1. create an default app to run.
 	app = gmc.New.AppDefault()

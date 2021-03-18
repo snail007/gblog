@@ -161,14 +161,14 @@ upx gblog-linux64
 upx gblog-linux32
 upx gblog-win64.exe
 upx gblog-win32.exe
-upx gblog-mac
 upx gblog-arm64
+#upx gblog-mac
 # with bleve
 upx gblog-linux64-bleve
 upx gblog-linux32-bleve
 upx gblog-win64-bleve.exe
 upx gblog-win32-bleve.exe
-upx gblog-mac-bleve
+#upx gblog-mac-bleve
 
 mv gblog-linux64 gblog-release/gblog-linux64-release/gblog
 mv gblog-linux32 gblog-release/gblog-linux32-release/gblog
