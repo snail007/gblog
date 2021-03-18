@@ -162,7 +162,7 @@ create table config(
 );
 insert into config (config_id, key, value) values (1,"basic",'{"file":"","key":"basic","web_site_blogger_email":"gblog@example.com","web_site_blogger_name":"又一个gblog博客","web_site_blogger_site":"https://github.com/snail007","web_site_copyright":"本博客内容，gblog版权所有","web_site_description":"gblog是一个广受欢迎的个人开源博客系统，使用golang开发，使用简单，专业的个人博客系统。","web_site_icp":"","web_site_keywords":"gblog开源博客，gmc框架，go博客系统，开源博客","web_site_logo":"/static/style/logo.png","web_site_icon":"/static/style/favicon.ico","web_site_stat":"","web_site_status":"on","web_site_title":"又一个gblog博客！"}');
 insert into config (config_id, key, value) values (2,"system","{}");
-insert into config (config_id, key, value) values (3,"upload",'{"github_repo":"","github_token":"","image_mask_text":"","key":"upload","upload_file_storage":"local"},"image_resize_width":"1024","upload_image_compress":"5"');
+insert into config (config_id, key, value) values (3,"upload",'{"github_speed_url":"https://cdn.jsdelivr.net/gh/%u/%p","github_repo":"","github_token":"","image_mask_text":"","key":"upload","upload_file_storage":"local","image_resize_width":"1024","upload_image_compress":"5"}');
 insert into catalog (catalog_id, name, sequence) values (0,"默认分类",0);
 insert into user (user_id, username, nickname, password, is_delete, update_time, create_time) values (1,'root',	'root',	'2df594b9710111099edbdb7edaa43301',	0,	%d,	%d);
 `

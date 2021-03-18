@@ -2,7 +2,6 @@ package blog
 
 import (
 	"encoding/json"
-	"fmt"
 	"gblog/global"
 	"github.com/blevesearch/bleve"
 	"github.com/snail007/gmc"
@@ -339,8 +338,14 @@ func (this *Blog) Attachment() {
 		this.Ctx.WriteFile(file)
 	case "github":
 		userRepo := gcast.ToString(global.Context.BConfig("upload.github_repo"))
-		u := fmt.Sprintf("https://cdn.jsdelivr.net/gh/%s/%s", userRepo, "attachment/"+filepath.Clean(id))
-		this.Ctx.Redirect(u)
+		path := "attachment/" + filepath.Clean(id)
+		speedURL := gcast.ToString(global.Context.BConfig("upload.github_speed_url"))
+		if speedURL == "" {
+			speedURL = "https://cdn.jsdelivr.net/gh/%u/%p"
+		}
+		speedURL = strings.Replace(speedURL, "%u", userRepo, 1)
+		speedURL = strings.Replace(speedURL, "%p", path, 1)
+		this.Ctx.Redirect(speedURL)
 	}
 
 }
