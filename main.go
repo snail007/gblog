@@ -7,13 +7,18 @@ package main
 
 import (
 	"fmt"
+	emconf "gblog/conf"
 	"gblog/initialize"
 	"github.com/snail007/gmc"
 	gcore "github.com/snail007/gmc/core"
 	"github.com/snail007/gmc/http/server"
+	gfile "github.com/snail007/gmc/util/file"
 	gdaemon "github.com/snail007/gmc/util/process/daemon"
 	ghook "github.com/snail007/gmc/util/process/hook"
 	"github.com/spf13/pflag"
+	"io/ioutil"
+	"os"
+	"path/filepath"
 	"runtime/debug"
 )
 
@@ -44,6 +49,13 @@ func start() {
 	conf := pflag.StringP("conf", "c", "conf/app.toml", "path of config file")
 	pflag.Parse()
 
+	if !gfile.Exists(*conf) {
+		os.MkdirAll(filepath.Dir(*conf), 0755)
+		err := ioutil.WriteFile(*conf, emconf.ConfAPP, 0755)
+		if err != nil {
+			panic(err)
+		}
+	}
 	// 1. create an default app to run.
 	app = gmc.New.AppDefault()
 	app.Ctx().Set("debug", *isDebug)

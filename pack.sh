@@ -11,6 +11,7 @@ gmct static --dir ../static
 cd ..
 
 rm -rf gblog-release
+rm -rf conf_release
 
 mkdir gblog-release
 mkdir gblog-release/gblog-linux64-release
@@ -25,19 +26,6 @@ mkdir gblog-release/gblog-linux32-release-bleve
 mkdir gblog-release/gblog-win64-release-bleve
 mkdir gblog-release/gblog-win32-release-bleve
 mkdir gblog-release/gblog-mac-release-bleve
-
-cp -R conf gblog-release/gblog-linux64-release
-cp -R conf gblog-release/gblog-linux32-release
-cp -R conf gblog-release/gblog-win64-release
-cp -R conf gblog-release/gblog-win32-release
-cp -R conf gblog-release/gblog-mac-release
-cp -R conf gblog-release/gblog-arm64-release
-#with bleve
-cp -R conf gblog-release/gblog-linux64-release-bleve
-cp -R conf gblog-release/gblog-linux32-release-bleve
-cp -R conf gblog-release/gblog-win64-release-bleve
-cp -R conf gblog-release/gblog-win32-release-bleve
-cp -R conf gblog-release/gblog-mac-release-bleve
 
 set -e
 
