@@ -81,6 +81,67 @@
     </div>
 </div>
 <script>
+    function bindPasteDrag($input){
+        var upload=function (that,file,fromPaste){
+            fromPaste=fromPaste||""
+            var formData = new FormData();
+            var fileName = new Date().getTime() + "." + file.name.split(".").pop();
+            formData.append('editormd-image-file', file, fileName);
+            $.ajax({
+                url: "{{.admPath}}/attachment/upload?water=0&from="+fromPaste,
+                type: 'post',
+                data: formData,
+                processData: false,
+                contentType: false,
+                dataType: 'json',
+                success: function (msg) {
+                    var success = msg['success'];
+                    if (success == 1) {
+                        that.value=msg["url"];
+                    } else {
+                        console.log(msg);
+                        alert("上传失败");
+                    }
+                }
+            });
+        };
+        $input.each(function (){
+            var that=this;
+            that.addEventListener("dragover", function (e) {
+                e.preventDefault()
+                e.stopPropagation()
+            })
+            that.addEventListener("dragenter", function (e) {
+                e.preventDefault()
+                e.stopPropagation()
+            })
+            that.addEventListener("drop", function (e) {
+                e.preventDefault()
+                e.stopPropagation()
+                var files = this.files || e.dataTransfer.files;
+                upload(that,files[0]);
+            })
+            that.addEventListener('paste', function (event) {
+                var items = (event.clipboardData || window.clipboardData).items;
+                var file = null;
+                if (items && items.length) {
+                    // 搜索剪切板items
+                    for (var i = 0; i < items.length; i++) {
+                        if (items[i].type.indexOf('image') !== -1) {
+                            file = items[i].getAsFile();
+                            break;
+                        }
+                    }
+                } else {
+                    return;
+                }
+                if (!file) {
+                    return;
+                }
+                upload(that,file,"1");
+            });
+        });
+    }
     function initPasteDragImg(Editor) {
         var doc = document.getElementById(Editor.id)
         doc.addEventListener('paste', function (event) {
@@ -151,6 +212,7 @@
         });
     }
     window.init.push(function () {
+        bindPasteDrag($("#poster_url"));
         var mkeditor;
         $(function () {
             mkeditor = editormd("mkeditor", {
