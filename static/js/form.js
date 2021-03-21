@@ -1,4 +1,12 @@
 $(document).ready(function () {
+    $("form .spinner-grow").each(function () {
+        var that = $(this)
+        var submit = that.parent();
+        var form = that.closest("form")
+        submit.click(function () {
+            form.attr("spinner-grow", "#" + that.attr("id"))
+        });
+    });
     var call = function (typ, form, content, status) {
         var done = form.attr("ajax-done");
         var success = form.attr("ajax-success");
@@ -25,16 +33,20 @@ $(document).ready(function () {
         $(this).ajaxSubmit({
             dataType: "json",
             beforeSend: function () {
-                form.find(".spinner-grow").parent().attr("disabled", "disabled")
-                form.find(".spinner-grow").show()
+                form.find("[type=submit]").attr("disabled", "disabled")
+                var loadingID = form.attr("spinner-grow");
+                form.find(loadingID).parent().attr("disabled", "disabled")
+                form.find(loadingID).show()
             },
             complete: function (a, b) {
                 var msg = a.responseText || ""
                 if (call("done", form, msg, a.status)) {
                     return
                 }
-                form.find(".spinner-grow").parent().removeAttr("disabled")
-                form.find(".spinner-grow").hide()
+                form.find("[type=submit]").removeAttr("disabled")
+                var loadingID = form.attr("spinner-grow");
+                form.find(loadingID).parent().removeAttr("disabled")
+                form.find(loadingID).hide()
             },
             error: function (a, b, c) {
                 var msg = a.responseText || ""
@@ -43,7 +55,7 @@ $(document).ready(function () {
                 }
                 notify("请求错误，请重试。响应码：" + a.status, "danger")
             },
-            success: function (data,status,jxhr) {
+            success: function (data, status, jxhr) {
                 var msg = jxhr.responseText || ""
                 if (call("success", form, msg, status)) {
                     return
@@ -65,8 +77,8 @@ $(document).ready(function () {
     // fileupload
     $(".fileupload").each(function () {
         var loader;
-        var $input=$(this);
-        var targetInput=$($input.attr("data-input"))
+        var $input = $(this);
+        var targetInput = $($input.attr("data-input"))
         $input.fileupload({
             dataType: 'json',
             beforeSend: function () {
@@ -80,7 +92,7 @@ $(document).ready(function () {
                 targetInput.val(result.url)
             },
             error: function (jqXHR, textStatus, errorThrown) {
-                showNotify(errorThrown|textStatus, 'danger');
+                showNotify(errorThrown | textStatus, 'danger');
             },
             done: function () {
                 loader.destroy();

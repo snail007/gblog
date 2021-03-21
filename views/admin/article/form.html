@@ -72,14 +72,14 @@
             <input type="hidden" name="referer" value="{{val .H "Referer"}}">
             <div class="col-auto">
                 <button type="submit" class="btn btn-primary mb-2">
-                    <span class="spinner-grow spinner-grow-sm" role="status" style="display: none;"
-                          aria-hidden="true"></span>
-                    {{if .data }}保存{{else}}添加{{end}}
+                        <span class="spinner-grow spinner-grow-sm" id="save" role="status" style="display: none;"
+                              aria-hidden="true"></span>
+                    {{if .data}}{{if eq .data.is_draft "1"}}发布{{else}}保存{{end}}{{else}}发布{{end}}
                 </button>
                 {{if or (not .data) (eq (val .data "is_draft") "1")}}
                 <button type="submit" class="btn btn-info mb-2" onclick="$('#is_draft').val(1)">
-                    <span class="spinner-grow spinner-grow-sm" role="status" style="display: none;"
-                          aria-hidden="true"></span>
+                        <span class="spinner-grow spinner-grow-sm" id="saveDraft" role="status" style="display: none;"
+                              aria-hidden="true"></span>
                     保存为草稿
                 </button>
                 {{end}}
