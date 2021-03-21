@@ -77,6 +77,7 @@
                                 </th>
                                 <th>文章ID</th>
                                 <th>标题</th>
+                                <th>状态</th>
                                 <th>文章目录</th>
                                 <th>修改时间</th>
                                 <th>创建时间</th>
@@ -97,10 +98,21 @@
                                     <td>
                                         <a href="{{$adminPath}}{{$controllerPath}}/detail?{{$idName}}={{val $row $idName}}">{{val $row $idName}}</a>
                                     </td>
-                                    <td><a class="text text-info" href="/view/{{val $row $idName}}" target="_blank">{{$row.title}}</a></td>
-                                    <td>{{$row.catalog_name}}</td>
-                                    <td>{{if eq $row.update_time "0"}}-{{else}}{{$row.update_time | date "2006-01-02 15:04"}}{{end}}</td>
-                                    <td {{if eq $row.is_pre_publish "1"}}class="text text-danger"{{end}}>{{$row.create_time | date "2006-01-02 15:04"}}</td>
+                                    <td><a class="text text-info" style="font-size: 1.2em;" href="/view/{{val $row $idName}}" target="_blank">{{$row.title}}</a></td>
+                                    <td>
+                                        {{if eq $row.is_draft "1"}}
+                                        <span class="text text-danger">草稿</span>
+                                        {{else}}
+                                            {{if eq $row.is_pre_publish "1"}}
+                                            <span class="text text-warning">预发布</span>
+                                            {{else}}
+                                            <span class="text text-success">已发布</span>
+                                            {{end}}
+                                        {{end}}
+                                    </td>
+                                    <td><span class="badge badge-cyan">{{$row.catalog_name}}</span></td>
+                                    <td class="text text-gray">{{if eq $row.update_time "0"}}-{{else}}{{$row.update_time | date "2006-01-02 15:04"}}{{end}}</td>
+                                    <td {{if eq $row.is_pre_publish "1"}}class="text text-warning"{{else}}class="text text-gray"{{end}}>{{$row.create_time | date "2006-01-02 15:04"}}</td>
                                     <td>
                                         <div class="btn-group">
                                             <a class="btn btn-xs btn-default"

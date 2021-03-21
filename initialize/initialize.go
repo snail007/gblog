@@ -72,9 +72,16 @@ func Initialize(s *ghttpserver.HTTPServer) (err error) {
 	ctx.SetDB(gdb.DB())
 	gdb.DBSQLite3().Config.Cache = &DBCache{}
 	// auto init databases
-	err = checkTable(ctx.DB())
+	isNewDB, err := checkTable(ctx.DB())
 	if err != nil {
 		return
+	}
+	// auto update db tables, if needed.
+	if !isNewDB {
+		err = autoUpdateTable(ctx.DB())
+		if err != nil {
+			return
+		}
 	}
 
 	// init logger
@@ -122,9 +129,11 @@ func (s *DBCache) Get(key string) (data []byte, err error) {
 	return
 }
 
-func checkTable(db gcore.Database) (err error) {
+func checkTable(db gcore.Database) (isNewDB bool, err error) {
+	isNewDB = true
 	_, e := db.Query(db.AR().Raw("select * from article"))
 	if e == nil {
+		isNewDB = false
 		return
 	}
 	now := time.Now().Unix()
@@ -135,6 +144,7 @@ create table article(
   summary text,
   poster_url text,
   content text,
+  is_draft integer default 0,
   catalog_id int,
   create_time int,
   update_time int
@@ -172,6 +182,31 @@ insert into user (user_id, username, nickname, password, is_delete, update_time,
 			_, err = db.Exec(db.AR().Raw(v))
 			if err != nil {
 				return
+			}
+		}
+	}
+	return
+}
+
+func autoUpdateTable(db gcore.Database) (err error) {
+	// checking sql, checking result except not nil, update sql.
+	sqlData := [][]interface{}{
+		{"select is_draft from article limit 0,1", true, `alter table article add column is_draft integer default 0`},
+	}
+	for _, v := range sqlData {
+		checkSQL := v[0].(string)
+		checkSQLExceptNotNil := v[1].(bool)
+		updateSQL := v[2].(string)
+		// add article.is_draft
+		_, e := db.Query(db.AR().Raw(checkSQL))
+		if (checkSQLExceptNotNil && e != nil) || (!checkSQLExceptNotNil && e == nil) {
+			for _, sql := range strings.Split(strings.Trim(updateSQL, ";\n\t "), ";") {
+				if sql != "" {
+					_, err = db.Exec(db.AR().Raw(sql))
+					if err != nil {
+						return
+					}
+				}
 			}
 		}
 	}

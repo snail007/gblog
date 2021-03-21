@@ -5,9 +5,10 @@
               action="{{.admPath}}{{$controllerPath}}/{{if .data}}edit{{else}}create{{end}}" method="post"
               enctype="application/x-www-form-urlencoded">
             {{if .data }}
-                {{$name:="article_id"}}
-                <input type="hidden" name="{{$name}}" id="{{$name}}" value="{{val .data $name}}">
+            {{$name:="article_id"}}
+            <input type="hidden" name="{{$name}}" id="{{$name}}" value="{{val .data $name}}">
             {{end}}
+            <input type="hidden" name="is_draft" id="is_draft" value='0'>
             <div class="form-group">
                 {{$name:="catalog_id"}}
                 <label for="{{$name}}">文章目录</label>
@@ -75,6 +76,13 @@
                           aria-hidden="true"></span>
                     {{if .data }}保存{{else}}添加{{end}}
                 </button>
+                {{if or (not .data) (eq (val .data "is_draft") "1")}}
+                <button type="submit" class="btn btn-info mb-2" onclick="$('#is_draft').val(1)">
+                    <span class="spinner-grow spinner-grow-sm" role="status" style="display: none;"
+                          aria-hidden="true"></span>
+                    保存为草稿
+                </button>
+                {{end}}
                 <a href="javascript:history.back()" class="btn btn-default mb-2">返回</a>
             </div>
         </form>

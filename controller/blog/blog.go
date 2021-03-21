@@ -86,6 +86,7 @@ func (this *Blog) List() {
 	id := this.Param.ByName("id")
 	where := gmap.M{
 		"create_time <=": time.Now().Unix(),
+		"is_draft":       0,
 	}
 	db := gmc.DB.DB()
 	catalog := gmap.Mss{}
@@ -150,7 +151,7 @@ func (this *Blog) Views() {
 	id := this.Param.ByName("id")
 	db := gmc.DB.DB()
 	rs, err := db.Query(this.cache("article-" + id).From("article").Where(
-		gmap.M{"article_id": id, "create_time <=": time.Now().Unix()},
+		gmap.M{"article_id": id, "create_time <=": time.Now().Unix(), "is_draft": 0},
 	))
 	if err != nil {
 		this.Stop(err)
@@ -204,7 +205,7 @@ func (this *Blog) Timeline() {
 	db := gmc.DB.DB()
 	rs, err := db.Query(this.cache("timeline").
 		From("article").
-		Where(gmap.M{"create_time <=": time.Now().Unix()}).
+		Where(gmap.M{"create_time <=": time.Now().Unix(),"is_draft":0}).
 		OrderBy("create_time", "desc"))
 	if err != nil {
 		this.Stop(err)
@@ -225,7 +226,7 @@ func (this *Blog) Search() {
 	db := gmc.DB.DB()
 	rs, err := db.Query(this.cache("search").
 		From("article").
-		Where(gmap.M{"create_time <=": time.Now().Unix()}).
+		Where(gmap.M{"create_time <=": time.Now().Unix(),"is_draft":0}).
 		OrderBy("create_time", "desc"))
 	if err != nil {
 		this.Stop(err)
@@ -263,7 +264,7 @@ func (this *Blog) Search() {
 				db := gmc.DB.DB()
 				rs, err := db.Query(this.cache("search").
 					From("article").
-					Where(gmap.M{"create_time <=": time.Now().Unix()}).
+					Where(gmap.M{"create_time <=": time.Now().Unix(),"is_draft":0}).
 					OrderBy("create_time", "desc"))
 				if err != nil {
 					this.Stop(err)
@@ -295,7 +296,7 @@ func (this *Blog) Catalogs() {
 	rs, err = db.Query(this.cache("catalogsSummary").
 		Select("count(*) as total,catalog_id").
 		From("article").
-		Where(gmap.M{"create_time <=": time.Now().Unix()}).
+		Where(gmap.M{"create_time <=": time.Now().Unix(),"is_draft":0}).
 		GroupBy("catalog_id"))
 	if err != nil {
 		this.Stop(err)

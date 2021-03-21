@@ -93,6 +93,11 @@ func (this *Article) Detail() {
 	if err != nil {
 		this.Stop(err)
 	}
+	isPrePublish := "0"
+	if time.Now().Unix() < gcast.ToInt64(row["create_time"]) {
+		isPrePublish = "1"
+	}
+	row["is_pre_publish"] = isPrePublish
 	row["catalog_name"] = catalog["name"]
 	this.View.Set("data", row)
 	this.View.Layout("admin/form").Render("admin/article/detail")
@@ -107,6 +112,8 @@ func (this *Article) Create() {
 		}
 		v := data.Create()
 		v.FilterRule("catalog_id", "int")
+
+		v.StringRule("is_draft", "required|enum:0,1")
 		v.StringRule("content", "required")
 		v.StringRule("title", "required")
 		v.StringRule("summary", "required")
@@ -119,6 +126,7 @@ func (this *Article) Create() {
 		dataInsert["summary"], _ = data.Get("summary")
 		dataInsert["content"], _ = data.Get("content")
 		dataInsert["catalog_id"], _ = data.Get("catalog_id")
+		dataInsert["is_draft"], _ = data.Get("is_draft")
 		dataInsert["poster_url"], _ = data.Get("poster_url")
 		dataInsert["update_time"] = 0
 		t, err := time.ParseInLocation("2006-01-02 15:04:05", this.Ctx.POST("create_time"), time.Local)
@@ -137,10 +145,12 @@ func (this *Article) Create() {
 		}
 		global.Context.Cache().Clear()
 		// insert index data
-		doc := fmt.Sprintf("%s\n%s\n%s", dataInsert["title"], dataInsert["summary"], dataInsert["content"])
-		err = global.Context.Indexer().Index(fmt.Sprintf("%d", id), doc)
-		if err != nil {
-			this.Logger.Warnf("insert index data fail, %d , error: %s", id, err)
+		if global.Context.Indexer() != nil {
+			doc := fmt.Sprintf("%s\n%s\n%s", dataInsert["title"], dataInsert["summary"], dataInsert["content"])
+			err = global.Context.Indexer().Index(fmt.Sprintf("%d", id), doc)
+			if err != nil {
+				this.Logger.Warnf("insert index data fail, %d , error: %s", id, err)
+			}
 		}
 		this._JSONSuccess("", "", this.Ctx.POST("referer"))
 	} else {
@@ -179,6 +189,7 @@ func (this *Article) Edit() {
 		v.FilterRule("article_id", "int")
 		v.FilterRule("catalog_id", "int")
 
+		v.StringRule("is_draft", "required|enum:0,1")
 		v.StringRule("article_id", "required|min:1")
 		v.StringRule("title", "required")
 		v.StringRule("summary", "required")
@@ -187,15 +198,23 @@ func (this *Article) Edit() {
 			this._JSONFail(v.Errors.One())
 		}
 
+		nowUnix := time.Now().Unix()
 		dataUpdate := gmap.M{}
 		dataUpdate["title"], _ = data.Get("title")
 		dataUpdate["summary"], _ = data.Get("summary")
 		dataUpdate["content"], _ = data.Get("content")
 		dataUpdate["catalog_id"], _ = data.Get("catalog_id")
 		dataUpdate["poster_url"], _ = data.Get("poster_url")
-		dataUpdate["update_time"] = time.Now().Unix()
+		dataUpdate["update_time"] = nowUnix
 		if dataUpdate["poster_url"] == "" {
 			dataUpdate["poster_url"] = global.RandImgIdx()
+		}
+		if article["is_draft"] == "1" {
+			dataUpdate["is_draft"], _ = data.Get("is_draft")
+			if dataUpdate["is_draft"] == "0" {
+				dataUpdate["create_time"] = nowUnix
+				dataUpdate["update_time"] = nowUnix
+			}
 		}
 		createTimeDB := gcast.ToInt64(article["create_time"])
 		createTime := this.Ctx.POST("create_time")
@@ -215,17 +234,18 @@ func (this *Article) Edit() {
 		}
 		global.Context.Cache().Clear()
 
-		// delete & insert index data
-		err = global.Context.Indexer().Delete(id)
-		if err != nil {
-			this.Logger.Warnf("delete index data fail, %d , error: %s", id, err)
+		if global.Context.Indexer() != nil {
+			// delete & insert index data
+			err = global.Context.Indexer().Delete(id)
+			if err != nil {
+				this.Logger.Warnf("delete index data fail, %d , error: %s", id, err)
+			}
+			doc := fmt.Sprintf("%s\n%s\n%s", dataUpdate["title"], dataUpdate["summary"], dataUpdate["content"])
+			err = global.Context.Indexer().Index(id, doc)
+			if err != nil {
+				this.Logger.Warnf("insert index data fail, %d , error: %s", id, err)
+			}
 		}
-		doc := fmt.Sprintf("%s\n%s\n%s", dataUpdate["title"], dataUpdate["summary"], dataUpdate["content"])
-		err = global.Context.Indexer().Index(id, doc)
-		if err != nil {
-			this.Logger.Warnf("insert index data fail, %d , error: %s", id, err)
-		}
-
 		this._JSONSuccess("", "", this.Ctx.POST("referer"))
 	} else {
 		catalogTable := gmc.DB.Table("catalog")
@@ -259,11 +279,13 @@ func (this *Article) Delete() {
 		this._JSONFail(err.Error())
 	})
 	global.Context.Cache().Clear()
-	for _, id := range ids {
-		//delete index data
-		err = global.Context.Indexer().Delete(id)
-		if err != nil {
-			this.Logger.Warnf("delete index data fail, %d , error: %s", id, err)
+	if global.Context.Indexer() != nil {
+		for _, id := range ids {
+			//delete index data
+			err = global.Context.Indexer().Delete(id)
+			if err != nil {
+				this.Logger.Warnf("delete index data fail, %d , error: %s", id, err)
+			}
 		}
 	}
 	this._JSONSuccess("", nil, this.Ctx.Header("Referer"))
