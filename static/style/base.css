@@ -242,7 +242,7 @@ main { overflow: hidden; }
 }
 
 .pagination .page-item,.pagination .page-link{display: inline-block;}
-.pagination .page-link{padding: 5px;border: 1px solid slategrey;min-width: 24px;text-align:center;min-height: 21px;}
+.pagination .page-link{padding: 5px;border: 1px solid #e6e5ec;min-width: 24px;text-align:center;min-height: 21px;color: #518f97;}
 .pagination .page-link-number{padding: 7px 5px 3px;}
 .pagination .disabled a{color: grey;}
 .pagination li.active a{background-color:#95999c;}
