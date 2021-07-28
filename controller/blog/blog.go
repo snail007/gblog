@@ -2,6 +2,12 @@ package blog
 
 import (
 	"encoding/json"
+	"math/rand"
+	"net/http"
+	"path/filepath"
+	"strings"
+	"time"
+
 	"gblog/global"
 	"github.com/blevesearch/bleve"
 	"github.com/snail007/gmc"
@@ -9,11 +15,6 @@ import (
 	gcast "github.com/snail007/gmc/util/cast"
 	gfile "github.com/snail007/gmc/util/file"
 	gmap "github.com/snail007/gmc/util/map"
-	"math/rand"
-	"net/http"
-	"path/filepath"
-	"strings"
-	"time"
 )
 
 type Blog struct {
@@ -205,7 +206,7 @@ func (this *Blog) Timeline() {
 	db := gmc.DB.DB()
 	rs, err := db.Query(this.cache("timeline").
 		From("article").
-		Where(gmap.M{"create_time <=": time.Now().Unix(),"is_draft":0}).
+		Where(gmap.M{"create_time <=": time.Now().Unix(), "is_draft": 0}).
 		OrderBy("create_time", "desc"))
 	if err != nil {
 		this.Stop(err)
@@ -216,7 +217,7 @@ func (this *Blog) Timeline() {
 }
 func (this *Blog) Search() {
 	keyword := strings.Trim(this.Ctx.GET("keyword"), " \t")
-	if keyword == "" || len(keyword) == 1 || len(keyword) >= 50 {
+	if keyword == "" || len(keyword) == 1 || len(keyword) >= 100 {
 		this.Ctx.WriteHeader(http.StatusNotFound)
 		return
 	}
@@ -226,7 +227,7 @@ func (this *Blog) Search() {
 	db := gmc.DB.DB()
 	rs, err := db.Query(this.cache("search").
 		From("article").
-		Where(gmap.M{"create_time <=": time.Now().Unix(),"is_draft":0}).
+		Where(gmap.M{"create_time <=": time.Now().Unix(), "is_draft": 0}).
 		OrderBy("create_time", "desc"))
 	if err != nil {
 		this.Stop(err)
@@ -264,7 +265,7 @@ func (this *Blog) Search() {
 				db := gmc.DB.DB()
 				rs, err := db.Query(this.cache("search").
 					From("article").
-					Where(gmap.M{"create_time <=": time.Now().Unix(),"is_draft":0}).
+					Where(gmap.M{"create_time <=": time.Now().Unix(), "is_draft": 0}).
 					OrderBy("create_time", "desc"))
 				if err != nil {
 					this.Stop(err)
@@ -280,7 +281,9 @@ func (this *Blog) Search() {
 			}
 		}
 	}
-
+	if len(articles) > 10 {
+		articles = articles[:10]
+	}
 	this.View.Set("articles", articles)
 	this.View.Layout("blog/timeline").Render("blog/timeline")
 }
@@ -296,7 +299,7 @@ func (this *Blog) Catalogs() {
 	rs, err = db.Query(this.cache("catalogsSummary").
 		Select("count(*) as total,catalog_id").
 		From("article").
-		Where(gmap.M{"create_time <=": time.Now().Unix(),"is_draft":0}).
+		Where(gmap.M{"create_time <=": time.Now().Unix(), "is_draft": 0}).
 		GroupBy("catalog_id"))
 	if err != nil {
 		this.Stop(err)
