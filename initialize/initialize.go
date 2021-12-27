@@ -7,6 +7,11 @@ package initialize
 
 import (
 	"fmt"
+	"os"
+	"path/filepath"
+	"strings"
+	"time"
+
 	"gblog/global"
 	"gblog/router"
 	"github.com/snail007/gmc"
@@ -16,10 +21,6 @@ import (
 	gdb "github.com/snail007/gmc/module/db"
 	glog "github.com/snail007/gmc/module/log"
 	gfile "github.com/snail007/gmc/util/file"
-	"os"
-	"path/filepath"
-	"strings"
-	"time"
 )
 
 func Initialize(s *ghttpserver.HTTPServer) (err error) {
@@ -139,42 +140,51 @@ func checkTable(db gcore.Database) (isNewDB bool, err error) {
 	now := time.Now().Unix()
 	sql := `
 create table article(
-  article_id integer PRIMARY KEY AUTOINCREMENT,
+  article_id integer  PRIMARY KEY AUTOINCREMENT,
   title text,
   summary text,
   poster_url text,
   content text,
-  is_draft integer default 0,
+  is_draft int default 0,
   catalog_id int,
   create_time int,
   update_time int
-);
+) ENGINE='InnoDB' COLLATE 'utf8mb4_general_ci';
 create table catalog(
   catalog_id integer PRIMARY KEY AUTOINCREMENT,
   name text,
-  sequence integer default 0,
-  is_nav integer default 0
-);
+  sequence int default 0,
+  is_nav int default 0
+) ENGINE='InnoDB' COLLATE 'utf8mb4_general_ci';
 CREATE TABLE user (
   user_id integer PRIMARY KEY AUTOINCREMENT,
   username text,
   nickname text,
   password text,
-  is_delete integer default 0,
-  update_time integer,
-  create_time integer
-);
+  is_delete int default 0,
+  update_time int,
+  create_time int
+) ENGINE='InnoDB' COLLATE 'utf8mb4_general_ci';
 create table config(
   config_id integer PRIMARY KEY AUTOINCREMENT,
   key text,
   value text
-);
+) ENGINE='InnoDB' COLLATE 'utf8mb4_general_ci';
 insert into config (config_id, key, value) values (1,"basic",'{"file":"","key":"basic","web_site_blogger_email":"gblog@example.com","web_site_blogger_name":"又一个gblog博客","web_site_blogger_site":"https://github.com/snail007","web_site_copyright":"本博客内容，gblog版权所有","web_site_description":"gblog是一个广受欢迎的个人开源博客系统，使用golang开发，使用简单，专业的个人博客系统。","web_site_icp":"","web_site_keywords":"gblog开源博客，gmc框架，go博客系统，开源博客","web_site_logo":"/static/style/logo.png","web_site_icon":"/static/style/favicon.ico","web_site_stat":"","web_site_status":"on","web_site_title":"又一个gblog博客！"}');
 insert into config (config_id, key, value) values (2,"system","{}");
 insert into config (config_id, key, value) values (3,"upload",'{"github_speed_url":"https://cdn.jsdelivr.net/gh/%u/%p","github_repo":"","github_token":"","image_mask_text":"","key":"upload","upload_file_storage":"local","image_resize_width":"1024","upload_image_compress":"5"}');
 insert into catalog (catalog_id, name, sequence) values (0,"默认分类",0);
 insert into user (user_id, username, nickname, password, is_delete, update_time, create_time) values (1,'root',	'root',	'2df594b9710111099edbdb7edaa43301',	0,	{now},	{now});
 `
+	if _, ok := db.(*gdb.MySQLDB); ok {
+		sql = strings.Replace(sql, "integer", "int", -1)
+		sql = strings.Replace(sql, "AUTOINCREMENT", "AUTO_INCREMENT", -1)
+		sql = strings.Replace(sql, "key text", "`key` text", 1)
+		sql = strings.Replace(sql, "key, value", "`key`, value ", -1)
+		sql = strings.Replace(sql, "key, value", "`key`, value ", -1)
+	} else {
+		sql = strings.Replace(sql, "ENGINE='InnoDB' COLLATE 'utf8mb4_general_ci'", "", -1)
+	}
 	sql = strings.Replace(sql, "{now}", fmt.Sprintf("%d", now), -1)
 	// create table
 	for _, v := range strings.Split(strings.Trim(sql, ";\n\t "), ";") {
