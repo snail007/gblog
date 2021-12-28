@@ -71,7 +71,11 @@ func Initialize(s *ghttpserver.HTTPServer) (err error) {
 		return
 	}
 	ctx.SetDB(gdb.DB())
-	gdb.DBSQLite3().Config.Cache = &DBCache{}
+	if _, ok := gdb.DB().(*gdb.MySQLDB); ok {
+		gdb.DBMySQL().Config.Cache = &DBCache{}
+	} else {
+		gdb.DBSQLite3().Config.Cache = &DBCache{}
+	}
 	// auto init databases
 	isNewDB, err := checkTable(ctx.DB())
 	if err != nil {
@@ -88,7 +92,7 @@ func Initialize(s *ghttpserver.HTTPServer) (err error) {
 	// init logger
 	logger := glog.NewFromConfig(cfg, "")
 	if ctx.IsDebug() {
-		logger.SetLevel(gcore.LTRACE)
+		logger.SetLevel(gcore.LogLevelTrace)
 	}
 	ctx.SetLog(logger)
 
@@ -132,14 +136,14 @@ func (s *DBCache) Get(key string) (data []byte, err error) {
 
 func checkTable(db gcore.Database) (isNewDB bool, err error) {
 	isNewDB = true
-	_, e := db.Query(db.AR().Raw("select * from article"))
+	_, e := db.Query(db.AR().Raw(prefixCheck(db, "select * from __PREFIX__article")))
 	if e == nil {
 		isNewDB = false
 		return
 	}
 	now := time.Now().Unix()
 	sql := `
-create table article(
+create table __PREFIX__article(
   article_id integer  PRIMARY KEY AUTOINCREMENT,
   title text,
   summary text,
@@ -149,14 +153,14 @@ create table article(
   catalog_id int,
   create_time int,
   update_time int
-) ENGINE='InnoDB' COLLATE 'utf8mb4_general_ci';
-create table catalog(
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4_general_ci;
+create table __PREFIX__catalog(
   catalog_id integer PRIMARY KEY AUTOINCREMENT,
   name text,
   sequence int default 0,
   is_nav int default 0
-) ENGINE='InnoDB' COLLATE 'utf8mb4_general_ci';
-CREATE TABLE user (
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4_general_ci;
+CREATE TABLE __PREFIX__user (
   user_id integer PRIMARY KEY AUTOINCREMENT,
   username text,
   nickname text,
@@ -164,18 +168,19 @@ CREATE TABLE user (
   is_delete int default 0,
   update_time int,
   create_time int
-) ENGINE='InnoDB' COLLATE 'utf8mb4_general_ci';
-create table config(
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4_general_ci;
+create table __PREFIX__config(
   config_id integer PRIMARY KEY AUTOINCREMENT,
   key text,
   value text
-) ENGINE='InnoDB' COLLATE 'utf8mb4_general_ci';
-insert into config (config_id, key, value) values (1,"basic",'{"file":"","key":"basic","web_site_blogger_email":"gblog@example.com","web_site_blogger_name":"又一个gblog博客","web_site_blogger_site":"https://github.com/snail007","web_site_copyright":"本博客内容，gblog版权所有","web_site_description":"gblog是一个广受欢迎的个人开源博客系统，使用golang开发，使用简单，专业的个人博客系统。","web_site_icp":"","web_site_keywords":"gblog开源博客，gmc框架，go博客系统，开源博客","web_site_logo":"/static/style/logo.png","web_site_icon":"/static/style/favicon.ico","web_site_stat":"","web_site_status":"on","web_site_title":"又一个gblog博客！"}');
-insert into config (config_id, key, value) values (2,"system","{}");
-insert into config (config_id, key, value) values (3,"upload",'{"github_speed_url":"https://cdn.jsdelivr.net/gh/%u/%p","github_repo":"","github_token":"","image_mask_text":"","key":"upload","upload_file_storage":"local","image_resize_width":"1024","upload_image_compress":"5"}');
-insert into catalog (catalog_id, name, sequence) values (0,"默认分类",0);
-insert into user (user_id, username, nickname, password, is_delete, update_time, create_time) values (1,'root',	'root',	'2df594b9710111099edbdb7edaa43301',	0,	{now},	{now});
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4_general_ci;
+insert into __PREFIX__config (config_id, key, value) values (1,"basic",'{"file":"","key":"basic","web_site_blogger_email":"gblog@example.com","web_site_blogger_name":"又一个gblog博客","web_site_blogger_site":"https://github.com/snail007","web_site_copyright":"本博客内容，gblog版权所有","web_site_description":"gblog是一个广受欢迎的个人开源博客系统，使用golang开发，使用简单，专业的个人博客系统。","web_site_icp":"","web_site_keywords":"gblog开源博客，gmc框架，go博客系统，开源博客","web_site_logo":"/static/style/logo.png","web_site_icon":"/static/style/favicon.ico","web_site_stat":"","web_site_status":"on","web_site_title":"又一个gblog博客！"}');
+insert into __PREFIX__config (config_id, key, value) values (2,"system","{}");
+insert into __PREFIX__config (config_id, key, value) values (3,"upload",'{"github_repo":"","github_speed_url":"https://cdn.jsdelivr.net/gh/%u/%p","github_token":"","gitlab_api_url":"","gitlab_repo":"","gitlab_token":"","image_mask_text":"","image_resize_width":"1024","key":"upload","upload_file_storage":"local","upload_image_compress":"5"}');
+insert into __PREFIX__catalog (catalog_id, name, sequence) values (0,"默认分类",0);
+insert into __PREFIX__user (user_id, username, nickname, password, is_delete, update_time, create_time) values (1,'root',	'root',	'2df594b9710111099edbdb7edaa43301',	0,	{now},	{now});
 `
+	sql = prefixCheck(db, sql)
 	if _, ok := db.(*gdb.MySQLDB); ok {
 		sql = strings.Replace(sql, "integer", "int", -1)
 		sql = strings.Replace(sql, "AUTOINCREMENT", "AUTO_INCREMENT", -1)
@@ -183,7 +188,7 @@ insert into user (user_id, username, nickname, password, is_delete, update_time,
 		sql = strings.Replace(sql, "key, value", "`key`, value ", -1)
 		sql = strings.Replace(sql, "key, value", "`key`, value ", -1)
 	} else {
-		sql = strings.Replace(sql, "ENGINE='InnoDB' COLLATE 'utf8mb4_general_ci'", "", -1)
+		sql = strings.Replace(sql, "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4_general_ci", "", -1)
 	}
 	sql = strings.Replace(sql, "{now}", fmt.Sprintf("%d", now), -1)
 	// create table
@@ -198,10 +203,23 @@ insert into user (user_id, username, nickname, password, is_delete, update_time,
 	return
 }
 
+func prefixCheck(db gcore.Database, sql string) string {
+	if v, ok := db.(*gdb.MySQLDB); ok {
+		if v.Config.TablePrefix == "" {
+			sql = strings.Replace(sql, "__PREFIX__", "", -1)
+		}
+	} else if v, ok := db.(*gdb.SQLite3DB); ok {
+		if v.Config.TablePrefix == "" {
+			sql = strings.Replace(sql, "__PREFIX__", "", -1)
+		}
+	}
+	return sql
+}
+
 func autoUpdateTable(db gcore.Database) (err error) {
 	// checking sql, checking result except not nil, update sql.
 	sqlData := [][]interface{}{
-		{"select is_draft from article limit 0,1", true, `alter table article add column is_draft integer default 0`},
+		//{"select is_draft from __PREFIX__article limit 0,1", true, `alter table __PREFIX__article add column is_draft integer default 0`},
 	}
 	for _, v := range sqlData {
 		checkSQL := v[0].(string)

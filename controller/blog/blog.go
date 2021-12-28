@@ -3,7 +3,9 @@ package blog
 import (
 	"encoding/json"
 	"math/rand"
+	"mime"
 	"net/http"
+	"os"
 	"path/filepath"
 	"strings"
 	"time"
@@ -15,6 +17,7 @@ import (
 	gcast "github.com/snail007/gmc/util/cast"
 	gfile "github.com/snail007/gmc/util/file"
 	gmap "github.com/snail007/gmc/util/map"
+	"github.com/xanzy/go-gitlab"
 )
 
 type Blog struct {
@@ -324,12 +327,14 @@ func (this *Blog) Catalogs() {
 func (this *Blog) Attachment() {
 	id := this.Ctx.GET("id")
 	if id == "" {
-		id = strings.TrimPrefix(this.Ctx.GetParam("id"), "/")
+		id = this.Ctx.GetParam("id")
 	}
 	if id == "" {
 		this.Ctx.WriteHeader(http.StatusNotFound)
 		return
 	}
+	id = filepath.Clean(strings.TrimPrefix(id, "/"))
+	path := "attachment/" + id
 	storageType := global.Context.BConfig("upload.upload_file_storage")
 	switch storageType {
 	case "local":
@@ -342,7 +347,6 @@ func (this *Blog) Attachment() {
 		this.Ctx.WriteFile(file)
 	case "github":
 		userRepo := gcast.ToString(global.Context.BConfig("upload.github_repo"))
-		path := "attachment/" + filepath.Clean(id)
 		speedURL := gcast.ToString(global.Context.BConfig("upload.github_speed_url"))
 		if speedURL == "" {
 			speedURL = "https://cdn.jsdelivr.net/gh/%u/%p"
@@ -350,6 +354,46 @@ func (this *Blog) Attachment() {
 		speedURL = strings.Replace(speedURL, "%u", userRepo, 1)
 		speedURL = strings.Replace(speedURL, "%p", path, 1)
 		this.Ctx.Redirect(speedURL)
+	case "gitlab":
+		mimeType := mime.TypeByExtension(filepath.Ext(id))
+		if mimeType == "" {
+			mimeType = "application/octet-stream"
+		}
+		var bin []byte
+		if gfile.Exists(path) {
+			bin = gfile.Bytes(path)
+		} else {
+			token := gcast.ToString(global.Context.BConfig("upload.gitlab_token"))
+			apiURL := gcast.ToString(global.Context.BConfig("upload.gitlab_api_url"))
+			userRepo := gcast.ToString(global.Context.BConfig("upload.gitlab_repo"))
+			client, err := gitlab.NewClient(token, gitlab.WithBaseURL(apiURL))
+			if err != nil {
+				this.Logger.Warnf("create gitlab client error, %s", err)
+				this.Ctx.Write(err.Error())
+				return
+			}
+			var resp *gitlab.Response
+			bin, resp, err = client.RepositoryFiles.GetRawFile(userRepo, path, &gitlab.GetRawFileOptions{})
+			if err != nil {
+				this.Logger.Warnf("get gitlab file error, %s", err)
+				this.Ctx.Write(err.Error())
+				return
+			}
+			resp.Body.Close()
+		}
+		this.Ctx.SetHeader("Content-Type", mimeType)
+		this.Ctx.Write(bin)
+		go func() {
+			if !gfile.Exists(path) {
+				dir := filepath.Dir(path)
+				if !gfile.IsDir(dir) {
+					os.MkdirAll(dir, 0755)
+				}
+				err := gfile.Write(path, bin, false)
+				if err != nil {
+					this.Logger.Warnf("write gitlab file to local fail, error: %s", err)
+				}
+			}
+		}()
 	}
-
 }

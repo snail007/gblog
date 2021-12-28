@@ -4299,3 +4299,7 @@ button.list-group-item:hover {
         white-space: nowrap;
     }
 }
+
+.image_type_area{
+    display: none;
+}

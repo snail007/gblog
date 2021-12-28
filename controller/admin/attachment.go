@@ -2,14 +2,8 @@ package admin
 
 import (
 	"context"
+	"encoding/base64"
 	"fmt"
-	"gblog/global"
-	"gblog/util/bimage"
-	"github.com/google/go-github/v33/github"
-	gcast "github.com/snail007/gmc/util/cast"
-	gfile "github.com/snail007/gmc/util/file"
-	gmap "github.com/snail007/gmc/util/map"
-	"golang.org/x/oauth2"
 	"io/ioutil"
 	"math/rand"
 	"mime/multipart"
@@ -18,6 +12,15 @@ import (
 	"path/filepath"
 	"strings"
 	"time"
+
+	"gblog/global"
+	"gblog/util/bimage"
+	"github.com/google/go-github/v33/github"
+	gcast "github.com/snail007/gmc/util/cast"
+	gfile "github.com/snail007/gmc/util/file"
+	gmap "github.com/snail007/gmc/util/map"
+	"github.com/xanzy/go-gitlab"
+	"golang.org/x/oauth2"
 )
 
 type Attachment struct {
@@ -61,6 +64,9 @@ func (this *Attachment) Upload() {
 		case "github":
 			savePath := "attachment/" + subDir + "/" + randFilename
 			err = this.uploadToGithub(savePath, file, isCompress)
+		case "gitlab":
+			savePath := "attachment/" + subDir + "/" + randFilename
+			err = this.uploadToGitLab(savePath, file, isCompress)
 		}
 
 		if err != nil {
@@ -97,16 +103,13 @@ func (this *Attachment) uploadToLocal(savePath string, file *multipart.FileHeade
 	}
 	return
 }
-
-func (this *Attachment) uploadToGithub(filePath string, file *multipart.FileHeader, isCompress bool) (err error) {
-	token := gcast.ToString(global.Context.BConfig("upload.github_token"))
-	userRepo := gcast.ToString(global.Context.BConfig("upload.github_repo"))
+func (this *Attachment) compressAndMask(file *multipart.FileHeader, isCompress bool) (contents []byte, err error) {
 	f, err := file.Open()
 	if err != nil {
 		return
 	}
 	defer f.Close()
-	contents, err := ioutil.ReadAll(f)
+	contents, err = ioutil.ReadAll(f)
 	if err != nil {
 		return
 	}
@@ -134,7 +137,15 @@ func (this *Attachment) uploadToGithub(filePath string, file *multipart.FileHead
 			this.Logger.Warnf("mask image fail,text: %s, error: %s, file: %s", maskText, e, file.Filename)
 		}
 	}
-
+	return
+}
+func (this *Attachment) uploadToGithub(filePath string, file *multipart.FileHeader, isCompress bool) (err error) {
+	token := gcast.ToString(global.Context.BConfig("upload.github_token"))
+	userRepo := gcast.ToString(global.Context.BConfig("upload.github_repo"))
+	contents, err := this.compressAndMask(file, isCompress)
+	if err != nil {
+		return
+	}
 	data := strings.Split(userRepo, "/")
 	ctx1, cancel1 := context.WithTimeout(context.Background(), time.Second*60)
 	defer cancel1()
@@ -156,6 +167,41 @@ func (this *Attachment) uploadToGithub(filePath string, file *multipart.FileHead
 	ctx2, cancel2 := context.WithTimeout(context.Background(), time.Second*60)
 	defer cancel2()
 	_, _, err = client.Repositories.CreateFile(ctx2, data[0], data[1], filePath, opts)
+	return
+}
+func (this *Attachment) uploadToGitLab(filePath string, file *multipart.FileHeader, isCompress bool) (err error) {
+	token := gcast.ToString(global.Context.BConfig("upload.gitlab_token"))
+	apiURL := gcast.ToString(global.Context.BConfig("upload.gitlab_api_url"))
+	userRepo := gcast.ToString(global.Context.BConfig("upload.gitlab_repo"))
+	contents, err := this.compressAndMask(file, isCompress)
+	if err != nil {
+		return
+	}
+	client, err := gitlab.NewClient(token, gitlab.WithBaseURL(apiURL))
+	if err != nil {
+		return
+	}
+	bs, resp, err := client.Branches.ListBranches(userRepo, &gitlab.ListBranchesOptions{})
+	if err != nil {
+		return
+	}
+	resp.Body.Close()
+	defaultBranchName := ""
+	for _, v := range bs {
+		if v.Default {
+			defaultBranchName = v.Name
+			break
+		}
+	}
+	encoding := "base64"
+	msg := "new file"
+	binText := base64.StdEncoding.EncodeToString(contents)
+	_, _, err = client.RepositoryFiles.CreateFile(userRepo, filePath, &gitlab.CreateFileOptions{
+		Branch:        &defaultBranchName,
+		Encoding:      &encoding,
+		Content:       &binText,
+		CommitMessage: &msg,
+	})
 	return
 }
 

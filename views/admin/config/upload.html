@@ -1,109 +1,157 @@
 <div class="container-fluid p-t-15">
-
-<div class="row">
-
-    <div class="col-lg-12">
-        <div class="card">
-            {{template "admin/config/common" .}}
-            <div class="tab-content">
-                <div class="tab-pane active">
-                    <form action="{{.admPath}}/config/conf" method="post" name="edit-form" class="edit-form ajax-form">
-                        <h2>图床选项</h2>
-                        <input type="hidden" name="key" value="upload"/>
-                        <div class="form-group">
-                            <label for="upload_file_storage">图床类型</label>
-                            <div class="btn-group btn-group-xs">
-                                <input type="hidden" name="upload_file_storage">
-                                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"
-                                        aria-haspopup="true" aria-expanded="false"></button>
-                                <ul class="dropdown-menu" value="{{.upload_file_storage}}">
-                                    <li><a class="dropdown-item" href="javascript:void(0);" value="local">本地存储</a></li>
-                                    <li><a class="dropdown-item" href="javascript:void(0);" value="github">Github</a></li>
-                                </ul>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                {{template "admin/config/common" .}}
+                <div class="tab-content">
+                    <div class="tab-pane active">
+                        <form action="{{.admPath}}/config/conf" method="post" name="edit-form"
+                              class="edit-form ajax-form">
+                            <h2>图床选项</h2>
+                            <input type="hidden" name="key" value="upload"/>
+                            <div class="form-group">
+                                <label for="upload_file_storage">图床类型</label>
+                                <div class="btn-group btn-group-xs">
+                                    <input type="hidden" name="upload_file_storage">
+                                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"
+                                            aria-haspopup="true" aria-expanded="false"></button>
+                                    <ul class="dropdown-menu upload_file_storage" value="{{.upload_file_storage}}">
+                                        <li><a class="dropdown-item" href="javascript:void(0);" value="local">本地存储</a>
+                                        </li>
+                                        <li><a class="dropdown-item" href="javascript:void(0);"
+                                               value="github">Github</a></li>
+                                        <li><a class="dropdown-item" href="javascript:void(0);"
+                                               value="gitlab">GitLab</a></li>
+                                    </ul>
+                                </div>
+                                <br>
                             </div>
-                            <br>
-                            <small class="help-block text text-danger">选择Github作为图床存储，务必填写下面的github信息才能使用。</small>
-                        </div>
-                        <div class="form-group">
-                            <label for="github_token">访问Github API的token</label>
-                            <input class="form-control" type="text" id="github_token" name="github_token" value="{{.github_token|html}}" >
-                            <small class="help-block">
-                                创建Github API的token步骤：<br>
-                                1.登录Github，点击右上角头像，点击：Settings。<br>
-                                2.点击左侧：Developer settings。<br>
-                                3.点击左侧：Personal access tokens。<br>
-                                4.点击右侧：Generate new token。<br>
-                                5."Note"一栏输入名称，比如：blog。<br>
-                                6.权限勾选 <b>repo</b>。<br>
-                                7.点击页面最下面的绿色按钮：Generate token。<br>
-                                8.然后就可以看见你创建的token，记得保存起来，只会出现这一次。
-                            </small>
-                        </div>
-                        <div class="form-group">
-                            <label for="github_repo">Github仓库</label>
-                            <input class="form-control" type="text" id="github_repo" name="github_repo" value="{{.github_repo|html}}" >
-                            <small class="help-block">格式：<i class="text text-danger">用户名</i>/<i class="text text-danger">仓库名</i>，比如：snail007/gmc</small>
-                        </div>
-                        <div class="form-group">
-                            <label for="github_speed_url">Github加速URL</label>
-                            <input class="form-control" type="text" id="github_speed_url" name="github_speed_url" value="{{val . "github_speed_url" "https://cdn.jsdelivr.net/gh/%u/%p"|html}}" >
-                            <small class="help-block">常用的有：<br>
-                                1.<i> https://cdn.jsdelivr.net/gh/%u/%p</i><br>
-                                2.<i> https://ghproxy.com/https://raw.githubusercontent.com/%u/main/%p</i><br>
-                                3.<i> https://raw.fastgit.org/%u/main/%p</i><br>
-                            </small>
-                            <small class="help-block">
-                            %u 变量，表示配置的Github仓库，比如：snail007/gmc。<br>
-                            %p 变量，表示Github仓库根目录开始的文件路径，比如：attachment/2021-01-11/foo.png<br>
-                            main 是分支名称，根据自己情况修改，一般是 master 或者 main 。
-                            </small>
-                        </div>
-                        <h2>图片选项</h2>
-                        <div class="form-group">
-                            <label for="upload_image_compress">图片压缩</label>
-                            <div class="btn-group btn-group-xs">
-                                <input type="hidden" name="upload_image_compress">
-                                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"
-                                        aria-haspopup="true" aria-expanded="false"></button>
-                                <ul class="dropdown-menu" value="{{val . "upload_image_compress" "5"}}">
-                                    <li><a class="dropdown-item" href="javascript:void(0);" value="0">不压缩</a></li>
-                                    <li><a class="dropdown-item" href="javascript:void(0);" value="1">1</a></li>
-                                    <li><a class="dropdown-item" href="javascript:void(0);" value="2">2</a></li>
-                                    <li><a class="dropdown-item" href="javascript:void(0);" value="3">3</a></li>
-                                    <li><a class="dropdown-item" href="javascript:void(0);" value="4">4</a></li>
-                                    <li><a class="dropdown-item" href="javascript:void(0);" value="5">5</a></li>
-                                    <li><a class="dropdown-item" href="javascript:void(0);" value="6">6</a></li>
-                                    <li><a class="dropdown-item" href="javascript:void(0);" value="7">7</a></li>
-                                    <li><a class="dropdown-item" href="javascript:void(0);" value="8">8</a></li>
-                                    <li><a class="dropdown-item" href="javascript:void(0);" value="9">9</a></li>
-                                    <li><a class="dropdown-item" href="javascript:void(0);" value="10">10</a></li>
-                                </ul>
+                            <div class="image_type_area area_github">
+                                <div class="form-group">
+                                    <p class="help-block text text-danger">选择Github作为图床存储，务必填写下面的github信息才能使用。</p>
+                                    <label for="github_token">访问Github API的token</label>
+                                    <input class="form-control" type="text" id="github_token" name="github_token"
+                                           value="{{.github_token|html}}">
+                                    <small class="help-block">
+                                        创建Github API的token步骤：<br>
+                                        1.登录Github，点击右上角头像，点击：Settings。<br>
+                                        2.点击左侧：Developer settings。<br>
+                                        3.点击左侧：Personal access tokens。<br>
+                                        4.点击右侧：Generate new token。<br>
+                                        5."Note"一栏输入名称，比如：blog。<br>
+                                        6.权限勾选 <b>repo</b>。<br>
+                                        7.点击页面最下面的绿色按钮：Generate token。<br>
+                                        8.然后就可以看见你创建的token，记得保存起来，只会出现这一次。
+                                    </small>
+                                </div>
+                                <div class="form-group">
+                                    <label for="github_repo">Github仓库</label>
+                                    <input class="form-control" type="text" id="github_repo" name="github_repo"
+                                           value="{{.github_repo|html}}">
+                                    <small class="help-block">格式：<i class="text text-danger">用户名</i>/<i
+                                                class="text text-danger">仓库名</i>，比如：snail007/gmc</small>
+                                </div>
+                                <div class="form-group">
+                                    <label for="github_speed_url">Github加速URL</label>
+                                    <input class="form-control" type="text" id="github_speed_url"
+                                           name="github_speed_url"
+                                           value="{{val . "github_speed_url" "https://cdn.jsdelivr.net/gh/%u/%p"|html}}">
+                                    <small class="help-block">常用的有：<br>
+                                        1.<i> https://cdn.jsdelivr.net/gh/%u/%p</i><br>
+                                        2.<i> https://ghproxy.com/https://raw.githubusercontent.com/%u/main/%p</i><br>
+                                        3.<i> https://raw.fastgit.org/%u/main/%p</i><br>
+                                    </small>
+                                    <small class="help-block">
+                                        %u 变量，表示配置的Github仓库，比如：snail007/gmc。<br>
+                                        %p 变量，表示Github仓库根目录开始的文件路径，比如：attachment/2021-01-11/foo.png<br>
+                                        main 是分支名称，根据自己情况修改，一般是 master 或者 main 。
+                                    </small>
+                                </div>
                             </div>
-                            <br>
-                            <small class="help-block">选择是否压缩上传的图片，压缩等级。数字越大压缩越厉害，图片质量越差。一般5比较平衡。</small>
-                        </div>
-                        <div class="form-group">
-                            <label for="image_mask_text">图片缩放</label>
-                            <input class="form-control" type="text" id="image_resize_width" name="image_resize_width" value="{{val . "image_resize_width" "1024"|html}}" >
-                            <small class="help-block text text-danger">必须打开上面的图片压缩，图片缩放才有效。</small>
-                            <small class="help-block">这里是设置上传的图片最大宽度，比如1024，会等比计算高度，0代表不缩放图片。超过这个宽度的图片才会被缩放，小于这个宽度的图片不会被放大。</small>
-                        </div>
-                        <div class="form-group">
-                            <label for="image_mask_text">图片水印</label>
-                            <input class="form-control" type="text" id="image_mask_text" name="image_mask_text" value="{{.image_mask_text|html}}" >
-                            <small class="help-block">图片水印文字，不打水印留空即可</small>
-                        </div>
-                        <div class="form-group">
-                            <button type="submit" class="btn btn-primary m-r-5">保 存</button>
-                        </div>
-                    </form>
-
+                            <div class="image_type_area area_gitlab">
+                                <div class="form-group">
+                                    <p class="help-block text text-danger">选择GitLab作为图床存储，务必填写下面的GitLab信息才能使用。</p>
+                                    <label for="gitlab_api_url">GitLab 的 API 地址 URL</label>
+                                    <input class="form-control" type="text" id="gitlab_api_url" name="gitlab_api_url"
+                                           value="{{.gitlab_api_url|html}}">
+                                    <label for="gitlab_token">访问 GitLab API 的 token</label>
+                                    <input class="form-control" type="text" id="gitlab_token" name="gitlab_token"
+                                           value="{{.gitlab_token|html}}">
+                                    <small class="help-block">
+                                        创建GitLab API的token步骤：<br>
+                                        1.登录GitLab，点击右上角头像，点击：Edit profile。<br>
+                                        2.点击左侧：Access Tokens。<br>
+                                        3.右侧：Personal Access Tokens,填写<b>Name</b>，下面 <b>Scopes</b> 全部勾选。<br>
+                                        4.点击下面 按钮：<b>Create personal access token</b>。<br>
+                                        5.然后就可以看见你创建的token，记得保存起来，只会出现这一次。
+                                    </small>
+                                </div>
+                                <div class="form-group">
+                                    <label for="gitlab_repo">GitLab仓库</label>
+                                    <input class="form-control" type="text" id="gitlab_repo" name="gitlab_repo"
+                                           value="{{.gitlab_repo|html}}">
+                                    <small class="help-block">格式：<i class="text text-danger">用户名</i>/<i
+                                                class="text text-danger">仓库名</i>，比如：snail007/gmc</small>
+                                </div>
+                            </div>
+                            <h2>图片选项</h2>
+                            <div class="form-group">
+                                <label for="upload_image_compress">图片压缩</label>
+                                <div class="btn-group btn-group-xs">
+                                    <input type="hidden" name="upload_image_compress">
+                                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"
+                                            aria-haspopup="true" aria-expanded="false"></button>
+                                    <ul class="dropdown-menu" value="{{val . "upload_image_compress" "5"}}">
+                                        <li><a class="dropdown-item" href="javascript:void(0);" value="0">不压缩</a></li>
+                                        <li><a class="dropdown-item" href="javascript:void(0);" value="1">1</a></li>
+                                        <li><a class="dropdown-item" href="javascript:void(0);" value="2">2</a></li>
+                                        <li><a class="dropdown-item" href="javascript:void(0);" value="3">3</a></li>
+                                        <li><a class="dropdown-item" href="javascript:void(0);" value="4">4</a></li>
+                                        <li><a class="dropdown-item" href="javascript:void(0);" value="5">5</a></li>
+                                        <li><a class="dropdown-item" href="javascript:void(0);" value="6">6</a></li>
+                                        <li><a class="dropdown-item" href="javascript:void(0);" value="7">7</a></li>
+                                        <li><a class="dropdown-item" href="javascript:void(0);" value="8">8</a></li>
+                                        <li><a class="dropdown-item" href="javascript:void(0);" value="9">9</a></li>
+                                        <li><a class="dropdown-item" href="javascript:void(0);" value="10">10</a></li>
+                                    </ul>
+                                </div>
+                                <br>
+                                <small class="help-block">选择是否压缩上传的图片，压缩等级。数字越大压缩越厉害，图片质量越差。一般5比较平衡。</small>
+                            </div>
+                            <div class="form-group">
+                                <label for="image_mask_text">图片缩放</label>
+                                <input class="form-control" type="text" id="image_resize_width"
+                                       name="image_resize_width" value="{{val . "image_resize_width" "1024"|html}}">
+                                <small class="help-block text text-danger">必须打开上面的图片压缩，图片缩放才有效。</small>
+                                <small class="help-block">这里是设置上传的图片最大宽度，比如1024，会等比计算高度，0代表不缩放图片。超过这个宽度的图片才会被缩放，小于这个宽度的图片不会被放大。</small>
+                            </div>
+                            <div class="form-group">
+                                <label for="image_mask_text">图片水印</label>
+                                <input class="form-control" type="text" id="image_mask_text" name="image_mask_text"
+                                       value="{{.image_mask_text|html}}">
+                                <small class="help-block">图片水印文字，不打水印留空即可</small>
+                            </div>
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-primary m-r-5">保 存</button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
-
         </div>
     </div>
-
 </div>
 
-</div>
+<script>
+    function showArea() {
+        $('.image_type_area').hide();
+        var upload_file_storage = $("[name='upload_file_storage']").val();
+        $(".area_" + upload_file_storage).show();
+    }
+    window.init.push(function () {
+        showArea();
+        $(".upload_file_storage").click(function (){
+            showArea();
+        });
+    });
+</script>
