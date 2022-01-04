@@ -16,7 +16,7 @@ var (
 )
 
 func syncArticle(articleID string, oldArticle gmap.Mss) (err error) {
- 	if !isGitLabSync() {
+	if !isGitLabSync() {
 		return
 	}
 	catalogTable := gmc.DB.Table("catalog")
@@ -89,6 +89,12 @@ func syncArticle(articleID string, oldArticle gmap.Mss) (err error) {
 		} else {
 			global.Context.Log().Warnf("sync article error: %s", err)
 			return
+		}
+	} else {
+		if oldArticlePath != "" && oldArticlePath != filePath {
+			go func() {
+				syncDeleteArticle(oldArticle)
+			}()
 		}
 	}
 	return
