@@ -7,7 +7,7 @@ require (
 	github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0
 	github.com/google/go-github/v33 v33.0.0
 	github.com/gookit/validate v1.2.8
-	github.com/snail007/gmc v0.0.0-20211227093044-44721a57782e
+	github.com/snail007/gmc v0.0.0-20220104032014-88ca1aa26066
 	github.com/snail007/resize v0.0.0-20180221191011-83c6a9932646
 	github.com/snail007/uasurfer v0.0.0-20191028135549-26b5daa857f1
 	github.com/spf13/pflag v1.0.3

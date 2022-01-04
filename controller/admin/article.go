@@ -2,12 +2,13 @@ package admin
 
 import (
 	"fmt"
+	"time"
+
 	"gblog/global"
 	"github.com/gookit/validate"
 	"github.com/snail007/gmc"
 	gcast "github.com/snail007/gmc/util/cast"
 	gmap "github.com/snail007/gmc/util/map"
-	"time"
 )
 
 type Article struct {
@@ -152,6 +153,7 @@ func (this *Article) Create() {
 				this.Logger.Warnf("insert index data fail, %d , error: %s", id, err)
 			}
 		}
+		go syncArticle(gcast.ToString(id), nil)
 		this._JSONSuccess("", "", this.Ctx.POST("referer"))
 	} else {
 		catalogTable := gmc.DB.Table("catalog")
@@ -246,6 +248,7 @@ func (this *Article) Edit() {
 				this.Logger.Warnf("insert index data fail, %d , error: %s", id, err)
 			}
 		}
+		go syncArticle(id, article)
 		this._JSONSuccess("", "", this.Ctx.POST("referer"))
 	} else {
 		catalogTable := gmc.DB.Table("catalog")
@@ -274,7 +277,12 @@ func (this *Article) Delete() {
 		ids = append(ids, id...)
 	}
 	table := gmc.DB.Table("article")
-	_, err := table.DeleteByIDs(ids)
+	var articles []gmap.Mss
+	var err error
+	if isGitLabSync() {
+		articles, err = table.MGetByIDs(ids)
+	}
+	_, err = table.DeleteByIDs(ids)
 	this.StopE(err, func() {
 		this._JSONFail(err.Error())
 	})
@@ -287,6 +295,13 @@ func (this *Article) Delete() {
 				this.Logger.Warnf("delete index data fail, %d , error: %s", id, err)
 			}
 		}
+	}
+	if len(articles) > 0 {
+		go func() {
+			for _, v := range articles {
+				syncDeleteArticle(v)
+			}
+		}()
 	}
 	this._JSONSuccess("", nil, this.Ctx.Header("Referer"))
 }
@@ -308,10 +323,28 @@ func (this *Article) Move() {
 		this._JSONFail("catalog not found")
 	}
 	table := gmc.DB.Table("article")
+	var articles []gmap.Mss
+	if isGitLabSync() {
+		articles, err = table.MGetByIDs(ids)
+	}
 	_, err = table.UpdateByIDs(ids, gmap.M{"catalog_id": catalogID})
 	this.StopE(err, func() {
 		this._JSONFail(err.Error())
 	})
+	if len(articles) > 0 {
+		go func() {
+			for _, v := range articles {
+				syncDeleteArticle(v)
+			}
+			articlesNew, _ := table.MGetByIDs(ids)
+			for _, v := range articlesNew {
+				syncArticle(v["article_id"], nil)
+			}
+		}()
+	}
 	global.Context.Cache().Clear()
+	if isGitLabSync() {
+
+	}
 	this._JSONSuccess("", nil, this.Ctx.Header("Referer"))
 }
