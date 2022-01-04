@@ -44,10 +44,7 @@ func syncArticle(articleID string, oldArticle gmap.Mss) (err error) {
 	token := gcast.ToString(global.Context.BConfig("upload.gitlab_token"))
 	apiURL := gcast.ToString(global.Context.BConfig("upload.gitlab_api_url"))
 	userRepo := gcast.ToString(global.Context.BConfig("upload.gitlab_repo"))
-	storageType := global.Context.BConfig("upload.upload_file_storage")
-	if storageType != "gitlab" {
-		return
-	}
+
 	client, err := gitlab.NewClient(token, gitlab.WithBaseURL(apiURL))
 	if err != nil {
 		global.Context.Log().Warnf("sync article error: %s", err)
@@ -152,7 +149,8 @@ func getUserRepo() string {
 }
 
 func isGitLabSync() bool {
-	return gcast.ToBool(global.Context.BConfig("upload.gitlab_sync"))
+	storageType := global.Context.BConfig("upload.upload_file_storage")
+	return storageType == "gitlab" && gcast.ToBool(global.Context.BConfig("upload.gitlab_sync"))
 }
 
 func getDefaultBranchName() (string, error) {
