@@ -30,7 +30,7 @@ func (this *Catalog) List() {
 		where = gmap.M{search + " like": "%" + keyword + "%"}
 	}
 	table := gmc.DB.Table("catalog")
-	rows, err := table.MGetBy(where, gmap.M{"0:is_nav": "desc", "1:sequence": "asc"})
+	rows, err := table.MGetBy(where, "is_nav", "desc", "sequence", "asc")
 	if err != nil {
 		this.Stop(err)
 	}
@@ -152,7 +152,7 @@ func (this *Catalog) Edit() {
 	}
 }
 
-//保存拖拽排序
+// 保存拖拽排序
 func (this *Catalog) SaveOrder() {
 	data := this.Ctx.POSTData()
 	if len(data) == 0 {

@@ -46,12 +46,12 @@ func (this *Article) List() {
 		start = 0
 	}
 	table := gmc.DB.Table("article")
-	rows, total, err := table.Page(where, start, pageSize, gmap.M{"article_id": "desc"})
+	rows, total, err := table.Page(where, start, pageSize, "article_id", "desc")
 	if err != nil {
 		this.Stop(err)
 	}
 	catalogTable := gmc.DB.Table("catalog")
-	catalogs, err := catalogTable.GetAll(gmap.M{"sequence": "asc"})
+	catalogs, err := catalogTable.GetAll("sequence", "asc")
 	if err != nil {
 		this.Stop(err)
 	}
@@ -157,7 +157,7 @@ func (this *Article) Create() {
 		this._JSONSuccess("", "", this.Ctx.POST("referer"))
 	} else {
 		catalogTable := gmc.DB.Table("catalog")
-		catalogs, err := catalogTable.GetAll(gmap.M{"sequence": "asc"})
+		catalogs, err := catalogTable.GetAll("sequence", "asc")
 		if err != nil {
 			this.Stop(err)
 		}
@@ -252,7 +252,7 @@ func (this *Article) Edit() {
 		this._JSONSuccess("", "", this.Ctx.POST("referer"))
 	} else {
 		catalogTable := gmc.DB.Table("catalog")
-		catalogs, err := catalogTable.GetAll(gmap.M{"sequence": "asc"})
+		catalogs, err := catalogTable.GetAll("sequence", "asc")
 		if err != nil {
 			this.Stop(err)
 		}

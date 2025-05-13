@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -x
 GOVERSION=1.16
 
 go mod tidy
@@ -32,7 +32,7 @@ set -e
 # linux 64
 docker run -it --rm \
 -v $GOPATH:/go \
--e BUILDDIR=github.com/snail007/gblog \
+-w /go/src/github.com/snail007/gblog \
 -e GO111MODULE=on \
 -e GOSUMDB=off \
 -e CGO_ENABLED=1 \
@@ -45,7 +45,7 @@ echo "gblog-linux64 success"
 # linux 64 with bleve
 docker run -it --rm \
 -v $GOPATH:/go \
--e BUILDDIR=github.com/snail007/gblog \
+-w /go/src/github.com/snail007/gblog \
 -e GO111MODULE=on \
 -e GOSUMDB=off \
 -e CGO_ENABLED=1 \
@@ -58,7 +58,7 @@ echo "gblog-linux64-bleve success"
 # linux 32
 docker run -it --rm \
 -v $GOPATH:/go \
--e BUILDDIR=github.com/snail007/gblog \
+-w /go/src/github.com/snail007/gblog \
 -e GO111MODULE=on \
 -e GOSUMDB=off \
 -e CGO_ENABLED=1 \
@@ -71,7 +71,7 @@ echo "gblog-linux32 success"
 # linux 32 with bleve
 docker run -it --rm \
 -v $GOPATH:/go \
--e BUILDDIR=github.com/snail007/gblog \
+-w /go/src/github.com/snail007/gblog \
 -e GO111MODULE=on \
 -e GOSUMDB=off \
 -e CGO_ENABLED=1 \
@@ -85,7 +85,7 @@ echo "gblog-linux32-bleve success"
 # windows 64
 docker run -it --rm \
 -v $GOPATH:/go \
--e BUILDDIR=github.com/snail007/gblog \
+-w /go/src/github.com/snail007/gblog \
 -e GO111MODULE=on \
 -e GOSUMDB=off \
 -e CGO_ENABLED=1 \
@@ -98,7 +98,7 @@ echo "gblog-win64.exe success"
 # windows 64 with bleve
 docker run -it --rm \
 -v $GOPATH:/go \
--e BUILDDIR=github.com/snail007/gblog \
+-w /go/src/github.com/snail007/gblog \
 -e GO111MODULE=on \
 -e GOSUMDB=off \
 -e CGO_ENABLED=1 \
@@ -112,7 +112,7 @@ echo "gblog-win64-bleve.exe success"
 # windows 32
 docker run -it --rm \
 -v $GOPATH:/go \
--e BUILDDIR=github.com/snail007/gblog \
+-w /go/src/github.com/snail007/gblog \
 -e GO111MODULE=on \
 -e GOSUMDB=off \
 -e CGO_ENABLED=1 \
@@ -125,7 +125,7 @@ echo "gblog-win32.exe success"
 # windows 32 with bleve
 docker run -it --rm \
 -v $GOPATH:/go \
--e BUILDDIR=github.com/snail007/gblog \
+-w /go/src/github.com/snail007/gblog \
 -e GO111MODULE=on \
 -e GOSUMDB=off \
 -e CGO_ENABLED=1 \
@@ -147,7 +147,7 @@ echo "gblog-mac-bleve success"
 # arm64
 docker run -it --rm \
 -v $GOPATH:/go \
--e BUILDDIR=github.com/snail007/gblog \
+-w /go/src/github.com/snail007/gblog \
 -e GO111MODULE=on \
 -e GOSUMDB=off \
 -e CGO_ENABLED=1 \

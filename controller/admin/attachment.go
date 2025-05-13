@@ -147,7 +147,8 @@ func (this *Attachment) uploadToGithub(filePath string, file *multipart.FileHead
 		return
 	}
 	data := strings.Split(userRepo, "/")
-	ctx1, cancel1 := context.WithTimeout(context.Background(), time.Second*60)
+	timeout := time.Minute * 30
+	ctx1, cancel1 := context.WithTimeout(context.Background(), timeout)
 	defer cancel1()
 	ts := oauth2.StaticTokenSource(
 		&oauth2.Token{AccessToken: token},
@@ -164,7 +165,7 @@ func (this *Attachment) uploadToGithub(filePath string, file *multipart.FileHead
 		Branch:    repo.DefaultBranch,
 		Committer: &github.CommitAuthor{Name: github.String("gblog"), Email: github.String("bot@gblog")},
 	}
-	ctx2, cancel2 := context.WithTimeout(context.Background(), time.Second*60)
+	ctx2, cancel2 := context.WithTimeout(context.Background(), timeout)
 	defer cancel2()
 	_, _, err = client.Repositories.CreateFile(ctx2, data[0], data[1], filePath, opts)
 	return
